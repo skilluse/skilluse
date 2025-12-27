@@ -22,3 +22,14 @@
   - pollUntilComplete() provides full polling loop with timeout support
   - openBrowser() provides cross-platform browser opening (darwin/win32/linux)
   - All types exported: DeviceCodeResponse, AccessTokenResponse, PollResult
+
+### [2025-12-27] Session #3
+- Working on: task05-config-store
+- Completed: F001, F002, F003, F004, F005, F006
+- In progress: None
+- Commits: c3ef7eb
+- Notes:
+  - Created store.ts service using conf library
+  - Config stored at ~/.skilluse/config.json (custom cwd option)
+  - Implemented: getConfig, setAuth, clearAuth, addRepo, removeRepo, setDefaultRepo, addInstalledSkill, removeInstalledSkill
+  - All types exported: Config, AuthConfig, RepoConfig, InstalledSkill

@@ -2,9 +2,9 @@
   "ticket": "task05-config-store",
   "title": "Configuration Store",
   "priority": 3,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-27",
-  "completed_at": null,
+  "completed_at": "2025-12-27",
   "dependencies": ["task01-project-setup"],
   "parallelizable": true,
   "features": [
@@ -18,8 +18,8 @@
         "Verify ~/.skilluse/ directory exists",
         "Verify config.json file exists"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Uses conf library with custom cwd option"
     },
     {
       "id": "F002",
@@ -31,7 +31,7 @@
         "Verify auth.token equals 'token123'",
         "Verify auth.user equals 'username'"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -44,7 +44,7 @@
         "Call getConfig()",
         "Verify auth is null"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -57,8 +57,8 @@
         "Call removeRepo('owner/repo')",
         "Verify repo is removed"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Also clears defaultRepo if the removed repo was default"
     },
     {
       "id": "F005",
@@ -69,7 +69,7 @@
         "Call setDefaultRepo('owner/repo')",
         "Verify config.defaultRepo equals 'owner/repo'"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -82,13 +82,13 @@
         "Call removeInstalledSkill('skill-name')",
         "Verify skill is removed"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }
