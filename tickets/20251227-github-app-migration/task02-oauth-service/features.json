@@ -2,7 +2,7 @@
   "ticket": "task02-oauth-service",
   "title": "GitHub App OAuth Service",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "dependencies": ["task01-create-github-app"],
   "parallelizable": false,
   "features": [
@@ -16,7 +16,7 @@
         "Verify response contains user_code",
         "Verify response contains verification_uri"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F002",
@@ -28,7 +28,7 @@
         "Verify polling handles 'authorization_pending' status",
         "Verify successful auth returns access_token"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F003",
@@ -40,7 +40,7 @@
         "Verify response contains installation list",
         "Verify each installation has id and account info"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F004",
@@ -52,7 +52,7 @@
         "Verify response contains repository list",
         "Verify repository info includes name and full_name"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F005",
@@ -64,7 +64,7 @@
         "Verify response contains token",
         "Verify response contains expires_at"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F006",
@@ -75,8 +75,8 @@
         "Verify error is caught and meaningful message returned",
         "Verify no unhandled exceptions"
       ],
-      "passes": false
+      "passes": true
     }
   ],
-  "completed_at": null
+  "completed_at": "2025-12-27"
 }

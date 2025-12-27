@@ -3,6 +3,38 @@
  * Reference: https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#device-flow
  */
 
+// ============================================================================
+// GitHub App Installation Types
+// ============================================================================
+
+export interface Installation {
+  id: number;
+  account: {
+    login: string;
+    type: "User" | "Organization";
+  };
+  repository_selection: "all" | "selected";
+  permissions: Record<string, string>;
+}
+
+export interface Repository {
+  id: number;
+  name: string;
+  full_name: string;
+  private: boolean;
+}
+
+export interface InstallationToken {
+  token: string;
+  expires_at: string;
+  permissions: Record<string, string>;
+  repositories?: Repository[];
+}
+
+// ============================================================================
+// OAuth Device Flow Types
+// ============================================================================
+
 export interface DeviceCodeResponse {
   device_code: string;
   user_code: string;
@@ -212,4 +244,101 @@ export async function openBrowser(url: string): Promise<void> {
   }
 
   await execAsync(command);
+}
+
+// ============================================================================
+// GitHub App Installation Management
+// ============================================================================
+
+const GITHUB_API_URL = "https://api.github.com";
+
+interface InstallationsResponse {
+  total_count: number;
+  installations: Installation[];
+}
+
+interface RepositoriesResponse {
+  total_count: number;
+  repositories: Repository[];
+}
+
+/**
+ * Get all GitHub App installations for the authenticated user
+ */
+export async function getUserInstallations(
+  userToken: string
+): Promise<Installation[]> {
+  const response = await fetch(`${GITHUB_API_URL}/user/installations`, {
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${userToken}`,
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to get installations: ${response.status} - ${error}`);
+  }
+
+  const data = (await response.json()) as InstallationsResponse;
+  return data.installations;
+}
+
+/**
+ * Get repositories accessible by a specific installation
+ */
+export async function getInstallationRepositories(
+  userToken: string,
+  installationId: number
+): Promise<Repository[]> {
+  const response = await fetch(
+    `${GITHUB_API_URL}/user/installations/${installationId}/repositories`,
+    {
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${userToken}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(
+      `Failed to get installation repositories: ${response.status} - ${error}`
+    );
+  }
+
+  const data = (await response.json()) as RepositoriesResponse;
+  return data.repositories;
+}
+
+/**
+ * Get an installation access token for API operations
+ */
+export async function getInstallationToken(
+  userToken: string,
+  installationId: number
+): Promise<InstallationToken> {
+  const response = await fetch(
+    `${GITHUB_API_URL}/user/installations/${installationId}/access_tokens`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${userToken}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(
+      `Failed to get installation token: ${response.status} - ${error}`
+    );
+  }
+
+  return (await response.json()) as InstallationToken;
 }

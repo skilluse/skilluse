@@ -10,9 +10,10 @@ import {
   setCredentials,
 } from "../services/index.js";
 
-// GitHub OAuth App Client ID for Skilluse CLI
-// Users can override with SKILLUSE_GITHUB_CLIENT_ID environment variable
-const GITHUB_CLIENT_ID = process.env.SKILLUSE_GITHUB_CLIENT_ID || "Ov23likh3P4o2wzi8nJZ";
+// GitHub App Client ID for Skilluse CLI
+// These are public values, safe to embed in client code
+// Override with SKILLUSE_GITHUB_CLIENT_ID env var for development
+const GITHUB_CLIENT_ID = process.env.SKILLUSE_GITHUB_CLIENT_ID || "Iv23liOOBSjdH2IRT6W2";
 
 export const options = z.object({
   force: z
