@@ -29,3 +29,11 @@ export {
   logPath,
   tempPath,
 } from "./paths.js";
+
+export {
+  getCredentials,
+  setCredentials,
+  clearCredentials,
+  isKeychainAvailable,
+  type Credentials,
+} from "./credentials.js";

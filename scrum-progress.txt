@@ -2,11 +2,23 @@
 
 ## Current Sprint (Config Refactor)
 - [x] cfg01-platform-paths - Use env-paths for platform-native directories
-- [ ] cfg02-secure-credentials - Store tokens in system keychain
+- [x] cfg02-secure-credentials - Store tokens in system keychain
 - [ ] cfg03-config-migration - Migrate from legacy ~/.skilluse/
 
 ## Completed (Config Refactor)
 - [x] cfg01-platform-paths
+- [x] cfg02-secure-credentials
+
+### [2025-12-27] Session - cfg02-secure-credentials
+- Working on: cfg02-secure-credentials
+- Completed: F001, F002, F003, F004, F005, F006
+- In progress: None
+- Notes:
+  - Added keytar package for system keychain support
+  - Created credentials.ts service with getCredentials, setCredentials, clearCredentials, isKeychainAvailable
+  - Keychain used on macOS Keychain, Windows Credential Manager, Linux libsecret
+  - Encrypted file fallback using AES-256-GCM when keychain unavailable
+  - Machine-specific key derivation for encrypted file (hostname + username)
 
 ---
 
