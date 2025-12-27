@@ -11,7 +11,7 @@ import { NavLink } from "~/components/web/ui/nav-link"
 import { config } from "~/config"
 import { cx } from "~/utils/cva"
 
-type HeaderProps = ComponentProps<"header">
+type HeaderProps = ComponentProps<"div">
 
 const Header = ({ className, ...props }: HeaderProps) => {
   const pathname = usePathname()
@@ -33,27 +33,37 @@ const Header = ({ className, ...props }: HeaderProps) => {
   }, [pathname])
 
   return (
-    <header
-      className={cx("fixed top-0 inset-x-0 z-50 bg-background/95 backdrop-blur-sm border-b", className)}
+    <div
+      className={cx("fixed top-(--header-top) inset-x-0 z-50 bg-background", className)}
+      id="header"
       role="banner"
       data-state={isNavOpen ? "open" : "close"}
       {...props}
     >
       <Container>
-        <div className="flex items-center justify-between h-16 gap-4">
-          {/* Logo */}
-          <Logo />
+        <div className="flex items-center py-3.5 gap-4 text-sm h-(--header-height) md:gap-6">
+          <Stack size="sm" wrap={false} className="mr-auto">
+            <button
+              type="button"
+              onClick={() => setNavOpen(!isNavOpen)}
+              className="block -m-1 -ml-1.5 lg:hidden"
+            >
+              <Hamburger className="size-7" />
+            </button>
+
+            <Logo />
+          </Stack>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            {config.navigation.main.map((item) => (
+          <nav className="flex flex-wrap gap-4 max-lg:hidden">
+            {config.navigation.main.map((item) =>
               item.external ? (
                 <Link
                   key={item.href}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   {item.title}
                 </Link>
@@ -62,35 +72,25 @@ const Header = ({ className, ...props }: HeaderProps) => {
                   {item.title}
                 </NavLink>
               )
-            ))}
+            )}
           </nav>
-
-          {/* Mobile Hamburger */}
-          <button
-            type="button"
-            onClick={() => setNavOpen(!isNavOpen)}
-            className="group/menu -m-1 p-1 md:hidden"
-            aria-label="Toggle menu"
-          >
-            <Hamburger className="size-7" />
-          </button>
         </div>
 
         {/* Mobile Navigation */}
         <nav
           className={cx(
-            "absolute top-full inset-x-0 bg-background/95 backdrop-blur-sm border-b py-4 px-6 flex flex-col gap-4 transition-opacity md:hidden",
+            "absolute top-full inset-x-0 h-[calc(100dvh-var(--header-top)-var(--header-height))] -mt-px py-4 px-6 grid grid-cols-2 place-items-start place-content-start gap-x-4 gap-y-6 bg-background/90 backdrop-blur-lg transition-opacity lg:hidden",
             isNavOpen ? "opacity-100" : "opacity-0 pointer-events-none",
           )}
         >
-          {config.navigation.main.map((item) => (
+          {config.navigation.main.map((item) =>
             item.external ? (
               <Link
                 key={item.href}
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-base text-muted-foreground hover:text-foreground transition-colors"
+                className="text-base text-muted-foreground hover:text-foreground"
               >
                 {item.title}
               </Link>
@@ -99,11 +99,17 @@ const Header = ({ className, ...props }: HeaderProps) => {
                 {item.title}
               </NavLink>
             )
-          ))}
+          )}
         </nav>
       </Container>
-    </header>
+    </div>
   )
 }
 
-export { Header, type HeaderProps }
+const HeaderBackdrop = () => {
+  return (
+    <div className="fixed top-(--header-offset) inset-x-0 z-40 h-8 pointer-events-none bg-linear-to-b from-background to-transparent" />
+  )
+}
+
+export { Header, HeaderBackdrop, type HeaderProps }

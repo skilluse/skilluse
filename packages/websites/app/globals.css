@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --header-height: 3.125rem;
+  --header-top: 0rem;
+  --header-offset: calc(var(--header-top) + var(--header-height));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 12%);
+  --color-border: hsl(0 0% 89%);
+  --color-input: hsl(0 0% 89%);
+  --color-ring: hsl(0 0% 84%);
+
+  --color-card: hsl(0 0% 98%);
+  --color-card-foreground: hsl(0 0% 12%);
+
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(0 0% 3.9%);
+
+  --color-primary: hsl(220 90% 56%);
+  --color-primary-foreground: hsl(0 0% 98%);
+
+  --color-secondary: hsl(0 0% 96%);
+  --color-secondary-foreground: hsl(0 0% 30%);
+
+  --color-muted: hsl(0 0% 96%);
+  --color-muted-foreground: hsl(0 0% 45.1%);
+
+  --color-accent: hsl(0 0% 96%);
+  --color-accent-foreground: hsl(0 0% 9%);
+
+  --color-destructive: hsl(3 71% 52%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+
+  --tracking-micro: -0.0125em;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-geist-sans);
+
+  --text-5xl: 2.75rem;
+  --text-6xl: 3rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    @apply border-border;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background: hsl(0 0% 4%);
+      --color-foreground: hsl(0 0% 90%);
+      --color-border: hsl(0 0% 14%);
+      --color-input: hsl(0 0% 14%);
+      --color-ring: hsl(0 0% 19%);
+
+      --color-card: hsl(0 0% 7%);
+      --color-card-foreground: hsl(0 0% 90%);
+
+      --color-popover: hsl(0 0% 4%);
+      --color-popover-foreground: hsl(0 0% 90%);
+
+      --color-primary: hsl(220 90% 56%);
+      --color-primary-foreground: hsl(0 0% 98%);
+
+      --color-secondary: hsl(0 0% 14%);
+      --color-secondary-foreground: hsl(0 0% 70%);
+
+      --color-muted: hsl(0 0% 14%);
+      --color-muted-foreground: hsl(0 0% 55%);
+
+      --color-accent: hsl(0 0% 14%);
+      --color-accent-foreground: hsl(0 0% 90%);
+
+      --color-destructive: hsl(3 71% 52%);
+      --color-destructive-foreground: hsl(0 0% 98%);
+    }
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }

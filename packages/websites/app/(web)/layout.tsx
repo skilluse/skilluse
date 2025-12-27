@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { Footer } from "~/components/web/footer"
-import { Header } from "~/components/web/header"
+import { Header, HeaderBackdrop } from "~/components/web/header"
 import { Container } from "~/components/web/ui/container"
 
 type WebLayoutProps = {
@@ -9,14 +9,17 @@ type WebLayoutProps = {
 
 export default function WebLayout({ children }: WebLayoutProps) {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-dvh overflow-clip pt-(--header-offset)">
       <Header />
-      <main className="flex-1 pt-16">
-        <Container className="py-8 md:py-12">
+      <HeaderBackdrop />
+
+      <Container asChild>
+        <main className="flex flex-col grow py-8 gap-8 md:gap-10 md:py-10 lg:gap-12 lg:py-12">
           {children}
-        </Container>
-      </main>
-      <Footer />
+
+          <Footer />
+        </main>
+      </Container>
     </div>
   )
 }
