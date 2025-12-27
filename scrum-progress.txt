@@ -1,3 +1,17 @@
+# Config Refactor Sprint
+
+## Current Sprint (Config Refactor)
+- [x] cfg01-platform-paths - Use env-paths for platform-native directories
+- [ ] cfg02-secure-credentials - Store tokens in system keychain
+- [ ] cfg03-config-migration - Migrate from legacy ~/.skilluse/
+
+## Completed (Config Refactor)
+- [x] cfg01-platform-paths
+
+---
+
+# CLI Core Sprint (Previous)
+
 ### [2025-12-27 17:07] Session #1
 - Working on: task02-ui-components
 - Completed: F001, F002, F003, F004, F005, F006

@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "conf": "^15.0.2",
+    "env-paths": "^3.0.0",
     "figures": "^6.1.0",
     "ink": "^5.2.1",
     "ink-select-input": "^6.2.0",

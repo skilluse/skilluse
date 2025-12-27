@@ -1,11 +1,5 @@
 import Conf from "conf";
-import { homedir } from "os";
-import { join } from "path";
-
-export interface AuthConfig {
-  token: string;
-  user: string;
-}
+import { configPath } from "./paths.js";
 
 export interface RepoConfig {
   repo: string; // "owner/repo"
@@ -25,42 +19,29 @@ export interface InstalledSkill {
 }
 
 export interface Config {
-  auth: AuthConfig | null;
   defaultRepo: string | null;
   repos: RepoConfig[];
   installed: InstalledSkill[];
 }
 
 const defaultConfig: Config = {
-  auth: null,
   defaultRepo: null,
   repos: [],
   installed: [],
 };
 
-const configDir = join(homedir(), ".skilluse");
-
 const store = new Conf<Config>({
   projectName: "skilluse",
-  cwd: configDir,
+  cwd: configPath,
   defaults: defaultConfig,
 });
 
 export function getConfig(): Config {
   return {
-    auth: store.get("auth"),
     defaultRepo: store.get("defaultRepo"),
     repos: store.get("repos"),
     installed: store.get("installed"),
   };
-}
-
-export function setAuth(token: string, user: string): void {
-  store.set("auth", { token, user });
-}
-
-export function clearAuth(): void {
-  store.set("auth", null);
 }
 
 export function addRepo(repo: RepoConfig): void {
@@ -79,7 +60,6 @@ export function removeRepo(repoName: string): void {
   const filtered = repos.filter((r) => r.repo !== repoName);
   store.set("repos", filtered);
 
-  // Clear defaultRepo if it was the removed repo
   if (store.get("defaultRepo") === repoName) {
     store.set("defaultRepo", null);
   }

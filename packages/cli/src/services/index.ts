@@ -12,15 +12,20 @@ export {
 
 export {
   getConfig,
-  setAuth,
-  clearAuth,
   addRepo,
   removeRepo,
   setDefaultRepo,
   addInstalledSkill,
   removeInstalledSkill,
   type Config,
-  type AuthConfig,
   type RepoConfig,
   type InstalledSkill,
 } from "./store.js";
+
+export {
+  configPath,
+  dataPath,
+  cachePath,
+  logPath,
+  tempPath,
+} from "./paths.js";
