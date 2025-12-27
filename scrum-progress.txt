@@ -1,10 +1,24 @@
-### [2025-12-27 16:45] Session #1
+### [2025-12-27 17:07] Session #1
 - Working on: task02-ui-components
 - Completed: F001, F002, F003, F004, F005, F006
 - In progress: None
+- Commits: 613ad7c
 - Notes:
   - Upgraded ink to v5 for compatibility with ink-spinner, ink-select-input, ink-text-input
   - Created custom Table component (ink-table not compatible with ink 5)
   - Created custom ProgressBar component
   - Created StatusMessage component with figures icons
   - Added demo command for testing components
+
+### [2025-12-27] Session #2
+- Working on: task03-oauth-flow
+- Completed: F001, F002, F003, F004, F005
+- In progress: None
+- Commits: 5110081
+- Notes:
+  - Created oauth.ts service with GitHub Device Flow implementation
+  - requestDeviceCode() calls GitHub device authorization endpoint
+  - pollForAccessToken() polls for access token with all error handling
+  - pollUntilComplete() provides full polling loop with timeout support
+  - openBrowser() provides cross-platform browser opening (darwin/win32/linux)
+  - All types exported: DeviceCodeResponse, AccessTokenResponse, PollResult

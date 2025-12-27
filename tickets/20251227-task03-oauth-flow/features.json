@@ -2,9 +2,9 @@
   "ticket": "task03-oauth-flow",
   "title": "GitHub OAuth Device Flow",
   "priority": 3,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-27",
-  "completed_at": null,
+  "completed_at": "2025-12-27",
   "dependencies": ["task01-project-setup"],
   "parallelizable": true,
   "features": [
@@ -18,8 +18,8 @@
         "Verify user_code is returned",
         "Verify verification_uri is returned"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented in requestDeviceCode() - calls GitHub device/code endpoint"
     },
     {
       "id": "F002",
@@ -31,8 +31,8 @@
         "Verify URL https://github.com/login/device is shown",
         "Verify instructions are clear"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "DeviceCodeResponse includes user_code and verification_uri for display"
     },
     {
       "id": "F003",
@@ -44,8 +44,8 @@
         "Verify polling continues until token received",
         "Verify access token is returned"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented in pollForAccessToken() and pollUntilComplete()"
     },
     {
       "id": "F004",
@@ -57,8 +57,8 @@
         "Verify timeout error is displayed",
         "Verify graceful exit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "pollUntilComplete() tracks expiresAt and returns {success: false, reason: 'expired'}"
     },
     {
       "id": "F005",
@@ -69,13 +69,13 @@
         "Press Enter to open browser",
         "Verify browser opens to verification URL"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "openBrowser() implemented with cross-platform support (darwin, win32, linux)"
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }
