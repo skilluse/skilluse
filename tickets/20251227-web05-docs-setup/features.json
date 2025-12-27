@@ -1,0 +1,110 @@
+{
+  "ticket": "web05-docs-setup",
+  "title": "Documentation Setup",
+  "priority": 5,
+  "status": "pending",
+  "dependencies": ["web01-project-setup", "web02-core-layout"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "content",
+      "description": "Docs collection configured",
+      "steps": [
+        "Define docs collection in content-collections.ts",
+        "Schema includes title, description, order",
+        "Transform extracts headings for TOC",
+        "Collection exports allDocs"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F002",
+      "category": "config",
+      "description": "Docs navigation configured",
+      "steps": [
+        "Create/update config/navigation.ts",
+        "Export docsNavigation array",
+        "Groups: Getting Started, Commands, Skills",
+        "Each item has title and href"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F003",
+      "category": "component",
+      "description": "Docs sidebar navigation",
+      "steps": [
+        "Create components/web/docs/docs-sidebar.tsx",
+        "Render navigation groups",
+        "Highlight active page",
+        "Collapsible sections (optional)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F004",
+      "category": "component",
+      "description": "Docs table of contents",
+      "steps": [
+        "Create components/web/docs/docs-toc.tsx",
+        "Accept headings array as prop",
+        "Render h2/h3 headings as links",
+        "Highlight current section on scroll (optional)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F005",
+      "category": "component",
+      "description": "Docs pagination (prev/next)",
+      "steps": [
+        "Create components/web/docs/docs-pagination.tsx",
+        "Show previous page link if exists",
+        "Show next page link if exists",
+        "Use navigation config for order"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F006",
+      "category": "layout",
+      "description": "Docs layout with 3-column structure",
+      "steps": [
+        "Create app/(web)/docs/layout.tsx",
+        "Left sidebar with navigation",
+        "Center content area",
+        "Right TOC on desktop",
+        "Responsive: sidebar hidden on mobile"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F007",
+      "category": "page",
+      "description": "Docs pages render correctly",
+      "steps": [
+        "Create app/(web)/docs/page.tsx for index",
+        "Create app/(web)/docs/[...slug]/page.tsx for nested",
+        "Fetch doc by slug from allDocs",
+        "Render MDX content with prose styling",
+        "Handle 404 for invalid slugs"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F008",
+      "category": "content",
+      "description": "Initial documentation written",
+      "steps": [
+        "Create content/docs/index.mdx (introduction)",
+        "Create content/docs/installation.mdx",
+        "Create content/docs/quick-start.mdx",
+        "Create at least one commands doc",
+        "All docs have valid frontmatter"
+      ],
+      "passes": false
+    }
+  ],
+  "completed_at": null
+}

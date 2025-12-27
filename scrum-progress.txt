@@ -33,3 +33,24 @@
   - Config stored at ~/.skilluse/config.json (custom cwd option)
   - Implemented: getConfig, setAuth, clearAuth, addRepo, removeRepo, setDefaultRepo, addInstalledSkill, removeInstalledSkill
   - All types exported: Config, AuthConfig, RepoConfig, InstalledSkill
+
+---
+
+# Website Project
+
+## Current Sprint (Website)
+- [ ] web01-project-setup - Initialize Next.js, copy components
+- [ ] web02-core-layout - Header, footer, layout
+- [ ] web03-landing-page - Hero, features, CTA
+- [ ] web04-blog-setup - Blog listing and posts
+- [ ] web05-docs-setup - Documentation with sidebar
+- [ ] web06-polish - SEO, OG images, sitemap
+
+## Completed (Website)
+(none yet)
+
+### [2025-12-27] Website Planning
+- Created website-design.md with full specification
+- Created 6 website tickets (web01-web06)
+- Reusing components from OpenAlternative
+- Stack: Next.js, Tailwind v4, content-collections, Radix UI
