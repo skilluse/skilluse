@@ -32,7 +32,7 @@ export const Breadcrumbs = ({ children, className, items, ...props }: Breadcrumb
   const breadcrumbItems = [
     {
       href: "/",
-      name: <Icon name="lucide/house" aria-label="Home" />,
+      name: <Icon name="House" aria-label="Home" />,
     },
     ...items,
   ]

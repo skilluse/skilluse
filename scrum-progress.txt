@@ -61,6 +61,19 @@
   - Implemented: getConfig, setAuth, clearAuth, addRepo, removeRepo, setDefaultRepo, addInstalledSkill, removeInstalledSkill
   - All types exported: Config, AuthConfig, RepoConfig, InstalledSkill
 
+### [2025-12-27] Session #4
+- Working on: task04-auth-commands
+- Completed: F001, F002, F003, F004, F005
+- In progress: None
+- Notes:
+  - Created login.tsx command with GitHub OAuth Device Flow
+  - Created logout.tsx command to clear credentials
+  - Created whoami.tsx command to show current user
+  - login: Checks existing session, starts OAuth, stores token in keychain
+  - logout: Clears credentials from keychain/encrypted file
+  - whoami: Fetches fresh user info from GitHub API, shows profile URL
+  - OAuth client ID configurable via SKILLUSE_GITHUB_CLIENT_ID env var
+
 ---
 
 # Website Project

@@ -2,7 +2,7 @@
   "ticket": "web02-core-layout",
   "title": "Core Layout Components",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "dependencies": ["web01-project-setup"],
   "parallelizable": false,
   "features": [
@@ -16,7 +16,7 @@
         "Set up default metadata (title, description)",
         "Verify font renders correctly"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F002",
@@ -29,7 +29,7 @@
         "Wrap children in Container",
         "Verify proper spacing on all screen sizes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F003",
@@ -42,7 +42,7 @@
         "GitHub link opens in new tab",
         "Header is fixed at top"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F004",
@@ -54,7 +54,7 @@
         "Nav closes on link click",
         "Nav closes on Escape key"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F005",
@@ -67,7 +67,7 @@
         "Add copyright notice",
         "Footer sticks to bottom on short pages"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F006",
@@ -79,7 +79,7 @@
         "Link to home page",
         "Proper sizing and alignment"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F007",
@@ -91,7 +91,7 @@
         "Each item has title, href, optional external flag",
         "Header uses this config"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F008",
@@ -102,8 +102,8 @@
         "Resize to mobile, verify responsive layout",
         "Check there are no layout shifts or overflow issues"
       ],
-      "passes": false
+      "passes": true
     }
   ],
-  "completed_at": null
+  "completed_at": "2025-12-27"
 }

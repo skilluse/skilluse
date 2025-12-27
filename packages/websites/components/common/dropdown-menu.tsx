@@ -64,7 +64,7 @@ const DropdownMenuCheckboxItem = ({
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Icon name="lucide/check" />
+        <Icon name="Check" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -85,7 +85,7 @@ const DropdownMenuRadioItem = ({
   >
     <span className="absolute left-2 flex size-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Icon name="lucide/circle" className="fill-current size-2" />
+        <Icon name="Circle" className="fill-current size-2" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -109,7 +109,7 @@ const DropdownMenuSubTrigger = ({
     {...props}
   >
     {children}
-    <Icon name="lucide/chevron-right" className="ml-auto" />
+    <Icon name="ChevronRight" className="ml-auto" />
   </DropdownMenuPrimitive.SubTrigger>
 )
 
