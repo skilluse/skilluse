@@ -98,13 +98,17 @@ packages/websites/components/
 └── docs/         # Docs components (web05)
 ```
 
-## Theme Integration
-The blog pages should use the CLI theme variables from web07:
-- Use `--cli-primary` (green) for inline code and command references
-- Use `--cli-secondary` (orange) for links
-- Use IBM Plex Mono font for code blocks
-- Keep prose content readable with `--cli-text-100` colors
-- Support both dark and light modes via the CSS variables
+## Theme Integration (OpenCode Style)
+The blog pages should follow the OpenCode design style from web09:
+- Use bordered container wrapper (already in layout)
+- Sticky header at browser top
+- All borders use 1px with `border-border` class
+- Border color: `hsl(0 3% 87%)` in light mode
+- No border radius on cards and buttons (`rounded-none`)
+- Post cards should be connected sections (like features/how-it-works)
+- IBM Plex Mono font for all text
+- Use `text-foreground` for primary text, `text-muted-foreground` for secondary
+- Support dark/light modes via CSS media query
 
 ## Out of Scope
 - RSS feed (web06-polish)

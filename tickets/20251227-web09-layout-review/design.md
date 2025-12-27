@@ -2,62 +2,69 @@
 
 ## Overview
 
-Review and refactor the website layout to match OpenCode design style. The previous implementation may have introduced layout issues that need to be fixed, including duplicate borders, incorrect padding, and visual inconsistencies.
+Refactor the website layout to match OpenCode design style with bordered container, sticky header, and connected card sections.
 
-## Requirements
-
-### Border Issues
-- Ensure no duplicate vertical/horizontal border lines between sections
-- Header bottom border should be single `2px solid` line
-- Footer top border should be single `2px solid` line
-- Footer column separators should not create double lines
-
-### Padding/Margin Consistency
-- Verify header content is vertically centered
-- Ensure container padding is consistent across breakpoints
-- Check `pt-(--header-offset)` calculation is correct
-- Footer columns should have consistent padding
+## Implemented Changes
 
 ### Layout Structure
-- Header: Three-column layout (Logo | Navigation | Social Icons)
-- Footer: Three-column layout (GitHub | Twitter | Copyright)
-- Mobile responsive hamburger menu for header
-- Footer responsive wrapping on mobile
+- Added bordered container wrapper around entire page content
+- Viewport margin: `p-2 sm:p-4`
+- Max width: `max-w-272`
+- Outer border: `border border-border`
 
-### Visual Consistency
-- Navigation text: `uppercase tracking-wide`
-- Border color: unified `border-border`
-- Hover states: `text-muted-foreground` → `text-foreground`
-- Dark/light mode support
+### Header
+- Changed from `fixed` to `sticky top-0` positioning
+- Three-column layout: Logo | Navigation | Social Icons
+- Removed lightning icon from logo
+- Mobile hamburger menu for responsive navigation
+
+### Footer
+- Three-column layout: GitHub | Twitter | Copyright
+- Column separators with `border-r`
+- Responsive wrapping on mobile with `border-b`
+
+### Border Styling
+- All borders use `1px` (not 2px)
+- Border color: `hsl(0 3% 87%)` in light mode
+- Unified `border-border` class throughout
+
+### Visual Elements
+- **Feature cards**: Connected with no gaps, no border radius
+- **How It Works cards**: Connected with no gaps, no border radius
+- **Terminal hero**: No border radius, no shadow
+- **Buttons**: `rounded-none`, equal width (`w-44`)
+- **Navigation text**: `uppercase tracking-wide`
+- **Hover states**: `text-muted-foreground` → `text-foreground`
+- **ASCII logo**: `text-foreground` (black text)
 
 ## Technical Details
 
-### Files to Review
+### Files Modified
 
 ```
 packages/websites/
 ├── app/
-│   ├── globals.css                    # Color theme configuration
+│   ├── globals.css                    # Border color update
 │   └── (web)/
-│       └── layout.tsx                 # Page layout structure
+│       └── layout.tsx                 # Bordered container wrapper
 └── components/
     ├── layout/
-    │   ├── header.tsx                 # Header three-column layout
-    │   ├── footer.tsx                 # Footer three-column layout
-    │   └── container.tsx              # Container padding
+    │   ├── header.tsx                 # Sticky header, removed icon
+    │   ├── footer.tsx                 # 1px borders
+    │   └── logo.tsx                   # Removed lightning icon
     └── home/
-        ├── hero.tsx
-        ├── features.tsx
-        ├── how-it-works.tsx
-        ├── supported-agents.tsx
-        └── cta.tsx
+        ├── hero.tsx                   # Equal width buttons
+        ├── features.tsx               # Connected cards
+        ├── how-it-works.tsx           # Connected cards
+        ├── terminal-hero.tsx          # No border radius
+        └── cta.tsx                    # Equal width buttons
 ```
 
 ### Design Reference
 
 OpenCode implementation:
 - `/Users/yuanjiwei/Documents/GitHub/opencode/packages/web/src/components/Header.astro`
-- `/Users/yuanjiwei/Documents/GitHub/opencode/packages/web/src/components/Lander.astro` (footer: lines 177-187, styles: 634-679)
+- `/Users/yuanjiwei/Documents/GitHub/opencode/packages/web/src/components/Lander.astro`
 - `/Users/yuanjiwei/Documents/GitHub/opencode/packages/web/src/styles/custom.css`
 
 ### Color Specifications
@@ -65,26 +72,21 @@ OpenCode implementation:
 **Light Mode:**
 - Background: `hsl(0 20% 99%)`
 - Foreground: `hsl(0 5% 12%)`
-- Border: `hsl(30 2% 81%)`
+- Border: `hsl(0 3% 87%)`
 
 **Dark Mode:**
 - Background: `hsl(0 9% 7%)`
 - Foreground: `hsl(0 15% 94%)`
 - Border: `hsl(0 3% 28%)`
 
-**Accent:**
-- Lime green: `hsl(62 84% 88%)`
-
 ## Acceptance Criteria
 
-See features.json for testable criteria.
+See features.json for testable criteria (14 features, all passing).
 
 ## Dependencies
 
 - web08-color-scheme (completed)
 
-## Out of Scope
+## Status
 
-- Content changes (text, images)
-- New feature additions
-- shadcn UI component modifications (use className overrides instead)
+**Completed** - All changes implemented and verified.

@@ -123,14 +123,18 @@ packages/websites/components/
 └── docs/         # Docs components (new)
 ```
 
-## Theme Integration
-The docs pages should use the CLI theme variables from web07:
-- Use `--cli-primary` (green) for inline code, commands, and active nav items
-- Use `--cli-secondary` (orange) for links
-- Use IBM Plex Mono font for code blocks
-- Keep prose content readable with `--cli-text-100` colors
-- Sidebar navigation should use primary color for active items
-- Support both dark and light modes via the CSS variables
+## Theme Integration (OpenCode Style)
+The docs pages should follow the OpenCode design style from web09:
+- Use bordered container wrapper (already in layout)
+- Sticky header at browser top
+- All borders use 1px with `border-border` class
+- Border color: `hsl(0 3% 87%)` in light mode
+- No border radius on navigation and buttons (`rounded-none`)
+- Sidebar sections should be connected with border dividers
+- IBM Plex Mono font for all text
+- Use `text-foreground` for primary text, `text-muted-foreground` for secondary
+- Active nav items use `text-foreground`, inactive use `text-muted-foreground`
+- Support dark/light modes via CSS media query
 
 ## Out of Scope
 - Search within docs
