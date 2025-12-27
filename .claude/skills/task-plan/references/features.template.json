@@ -1,0 +1,41 @@
+{
+  "ticket": "taskNN-short-description",
+  "title": "Human Readable Title",
+  "priority": 1,
+  "status": "pending",
+  "created_at": "YYYY-MM-DD",
+  "completed_at": null,
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Brief description of what this feature does",
+      "steps": [
+        "Step 1: Navigate to...",
+        "Step 2: Perform action...",
+        "Step 3: Verify result..."
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Another feature description",
+      "steps": [
+        "Step 1",
+        "Step 2",
+        "Step 3"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}
