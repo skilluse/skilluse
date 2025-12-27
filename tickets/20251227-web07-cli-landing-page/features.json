@@ -1,0 +1,155 @@
+{
+  "ticket": "web07-cli-landing-page",
+  "title": "CLI-Style Landing Page",
+  "priority": 1,
+  "status": "pending",
+  "dependencies": ["web03-landing-page"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "theme",
+      "description": "CLI color theme with dark/light modes",
+      "steps": [
+        "Add CLI color variables to globals.css",
+        "Dark mode: body #1D2A35, primary #05CE91, secondary #FF9D00",
+        "Light mode: body #EFF3F3, primary #027474, secondary #FF9D00",
+        "Text colors for both modes",
+        "prefers-color-scheme media query support"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F002",
+      "category": "typography",
+      "description": "Monospace font setup",
+      "steps": [
+        "Add IBM Plex Mono from Google Fonts",
+        "Set as default font for CLI page",
+        "Font weight 500",
+        "Custom scrollbar styling for both themes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F003",
+      "category": "component",
+      "description": "CLI wrapper component",
+      "steps": [
+        "Create CLIWrapper with terminal styling",
+        "Full viewport height",
+        "Theme-aware background",
+        "Custom scrollbar"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F004",
+      "category": "component",
+      "description": "Terminal prompt component",
+      "steps": [
+        "Create TerminalPrompt component",
+        "Display visitor@skilluse.dev:~$",
+        "User in secondary color, hostname in primary",
+        "Reusable across sections"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F005",
+      "category": "component",
+      "description": "ASCII logo component",
+      "steps": [
+        "Create ASCIILogo component",
+        "Display SkillUse in ASCII art",
+        "Proper monospace formatting",
+        "Hidden on mobile (too wide)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F006",
+      "category": "section",
+      "description": "Welcome section (hero)",
+      "steps": [
+        "Display ASCII logo",
+        "Welcome message with version",
+        "Brief description of SkillUse",
+        "Link to repo and help hint"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F007",
+      "category": "section",
+      "description": "Help section (commands)",
+      "steps": [
+        "List available sections as commands",
+        "Format: command - description",
+        "Tabbed alignment",
+        "Keyboard hints at bottom"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F008",
+      "category": "section",
+      "description": "Features section",
+      "steps": [
+        "Display as CLI output",
+        "List key features with icons/bullets",
+        "Primary color for feature names",
+        "Secondary text for descriptions"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F009",
+      "category": "section",
+      "description": "Install section",
+      "steps": [
+        "Show installation commands",
+        "Code block styling",
+        "Copy-friendly format",
+        "Multiple install methods"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F010",
+      "category": "section",
+      "description": "Agents section",
+      "steps": [
+        "List supported AI agents",
+        "CLI-style list format",
+        "Links to documentation"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F011",
+      "category": "page",
+      "description": "Landing page assembled",
+      "steps": [
+        "Replace current landing with CLI style",
+        "All sections display correctly",
+        "Proper section spacing",
+        "Links work correctly"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F012",
+      "category": "responsive",
+      "description": "Mobile responsive",
+      "steps": [
+        "Test on mobile viewport (375px)",
+        "ASCII art hidden on small screens",
+        "Text readable and properly sized",
+        "No horizontal overflow"
+      ],
+      "passes": false
+    }
+  ],
+  "completed_at": null
+}
