@@ -1,0 +1,183 @@
+{
+  "ticket": "web09-layout-review",
+  "title": "Review and Fix Homepage Layout Issues",
+  "priority": 1,
+  "status": "pending",
+  "dependencies": ["web08-color-scheme"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "border",
+      "description": "Header and Content have single border line (no duplicate)",
+      "steps": [
+        "Open homepage in browser",
+        "Inspect header bottom border",
+        "Verify only one 2px border line exists between header and content",
+        "Check in both light and dark mode"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F002",
+      "category": "border",
+      "description": "Footer and Content have single border line (no duplicate)",
+      "steps": [
+        "Scroll to footer section",
+        "Inspect footer top border",
+        "Verify only one 2px border line exists between content and footer",
+        "Check in both light and dark mode"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F003",
+      "category": "border",
+      "description": "Footer column separators are single lines (no duplicate)",
+      "steps": [
+        "Inspect footer columns on desktop",
+        "Verify border-right on each column creates single vertical line",
+        "No doubled borders where columns meet",
+        "Check responsive behavior on mobile"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F004",
+      "category": "padding",
+      "description": "Header content is vertically centered",
+      "steps": [
+        "Open homepage in browser",
+        "Inspect header element",
+        "Verify logo, nav, and icons are vertically centered",
+        "Check at different viewport sizes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F005",
+      "category": "padding",
+      "description": "Container padding is consistent across breakpoints",
+      "steps": [
+        "Resize browser window through mobile, tablet, desktop sizes",
+        "Verify horizontal padding adjusts appropriately",
+        "Content should not touch screen edges on any size",
+        "Padding should increase proportionally on larger screens"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F006",
+      "category": "padding",
+      "description": "Header offset prevents content overlap",
+      "steps": [
+        "Open homepage",
+        "Verify page content starts below fixed header",
+        "Scroll page and verify header stays fixed",
+        "Content should never be hidden behind header"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F007",
+      "category": "layout",
+      "description": "Header three-column layout correct on desktop",
+      "steps": [
+        "Open homepage on desktop (>768px)",
+        "Verify Logo on left side",
+        "Verify Navigation links centered",
+        "Verify Social icons on right side",
+        "All three sections should be visible"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F008",
+      "category": "layout",
+      "description": "Header hamburger menu works on mobile",
+      "steps": [
+        "Open homepage on mobile (<768px)",
+        "Verify hamburger icon appears instead of nav/icons",
+        "Click hamburger to open menu",
+        "Verify nav links and social icons appear in dropdown",
+        "Click again to close menu"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F009",
+      "category": "layout",
+      "description": "Footer three-column layout correct on desktop",
+      "steps": [
+        "Scroll to footer on desktop",
+        "Verify GitHub link on left",
+        "Verify Twitter link in middle",
+        "Verify Copyright on right",
+        "Each section separated by vertical border"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F010",
+      "category": "layout",
+      "description": "Footer responsive layout on mobile",
+      "steps": [
+        "View footer on mobile (<640px)",
+        "Verify columns stack or wrap appropriately",
+        "Borders should switch from vertical to horizontal",
+        "All content remains visible and readable"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F011",
+      "category": "visual",
+      "description": "Navigation text uses uppercase with tracking",
+      "steps": [
+        "Inspect header navigation links",
+        "Verify text-transform: uppercase",
+        "Verify letter-spacing (tracking-wide)",
+        "Same style in footer links"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F012",
+      "category": "visual",
+      "description": "Hover states work correctly",
+      "steps": [
+        "Hover over header nav links",
+        "Verify color changes from muted to foreground",
+        "Hover over footer links",
+        "Verify same hover behavior"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F013",
+      "category": "visual",
+      "description": "Dark mode displays correctly",
+      "steps": [
+        "Switch system to dark mode (or use prefers-color-scheme)",
+        "Verify background becomes dark",
+        "Verify text becomes light",
+        "Verify borders use dark mode color",
+        "All elements remain visible and readable"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F014",
+      "category": "build",
+      "description": "Build passes without errors",
+      "steps": [
+        "Run pnpm build in packages/websites",
+        "Verify no TypeScript errors",
+        "Verify no build errors",
+        "Build completes successfully"
+      ],
+      "passes": false
+    }
+  ],
+  "completed_at": null
+}
