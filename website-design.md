@@ -357,8 +357,8 @@ export const siteConfig = {
   tagline: "Manage AI Agent Skills with Ease",
   description:
     "A powerful CLI tool to discover, install, and manage skills for Claude Code, Codex CLI, and more AI coding assistants.",
-  url: "https://skilluse.ai",
-  email: "hello@skilluse.ai",
+  url: "https://skilluse.dev",
+  email: "hello@skilluse.dev",
   github: "https://github.com/skilluse/skilluse",
 }
 ```

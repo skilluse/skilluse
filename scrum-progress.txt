@@ -53,7 +53,7 @@
 # Website Project
 
 ## Current Sprint (Website)
-- [ ] web01-project-setup - Initialize Next.js, copy components
+- [x] web01-project-setup - Initialize Next.js, copy components
 - [ ] web02-core-layout - Header, footer, layout
 - [ ] web03-landing-page - Hero, features, CTA
 - [ ] web04-blog-setup - Blog listing and posts
@@ -61,10 +61,24 @@
 - [ ] web06-polish - SEO, OG images, sitemap
 
 ## Completed (Website)
-(none yet)
+- [x] web01-project-setup
 
 ### [2025-12-27] Website Planning
 - Created website-design.md with full specification
 - Created 6 website tickets (web01-web06)
 - Reusing components from OpenAlternative
 - Stack: Next.js, Tailwind v4, content-collections, Radix UI
+
+### [2025-12-27] Session - web01-project-setup
+- Working on: web01-project-setup
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008
+- In progress: None
+- Notes:
+  - Initialized Next.js 16.1.1-canary with App Router
+  - Configured Tailwind CSS v4 with tailwind-merge
+  - Copied 14 common components from OpenAlternative
+  - Copied 8 web UI components
+  - Created Icon component using lucide-react
+  - Set up site and links configuration (skilluse.dev)
+  - Configured content-collections for MDX (posts & docs)
+  - Dev server runs successfully on localhost:3000
