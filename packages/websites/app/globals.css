@@ -5,38 +5,41 @@
   --header-top: 0rem;
   --header-offset: calc(var(--header-top) + var(--header-height));
 
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(0 0% 12%);
-  --color-border: hsl(0 0% 89%);
-  --color-input: hsl(0 0% 89%);
-  --color-ring: hsl(0 0% 84%);
+  /* Light theme (default) - CLI aesthetic */
+  --color-background: hsl(180 10% 94%);
+  --color-foreground: hsl(200 14% 26%);
+  --color-border: hsl(180 8% 85%);
+  --color-input: hsl(180 8% 85%);
+  --color-ring: hsl(180 8% 80%);
 
-  --color-card: hsl(0 0% 98%);
-  --color-card-foreground: hsl(0 0% 12%);
+  --color-card: hsl(180 8% 97%);
+  --color-card-foreground: hsl(200 14% 26%);
 
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(0 0% 3.9%);
+  --color-popover: hsl(180 10% 94%);
+  --color-popover-foreground: hsl(200 14% 26%);
 
-  --color-primary: hsl(220 90% 56%);
+  /* Primary: teal green for light mode */
+  --color-primary: hsl(174 98% 23%);
   --color-primary-foreground: hsl(0 0% 98%);
 
-  --color-secondary: hsl(0 0% 96%);
-  --color-secondary-foreground: hsl(0 0% 30%);
+  /* Secondary: orange accent */
+  --color-secondary: hsl(36 100% 50%);
+  --color-secondary-foreground: hsl(0 0% 10%);
 
-  --color-muted: hsl(0 0% 96%);
-  --color-muted-foreground: hsl(0 0% 45.1%);
+  --color-muted: hsl(180 8% 90%);
+  --color-muted-foreground: hsl(200 10% 40%);
 
-  --color-accent: hsl(0 0% 96%);
-  --color-accent-foreground: hsl(0 0% 9%);
+  --color-accent: hsl(180 8% 90%);
+  --color-accent-foreground: hsl(200 14% 20%);
 
   --color-destructive: hsl(3 71% 52%);
   --color-destructive-foreground: hsl(0 0% 98%);
 
   --tracking-micro: -0.0125em;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-geist-sans);
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: var(--font-mono);
+  --font-display: var(--font-mono);
 
   --text-5xl: 2.75rem;
   --text-6xl: 3rem;
@@ -53,29 +56,32 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-background: hsl(0 0% 4%);
-      --color-foreground: hsl(0 0% 90%);
-      --color-border: hsl(0 0% 14%);
-      --color-input: hsl(0 0% 14%);
-      --color-ring: hsl(0 0% 19%);
+      /* Dark theme - CLI aesthetic */
+      --color-background: hsl(200 26% 16%);
+      --color-foreground: hsl(210 20% 80%);
+      --color-border: hsl(200 20% 22%);
+      --color-input: hsl(200 20% 22%);
+      --color-ring: hsl(200 20% 28%);
 
-      --color-card: hsl(0 0% 7%);
-      --color-card-foreground: hsl(0 0% 90%);
+      --color-card: hsl(200 24% 13%);
+      --color-card-foreground: hsl(210 20% 80%);
 
-      --color-popover: hsl(0 0% 4%);
-      --color-popover-foreground: hsl(0 0% 90%);
+      --color-popover: hsl(200 26% 16%);
+      --color-popover-foreground: hsl(210 20% 80%);
 
-      --color-primary: hsl(220 90% 56%);
-      --color-primary-foreground: hsl(0 0% 98%);
+      /* Primary: bright green for dark mode */
+      --color-primary: hsl(158 95% 41%);
+      --color-primary-foreground: hsl(200 26% 16%);
 
-      --color-secondary: hsl(0 0% 14%);
-      --color-secondary-foreground: hsl(0 0% 70%);
+      /* Secondary: orange accent */
+      --color-secondary: hsl(36 100% 50%);
+      --color-secondary-foreground: hsl(200 26% 16%);
 
-      --color-muted: hsl(0 0% 14%);
-      --color-muted-foreground: hsl(0 0% 55%);
+      --color-muted: hsl(200 20% 22%);
+      --color-muted-foreground: hsl(210 15% 60%);
 
-      --color-accent: hsl(0 0% 14%);
-      --color-accent-foreground: hsl(0 0% 90%);
+      --color-accent: hsl(200 20% 22%);
+      --color-accent-foreground: hsl(210 20% 90%);
 
       --color-destructive: hsl(3 71% 52%);
       --color-destructive-foreground: hsl(0 0% 98%);
@@ -84,5 +90,23 @@
 }
 
 body {
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-mono);
+}
+
+/* Custom scrollbar for CLI aesthetic */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-muted);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-foreground);
 }
