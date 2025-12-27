@@ -2,9 +2,9 @@
   "ticket": "task01-project-setup",
   "title": "Project Setup",
   "priority": 1,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-27",
-  "completed_at": null,
+  "completed_at": "2025-12-27",
   "dependencies": [],
   "parallelizable": false,
   "features": [
@@ -17,7 +17,7 @@
         "Verify name is 'skilluse'",
         "Verify bin entry points to correct file"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -29,7 +29,7 @@
         "Verify jsx is set to 'react-jsx'",
         "Run tsc --noEmit successfully"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -41,7 +41,7 @@
         "Check pastel is in dependencies",
         "Check react is in dependencies"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -53,7 +53,7 @@
         "Verify output shows help text",
         "Verify no errors in console"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -65,7 +65,7 @@
         "Verify src/app.tsx exists",
         "Verify directories: commands/, components/, services/, config/, hooks/, types/"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     }
   ],
