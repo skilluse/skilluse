@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${ibmPlexMono.variable} font-mono antialiased`}
+        className={`${ibmPlexMono.variable} font-mono antialiased bg-background text-foreground`}
       >
         {children}
       </body>

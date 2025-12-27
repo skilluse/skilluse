@@ -1,4 +1,4 @@
-import { Hero, Features, HowItWorks, SupportedAgents, CTA } from "~/components/web/home"
+import { Hero, Features, HowItWorks, SupportedAgents, CTA } from "~/components/home"
 
 export default function HomePage() {
   return (

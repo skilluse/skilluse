@@ -1,6 +1,0 @@
-export { Hero } from "./hero"
-export { TerminalHero } from "./terminal-hero"
-export { Features } from "./features"
-export { HowItWorks } from "./how-it-works"
-export { SupportedAgents } from "./supported-agents"
-export { CTA } from "./cta"
