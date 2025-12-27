@@ -6,6 +6,7 @@
   "created_at": "2025-12-27",
   "completed_at": null,
   "dependencies": ["task05-config-store", "task07-repo-commands"],
+  "parallelizable": false,
   "features": [
     {
       "id": "F001",

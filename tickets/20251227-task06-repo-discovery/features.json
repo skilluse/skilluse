@@ -6,6 +6,7 @@
   "created_at": "2025-12-27",
   "completed_at": null,
   "dependencies": ["task01-project-setup", "task02-ui-components", "task03-oauth-flow"],
+  "parallelizable": false,
   "features": [
     {
       "id": "F001",
