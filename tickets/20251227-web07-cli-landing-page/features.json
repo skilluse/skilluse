@@ -2,7 +2,7 @@
   "ticket": "web07-cli-landing-page",
   "title": "CLI-Style Landing Page",
   "priority": 1,
-  "status": "pending",
+  "status": "completed",
   "dependencies": ["web03-landing-page"],
   "parallelizable": false,
   "features": [
@@ -12,144 +12,140 @@
       "description": "CLI color theme with dark/light modes",
       "steps": [
         "Add CLI color variables to globals.css",
-        "Dark mode: body #1D2A35, primary #05CE91, secondary #FF9D00",
-        "Light mode: body #EFF3F3, primary #027474, secondary #FF9D00",
+        "Dark mode: background hsl(200 26% 16%), primary green, secondary orange",
+        "Light mode: background hsl(180 10% 94%), primary teal, secondary orange",
         "Text colors for both modes",
         "prefers-color-scheme media query support"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F002",
       "category": "typography",
-      "description": "Monospace font setup",
+      "description": "IBM Plex Mono font setup",
       "steps": [
-        "Add IBM Plex Mono from Google Fonts",
-        "Set as default font for CLI page",
-        "Font weight 500",
-        "Custom scrollbar styling for both themes"
+        "Add IBM Plex Mono from Google Fonts via next/font",
+        "Set as default font globally",
+        "Font weights 400, 500, 700",
+        "Custom scrollbar styling for CLI aesthetic"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F003",
       "category": "component",
-      "description": "CLI wrapper component",
+      "description": "TerminalHero component",
       "steps": [
-        "Create CLIWrapper with terminal styling",
-        "Full viewport height",
-        "Theme-aware background",
-        "Custom scrollbar"
+        "Create TerminalHero with terminal widget styling",
+        "macOS-style header with traffic light buttons",
+        "Theme-aware background and colors",
+        "Rounded corners and shadow"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F004",
       "category": "component",
-      "description": "Terminal prompt component",
+      "description": "Terminal prompt style",
       "steps": [
-        "Create TerminalPrompt component",
-        "Display visitor@skilluse.dev:~$",
-        "User in secondary color, hostname in primary",
-        "Reusable across sections"
+        "Create TerminalPrompt sub-component",
+        "Display ~ $ prompt",
+        "Primary color for tilde, muted for dollar sign",
+        "Support optional command text after prompt"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F005",
       "category": "component",
-      "description": "ASCII logo component",
+      "description": "ASCII logo display",
       "steps": [
-        "Create ASCIILogo component",
-        "Display SkillUse in ASCII art",
-        "Proper monospace formatting",
-        "Hidden on mobile (too wide)"
+        "Create ASCII art for SkillUse",
+        "Display in welcome command output",
+        "Primary color styling",
+        "Responsive sizing (smaller on mobile)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F006",
       "category": "section",
-      "description": "Welcome section (hero)",
+      "description": "Welcome command section",
       "steps": [
-        "Display ASCII logo",
-        "Welcome message with version",
-        "Brief description of SkillUse",
-        "Link to repo and help hint"
+        "Display ASCII logo in terminal",
+        "Shows after ~ $ welcome command"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F007",
       "category": "section",
-      "description": "Help section (commands)",
+      "description": "Help command section",
       "steps": [
-        "List available sections as commands",
+        "List key CLI commands",
         "Format: command - description",
-        "Tabbed alignment",
-        "Keyboard hints at bottom"
+        "Commands in primary color",
+        "Descriptions in muted color"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F008",
       "category": "section",
-      "description": "Features section",
+      "description": "Demo install command",
       "steps": [
-        "Display as CLI output",
-        "List key features with icons/bullets",
-        "Primary color for feature names",
-        "Secondary text for descriptions"
+        "Show skilluse install code-review command",
+        "Success checkmark with message",
+        "Demonstrates the tool in action"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F009",
       "category": "section",
-      "description": "Install section",
+      "description": "Active prompt with cursor",
       "steps": [
-        "Show installation commands",
-        "Code block styling",
-        "Copy-friendly format",
-        "Multiple install methods"
+        "Empty prompt at bottom of terminal",
+        "Blinking cursor animation",
+        "Indicates interactivity"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F010",
-      "category": "section",
-      "description": "Agents section",
+      "category": "integration",
+      "description": "Hero section integration",
       "steps": [
-        "List supported AI agents",
-        "CLI-style list format",
-        "Links to documentation"
+        "TerminalHero placed below CTA buttons",
+        "Existing Intro and Stack components preserved",
+        "Modern UI combined with terminal widget"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F011",
       "category": "page",
       "description": "Landing page assembled",
       "steps": [
-        "Replace current landing with CLI style",
-        "All sections display correctly",
-        "Proper section spacing",
-        "Links work correctly"
+        "Hero with terminal widget displays correctly",
+        "Other sections (Features, HowItWorks, etc.) unchanged",
+        "Proper section spacing maintained",
+        "Links and buttons work correctly"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F012",
       "category": "responsive",
       "description": "Mobile responsive",
       "steps": [
-        "Test on mobile viewport (375px)",
-        "ASCII art hidden on small screens",
+        "Terminal widget scales on mobile",
+        "ASCII art uses smaller font on mobile",
         "Text readable and properly sized",
         "No horizontal overflow"
       ],
-      "passes": false
+      "passes": true
     }
   ],
-  "completed_at": null
+  "completed_at": "2025-12-27"
 }

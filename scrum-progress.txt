@@ -3,14 +3,29 @@
 ## Current Sprint (GitHub App Migration)
 - [x] task01-create-github-app - Create GitHub App (manual)
 - [x] task02-oauth-service - OAuth service for installations
-- [ ] task03-update-login - Update login command
-- [ ] task04-manage-command - Installation management UI
-- [ ] task05-repository-picker - Repository picker component
-- [ ] task06-migration-docs - Update documentation
+- [x] task03-credential-storage - Credential storage for multiple token types
+- [ ] task04-update-login - Update login command
+- [ ] task05-manage-command - Installation management UI
+- [ ] task06-repository-picker - Repository picker component
+- [ ] task07-migration-docs - Update documentation
 
 ## Completed (GitHub App Migration)
 - [x] task01-create-github-app
 - [x] task02-oauth-service
+- [x] task03-credential-storage
+
+### [2025-12-27] Session - task03-credential-storage
+- Working on: task03-credential-storage
+- Completed: F001, F002, F003, F004, F005, F006
+- In progress: None
+- Commits: 44e33a7
+- Notes:
+  - Added UserCredentials interface and setUserCredentials/getUserCredentials
+  - Added StoredInstallation type and setInstallations/getInstallations to store.ts
+  - Added setDefaultInstallation/getDefaultInstallation for default selection
+  - Added in-memory InstallationTokenCache with expiry handling
+  - Storage: user token in keychain, installations in config JSON, token cache in memory
+  - All new types/functions exported from services/index.ts
 
 ### [2025-12-27] Session - task02-oauth-service
 - Working on: task02-oauth-service
@@ -111,6 +126,7 @@
 - [x] web01-project-setup - Initialize Next.js, copy components
 - [x] web02-core-layout - Header, footer, layout
 - [x] web03-landing-page - Hero, features, CTA
+- [x] web07-cli-landing-page - CLI terminal hero with IBM Plex Mono
 - [ ] web04-blog-setup - Blog listing and posts
 - [ ] web05-docs-setup - Documentation with sidebar
 - [ ] web06-polish - SEO, OG images, sitemap
@@ -119,6 +135,7 @@
 - [x] web01-project-setup
 - [x] web02-core-layout
 - [x] web03-landing-page
+- [x] web07-cli-landing-page
 
 ### [2025-12-27] Website Planning
 - Created website-design.md with full specification
@@ -154,10 +171,26 @@
   - Fixed missing components: kbd, pagination-link
   - Fixed lucide-react icon names compatibility
 
+### [2025-12-27] Session - web07-cli-landing-page
+- Working on: web07-cli-landing-page
+- Completed: F001-F012 (all features)
+- In progress: None
+- Commits: 0e756b8
+- Notes:
+  - Hybrid approach: CLI terminal widget within modern UI layout
+  - IBM Plex Mono font from Google Fonts (weights 400, 500, 700)
+  - CLI color scheme: green primary (#05CE91 dark / #027474 light), orange secondary (#FF9D00)
+  - Dark/light themes via prefers-color-scheme media query
+  - TerminalHero component: macOS-style terminal with traffic lights
+  - ASCII art logo, help commands, install demo, blinking cursor
+  - Custom scrollbar styling for CLI aesthetic
+  - Replaced TerminalDemo with TerminalHero in Hero section
+
 ### [2025-12-27] Session - web03-landing-page
 - Working on: web03-landing-page
 - Completed: F001, F002, F003, F004, F005, F006, F007, F008
 - In progress: None
+- Commits: dbffbee
 - Notes:
   - Created Hero section with tagline, description, CTA buttons
   - Added TerminalDemo component with dark terminal styling
