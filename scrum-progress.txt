@@ -3,11 +3,12 @@
 ## Current Sprint (Config Refactor)
 - [x] cfg01-platform-paths - Use env-paths for platform-native directories
 - [x] cfg02-secure-credentials - Store tokens in system keychain
-- [ ] cfg03-config-migration - Migrate from legacy ~/.skilluse/
+- [~] cfg03-config-migration - Skipped (product not released, no legacy users)
 
 ## Completed (Config Refactor)
 - [x] cfg01-platform-paths
 - [x] cfg02-secure-credentials
+- [~] cfg03-config-migration (skipped)
 
 ### [2025-12-27] Session - cfg02-secure-credentials
 - Working on: cfg02-secure-credentials
