@@ -1,0 +1,32 @@
+# Scrum Progress Log
+
+## Project: GitHub App Migration
+Created: 2025-12-27
+
+## Overview
+Migrate Skilluse CLI authentication from OAuth App to GitHub App for fine-grained repository permissions.
+
+## Current Sprint
+
+- [ ] task01-create-github-app (Priority 1, foundational)
+- [ ] task02-oauth-service (Priority 2, depends on task01)
+- [ ] task03-credential-storage (Priority 2, parallelizable after task01)
+- [ ] task04-cli-commands (Priority 3, depends on task02 + task03)
+- [ ] task05-testing-cleanup (Priority 4, final)
+
+## Task Dependencies
+
+```
+task01-create-github-app
+    │
+    ├──> task02-oauth-service ──┐
+    │                           ├──> task04-cli-commands ──> task05-testing-cleanup
+    └──> task03-credential-storage ─┘
+         (parallelizable)
+```
+
+## Completed
+(none yet)
+
+## Session Log
+[2025-12-27] Project initialized with 5 tickets

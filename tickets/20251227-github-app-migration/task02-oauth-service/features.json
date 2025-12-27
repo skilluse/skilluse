@@ -1,0 +1,82 @@
+{
+  "ticket": "task02-oauth-service",
+  "title": "GitHub App OAuth Service",
+  "priority": 2,
+  "status": "pending",
+  "dependencies": ["task01-create-github-app"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Device flow requests device code from GitHub",
+      "steps": [
+        "Call requestDeviceCode with GitHub App client ID",
+        "Verify response contains device_code",
+        "Verify response contains user_code",
+        "Verify response contains verification_uri"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Device flow polls for user access token",
+      "steps": [
+        "Start device flow and get device code",
+        "Call pollForUserToken",
+        "Verify polling handles 'authorization_pending' status",
+        "Verify successful auth returns access_token"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Can list user's GitHub App installations",
+      "steps": [
+        "Authenticate and get user token",
+        "Call getUserInstallations",
+        "Verify response contains installation list",
+        "Verify each installation has id and account info"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Can list repositories for an installation",
+      "steps": [
+        "Get user token and installation ID",
+        "Call getInstallationRepositories",
+        "Verify response contains repository list",
+        "Verify repository info includes name and full_name"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "Can get installation access token",
+      "steps": [
+        "Get user token and installation ID",
+        "Call getInstallationToken",
+        "Verify response contains token",
+        "Verify response contains expires_at"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F006",
+      "category": "error-handling",
+      "description": "Handles API errors gracefully",
+      "steps": [
+        "Call API with invalid token",
+        "Verify error is caught and meaningful message returned",
+        "Verify no unhandled exceptions"
+      ],
+      "passes": false
+    }
+  ],
+  "completed_at": null
+}

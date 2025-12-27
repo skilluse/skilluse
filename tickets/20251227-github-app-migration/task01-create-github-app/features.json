@@ -1,0 +1,58 @@
+{
+  "ticket": "task01-create-github-app",
+  "title": "Create GitHub App",
+  "priority": 1,
+  "status": "pending",
+  "dependencies": [],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "configuration",
+      "description": "GitHub App is registered with correct settings",
+      "steps": [
+        "Navigate to https://github.com/settings/apps",
+        "Verify 'Skilluse CLI' app exists",
+        "Verify Device Flow is enabled",
+        "Verify Webhook is disabled"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F002",
+      "category": "configuration",
+      "description": "GitHub App has minimal required permissions",
+      "steps": [
+        "Open GitHub App settings > Permissions",
+        "Verify Contents permission is set to Read",
+        "Verify Metadata permission is set to Read",
+        "Verify no other permissions are granted"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F003",
+      "category": "code",
+      "description": "GitHub App configuration file exists",
+      "steps": [
+        "Check file exists: packages/cli/src/config/github-app.ts",
+        "Verify appId is configured",
+        "Verify clientId is configured",
+        "Verify environment variable overrides work"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F004",
+      "category": "documentation",
+      "description": "Old OAuth App Client ID is removed from codebase",
+      "steps": [
+        "Search for old Client ID in codebase",
+        "Verify it no longer exists in login.tsx",
+        "Verify new GitHub App Client ID is used"
+      ],
+      "passes": false
+    }
+  ],
+  "completed_at": null
+}
