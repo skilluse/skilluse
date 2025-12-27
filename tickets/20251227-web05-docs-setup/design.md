@@ -109,6 +109,16 @@ See features.json for testable criteria.
 ## Dependencies
 - web01-project-setup (content-collections)
 - web02-core-layout (layout)
+- web07-cli-landing-page (CLI theme variables and typography)
+
+## Theme Integration
+The docs pages should use the CLI theme variables from web07:
+- Use `--cli-primary` (green) for inline code, commands, and active nav items
+- Use `--cli-secondary` (orange) for links
+- Use IBM Plex Mono font for code blocks
+- Keep prose content readable with `--cli-text-100` colors
+- Sidebar navigation should use primary color for active items
+- Support both dark and light modes via the CSS variables
 
 ## Out of Scope
 - Search within docs

@@ -84,6 +84,15 @@ See features.json for testable criteria.
 ## Dependencies
 - web01-project-setup (content-collections config)
 - web02-core-layout (layout, breadcrumbs)
+- web07-cli-landing-page (CLI theme variables and typography)
+
+## Theme Integration
+The blog pages should use the CLI theme variables from web07:
+- Use `--cli-primary` (green) for inline code and command references
+- Use `--cli-secondary` (orange) for links
+- Use IBM Plex Mono font for code blocks
+- Keep prose content readable with `--cli-text-100` colors
+- Support both dark and light modes via the CSS variables
 
 ## Out of Scope
 - RSS feed (web06-polish)

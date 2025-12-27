@@ -3,7 +3,7 @@
   "title": "Blog Setup",
   "priority": 4,
   "status": "pending",
-  "dependencies": ["web01-project-setup", "web02-core-layout"],
+  "dependencies": ["web01-project-setup", "web02-core-layout", "web07-cli-landing-page"],
   "parallelizable": true,
   "features": [
     {
