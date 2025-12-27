@@ -80,7 +80,7 @@
 
 ## Current Sprint (Website)
 - [x] web01-project-setup - Initialize Next.js, copy components
-- [ ] web02-core-layout - Header, footer, layout
+- [x] web02-core-layout - Header, footer, layout
 - [ ] web03-landing-page - Hero, features, CTA
 - [ ] web04-blog-setup - Blog listing and posts
 - [ ] web05-docs-setup - Documentation with sidebar
@@ -88,6 +88,7 @@
 
 ## Completed (Website)
 - [x] web01-project-setup
+- [x] web02-core-layout
 
 ### [2025-12-27] Website Planning
 - Created website-design.md with full specification
@@ -108,3 +109,17 @@
   - Set up site and links configuration (skilluse.dev)
   - Configured content-collections for MDX (posts & docs)
   - Dev server runs successfully on localhost:3000
+
+### [2025-12-27] Session - web02-core-layout
+- Working on: web02-core-layout
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008
+- In progress: None
+- Commits: 32e678b
+- Notes:
+  - Root layout with Geist fonts and site metadata
+  - Created (web) route group with layout structure
+  - Header: Logo, nav links (Docs, Blog, GitHub), mobile hamburger
+  - Footer: Quick links, social icons (GitHub, X), copyright
+  - Navigation config for reusable nav items
+  - Fixed missing components: kbd, pagination-link
+  - Fixed lucide-react icon names compatibility
