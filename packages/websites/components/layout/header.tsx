@@ -31,8 +31,8 @@ const Header = ({ className, ...props }: HeaderProps) => {
   }, [pathname])
 
   return (
-    <div
-      className={cx("fixed top-(--header-top) inset-x-0 z-50 bg-background border-b-2 border-border", className)}
+    <header
+      className={cx("sticky top-0 z-50 bg-background border-b border-border", className)}
       id="header"
       role="banner"
       data-state={isNavOpen ? "open" : "close"}
@@ -150,14 +150,8 @@ const Header = ({ className, ...props }: HeaderProps) => {
           </Container>
         </nav>
       </Container>
-    </div>
+    </header>
   )
 }
 
-const HeaderBackdrop = () => {
-  return (
-    <div className="fixed top-(--header-offset) inset-x-0 z-40 h-8 pointer-events-none bg-linear-to-b from-background to-transparent" />
-  )
-}
-
-export { Header, HeaderBackdrop, type HeaderProps }
+export { Header, type HeaderProps }

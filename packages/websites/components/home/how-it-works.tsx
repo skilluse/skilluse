@@ -1,7 +1,4 @@
-import { H5 } from "~/components/shared/heading"
-import { Stack } from "~/components/shared/stack"
 import { Intro, IntroTitle, IntroDescription } from "~/components/shared/intro"
-import { Grid } from "~/components/shared/grid"
 
 interface Step {
   number: number
@@ -39,31 +36,27 @@ export function HowItWorks() {
         <IntroDescription>Get started in three simple steps.</IntroDescription>
       </Intro>
 
-      <Grid>
-        {steps.map((step) => (
-          <StepCard key={step.number} {...step} />
+      <div className="flex flex-col sm:flex-row border border-border">
+        {steps.map((step, index) => (
+          <StepCard key={step.number} {...step} isFirst={index === 0} />
         ))}
-      </Grid>
+      </div>
     </>
   )
 }
 
-function StepCard({ number, title, description, command }: Step) {
+function StepCard({ number, title, description, command, isFirst }: Step & { isFirst: boolean }) {
   return (
-    <Stack direction="column" className="items-center text-center gap-3">
-      <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold">
+    <div className={`flex-1 p-5 text-center ${isFirst ? "" : "border-t sm:border-t-0 sm:border-l"} border-border`}>
+      <div className="inline-flex size-8 items-center justify-center border border-border text-sm font-semibold mb-3">
         {number}
       </div>
-
-      <div>
-        <H5>{title}</H5>
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
-      </div>
-
-      <code className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border bg-card text-sm font-mono">
-        <span className="text-primary">$</span>
-        <span className="text-secondary-foreground">{command}</span>
+      <h3 className="text-base font-semibold text-foreground">{title}</h3>
+      <p className="text-sm text-muted-foreground mt-1 mb-3">{description}</p>
+      <code className="block w-4/5 mx-auto px-3 py-1.5 border border-border text-sm font-mono">
+        <span className="text-muted-foreground">$ </span>
+        <span className="text-foreground">{command}</span>
       </code>
-    </Stack>
+    </div>
   )
 }

@@ -10,7 +10,7 @@ export const Footer = ({ className, ...props }: FooterProps) => {
 
   return (
     <footer
-      className={cx("mt-auto border-t-2 border-border", className)}
+      className={cx("mt-auto border-t border-border", className)}
       {...props}
     >
       <div className="flex flex-wrap">
@@ -19,7 +19,7 @@ export const Footer = ({ className, ...props }: FooterProps) => {
           href={config.links.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 min-w-[120px] py-4 text-center text-sm uppercase tracking-wide text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border-r-2 border-border max-sm:border-r-0 max-sm:border-b-2 max-sm:flex-[1_1_50%]"
+          className="flex-1 min-w-[120px] py-4 text-center text-sm uppercase tracking-wide text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border-r border-border max-sm:border-r-0 max-sm:border-b max-sm:flex-[1_1_50%]"
         >
           GitHub
         </a>
@@ -29,7 +29,7 @@ export const Footer = ({ className, ...props }: FooterProps) => {
           href={config.links.twitter}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 min-w-[120px] py-4 text-center text-sm uppercase tracking-wide text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border-r-2 border-border max-sm:border-r-0 max-sm:border-b-2 max-sm:flex-[1_1_50%]"
+          className="flex-1 min-w-[120px] py-4 text-center text-sm uppercase tracking-wide text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border-r border-border max-sm:border-r-0 max-sm:border-b max-sm:flex-[1_1_50%]"
         >
           Twitter
         </a>

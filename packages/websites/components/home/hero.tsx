@@ -20,14 +20,14 @@ export function Hero() {
       </Intro>
 
       <Stack size="lg" className="justify-center">
-        <Button asChild size="lg">
+        <Button asChild size="lg" className="rounded-none w-44">
           <Link href="/docs">
             Get Started
             <Icon name="ArrowRight" />
           </Link>
         </Button>
 
-        <Button asChild variant="outline" size="lg">
+        <Button asChild variant="outline" size="lg" className="rounded-none w-44">
           <Link href={config.links.github} target="_blank" rel="noopener noreferrer">
             <Icon name="Github" />
             View on GitHub

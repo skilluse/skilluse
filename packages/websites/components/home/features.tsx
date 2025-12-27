@@ -1,7 +1,5 @@
-import { Card, CardHeader, CardTitle, CardDescription } from "~/components/ui/card"
 import { Icon, type IconName } from "~/components/shared/icon"
 import { Intro, IntroTitle, IntroDescription } from "~/components/shared/intro"
-import { Grid } from "~/components/shared/grid"
 
 interface Feature {
   icon: IconName
@@ -42,23 +40,23 @@ export function Features() {
         </IntroDescription>
       </Intro>
 
-      <Grid className="lg:grid-cols-4">
-        {features.map((feature) => (
-          <FeatureCard key={feature.title} {...feature} />
+      <div className="flex flex-col sm:flex-row border border-border">
+        {features.map((feature, index) => (
+          <FeatureCard key={feature.title} {...feature} isFirst={index === 0} />
         ))}
-      </Grid>
+      </div>
     </>
   )
 }
 
-function FeatureCard({ icon, title, description }: Feature) {
+function FeatureCard({ icon, title, description, isFirst }: Feature & { isFirst: boolean }) {
   return (
-    <Card className="gap-4">
-      <CardHeader className="flex-row items-center gap-2 p-5 pb-0">
-        <Icon name={icon} className="size-5 text-primary" />
-        <CardTitle className="text-base">{title}</CardTitle>
-      </CardHeader>
-      <CardDescription className="px-5 pb-5">{description}</CardDescription>
-    </Card>
+    <div className={`flex-1 p-5 ${isFirst ? "" : "border-t sm:border-t-0 sm:border-l"} border-border`}>
+      <div className="flex items-center gap-2 mb-3">
+        <Icon name={icon} className="size-5 text-foreground" />
+        <h3 className="text-base font-semibold text-foreground">{title}</h3>
+      </div>
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </div>
   )
 }

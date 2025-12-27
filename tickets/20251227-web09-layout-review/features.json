@@ -8,148 +8,133 @@
   "features": [
     {
       "id": "F001",
-      "category": "border",
-      "description": "Header and Content have single border line (no duplicate)",
+      "category": "layout",
+      "description": "Add bordered container wrapper (OpenCode style)",
       "steps": [
-        "Open homepage in browser",
-        "Inspect header bottom border",
-        "Verify only one 2px border line exists between header and content",
-        "Check in both light and dark mode"
+        "Wrap page content in bordered container",
+        "Add margin from viewport edges (p-2 sm:p-4)",
+        "Set max-width (max-w-272)",
+        "Add border around entire content area"
       ],
       "passes": true
     },
     {
       "id": "F002",
-      "category": "border",
-      "description": "Footer and Content have single border line (no duplicate)",
+      "category": "layout",
+      "description": "Header uses sticky positioning",
       "steps": [
-        "Scroll to footer section",
-        "Inspect footer top border",
-        "Verify only one 2px border line exists between content and footer",
-        "Check in both light and dark mode"
+        "Change header from fixed to sticky",
+        "Set top-0 to stick at browser top when scrolling",
+        "Verify header stays visible during scroll"
       ],
       "passes": true
     },
     {
       "id": "F003",
       "category": "border",
-      "description": "Footer column separators are single lines (no duplicate)",
+      "description": "Use 1px borders throughout (not 2px)",
       "steps": [
-        "Inspect footer columns on desktop",
-        "Verify border-right on each column creates single vertical line",
-        "No doubled borders where columns meet",
-        "Check responsive behavior on mobile"
+        "Update layout wrapper border to 1px",
+        "Update header border-b to 1px",
+        "Update footer border-t to 1px",
+        "Update all section dividers to 1px"
       ],
       "passes": true
     },
     {
       "id": "F004",
-      "category": "padding",
-      "description": "Header content is vertically centered",
+      "category": "border",
+      "description": "Update border color to hsl(0 3% 87%)",
       "steps": [
-        "Open homepage in browser",
-        "Inspect header element",
-        "Verify logo, nav, and icons are vertically centered",
-        "Check at different viewport sizes"
+        "Update --color-border in globals.css",
+        "Verify border color in light mode"
       ],
       "passes": true
     },
     {
       "id": "F005",
-      "category": "padding",
-      "description": "Container padding is consistent across breakpoints",
+      "category": "visual",
+      "description": "Feature cards connected with no border radius",
       "steps": [
-        "Resize browser window through mobile, tablet, desktop sizes",
-        "Verify horizontal padding adjusts appropriately",
-        "Content should not touch screen edges on any size",
-        "Padding should increase proportionally on larger screens"
+        "Remove Card component, use flex container",
+        "Add outer border around all cards",
+        "Use border-l dividers between cards",
+        "No border radius on container"
       ],
       "passes": true
     },
     {
       "id": "F006",
-      "category": "padding",
-      "description": "Header offset prevents content overlap",
+      "category": "visual",
+      "description": "How It Works cards connected with no border radius",
       "steps": [
-        "Open homepage",
-        "Verify page content starts below fixed header",
-        "Scroll page and verify header stays fixed",
-        "Content should never be hidden behind header"
+        "Remove Grid component, use flex container",
+        "Add outer border around all steps",
+        "Use border-l dividers between steps",
+        "Square number badges and command boxes"
       ],
       "passes": true
     },
     {
       "id": "F007",
-      "category": "layout",
-      "description": "Header three-column layout correct on desktop",
+      "category": "visual",
+      "description": "Terminal hero has no border radius",
       "steps": [
-        "Open homepage on desktop (>768px)",
-        "Verify Logo on left side",
-        "Verify Navigation links centered",
-        "Verify Social icons on right side",
-        "All three sections should be visible"
+        "Remove rounded-lg from terminal container",
+        "Use border border-border instead of shadow"
       ],
       "passes": true
     },
     {
       "id": "F008",
-      "category": "layout",
-      "description": "Header hamburger menu works on mobile",
+      "category": "visual",
+      "description": "Buttons have no border radius and equal width",
       "steps": [
-        "Open homepage on mobile (<768px)",
-        "Verify hamburger icon appears instead of nav/icons",
-        "Click hamburger to open menu",
-        "Verify nav links and social icons appear in dropdown",
-        "Click again to close menu"
+        "Add rounded-none to all buttons",
+        "Add w-44 for equal width on hero buttons",
+        "Add w-44 for equal width on CTA buttons"
       ],
       "passes": true
     },
     {
       "id": "F009",
-      "category": "layout",
-      "description": "Footer three-column layout correct on desktop",
+      "category": "visual",
+      "description": "Remove lightning icon from header logo",
       "steps": [
-        "Scroll to footer on desktop",
-        "Verify GitHub link on left",
-        "Verify Twitter link in middle",
-        "Verify Copyright on right",
-        "Each section separated by vertical border"
+        "Update Logo component to remove icon",
+        "Show only site name text"
       ],
       "passes": true
     },
     {
       "id": "F010",
-      "category": "layout",
-      "description": "Footer responsive layout on mobile",
+      "category": "visual",
+      "description": "ASCII logo uses black text (foreground color)",
       "steps": [
-        "View footer on mobile (<640px)",
-        "Verify columns stack or wrap appropriately",
-        "Borders should switch from vertical to horizontal",
-        "All content remains visible and readable"
+        "Update terminal-hero ASCII logo styling",
+        "Use text-foreground for black text"
       ],
       "passes": true
     },
     {
       "id": "F011",
-      "category": "visual",
-      "description": "Navigation text uses uppercase with tracking",
+      "category": "layout",
+      "description": "Header three-column layout correct",
       "steps": [
-        "Inspect header navigation links",
-        "Verify text-transform: uppercase",
-        "Verify letter-spacing (tracking-wide)",
-        "Same style in footer links"
+        "Logo on left",
+        "Navigation centered",
+        "Social icons on right"
       ],
       "passes": true
     },
     {
       "id": "F012",
-      "category": "visual",
-      "description": "Hover states work correctly",
+      "category": "layout",
+      "description": "Footer three-column layout correct",
       "steps": [
-        "Hover over header nav links",
-        "Verify color changes from muted to foreground",
-        "Hover over footer links",
-        "Verify same hover behavior"
+        "GitHub link on left",
+        "Twitter link in middle",
+        "Copyright on right"
       ],
       "passes": true
     },
@@ -158,10 +143,7 @@
       "category": "visual",
       "description": "Dark mode displays correctly",
       "steps": [
-        "Switch system to dark mode (or use prefers-color-scheme)",
-        "Verify background becomes dark",
-        "Verify text becomes light",
-        "Verify borders use dark mode color",
+        "Verify colors switch in dark mode",
         "All elements remain visible and readable"
       ],
       "passes": true
@@ -171,9 +153,8 @@
       "category": "build",
       "description": "Build passes without errors",
       "steps": [
-        "Run pnpm build in packages/websites",
+        "Run pnpm build",
         "Verify no TypeScript errors",
-        "Verify no build errors",
         "Build completes successfully"
       ],
       "passes": true

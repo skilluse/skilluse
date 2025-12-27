@@ -15,7 +15,7 @@ export function TerminalHero({ className }: TerminalHeroProps) {
   return (
     <div
       className={cx(
-        "w-full max-w-3xl mx-auto rounded-lg border bg-card overflow-hidden shadow-lg",
+        "w-full max-w-3xl mx-auto border border-border bg-card overflow-hidden",
         className
       )}
     >
@@ -36,7 +36,7 @@ export function TerminalHero({ className }: TerminalHeroProps) {
         {/* Welcome */}
         <div>
           <TerminalPrompt command="welcome" />
-          <pre className="text-primary text-xs md:text-sm mt-2 overflow-x-auto">
+          <pre className="text-foreground text-xs md:text-sm mt-2 overflow-x-auto">
             {ASCII_LOGO}
           </pre>
         </div>

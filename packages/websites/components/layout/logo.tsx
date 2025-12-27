@@ -12,13 +12,12 @@ export const Logo = ({ className, href = "/", ...props }: LogoProps) => {
     <Link
       href={href}
       className={cx(
-        "flex items-center gap-2 text-xl font-bold tracking-tight text-foreground hover:opacity-80 transition-opacity",
+        "text-xl font-bold tracking-tight text-foreground hover:opacity-80 transition-opacity",
         className
       )}
       {...props}
     >
-      <span className="text-primary">⚡</span>
-      <span>{config.site.name}</span>
+      {config.site.name}
     </Link>
   )
 }
