@@ -1,0 +1,10 @@
+### [2025-12-27 16:45] Session #1
+- Working on: task02-ui-components
+- Completed: F001, F002, F003, F004, F005, F006
+- In progress: None
+- Notes:
+  - Upgraded ink to v5 for compatibility with ink-spinner, ink-select-input, ink-text-input
+  - Created custom Table component (ink-table not compatible with ink 5)
+  - Created custom ProgressBar component
+  - Created StatusMessage component with figures icons
+  - Added demo command for testing components

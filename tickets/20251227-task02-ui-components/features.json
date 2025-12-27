@@ -2,9 +2,9 @@
   "ticket": "task02-ui-components",
   "title": "UI Components",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-27",
-  "completed_at": null,
+  "completed_at": "2025-12-27",
   "dependencies": ["task01-project-setup"],
   "parallelizable": true,
   "features": [
@@ -18,8 +18,8 @@
         "Verify spinner animation displays",
         "Verify text appears next to spinner"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Uses ink-spinner with dots animation"
     },
     {
       "id": "F002",
@@ -32,8 +32,8 @@
         "Press Enter to select",
         "Verify onSelect callback fires with correct value"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Wraps ink-select-input"
     },
     {
       "id": "F003",
@@ -45,8 +45,8 @@
         "Verify rows display correctly",
         "Verify alignment is consistent"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Custom implementation using ink Box/Text (ink-table incompatible with ink 5)"
     },
     {
       "id": "F004",
@@ -58,8 +58,8 @@
         "Update percent to 100",
         "Verify bar shows fully filled"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Custom implementation with block characters"
     },
     {
       "id": "F005",
@@ -73,8 +73,8 @@
         "Render StatusMessage type='warning'",
         "Verify yellow warning icon appears"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Uses figures package for cross-platform icons"
     },
     {
       "id": "F006",
@@ -86,13 +86,13 @@
         "Verify onChange fires with typed text",
         "Verify value is displayed"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Wraps ink-text-input"
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }
