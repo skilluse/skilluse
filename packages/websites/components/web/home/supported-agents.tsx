@@ -1,74 +1,44 @@
-import { H2 } from "~/components/common/heading"
 import { Icon, type IconName } from "~/components/common/icon"
-import { cx } from "~/utils/cva"
+import { Stack } from "~/components/common/stack"
+import { Intro, IntroTitle, IntroDescription } from "~/components/web/ui/intro"
 
 interface Agent {
   name: string
   icon: IconName
-  description: string
 }
 
 const agents: Agent[] = [
-  {
-    name: "Claude Code",
-    icon: "Terminal",
-    description: "Anthropic's official CLI for Claude",
-  },
-  {
-    name: "Codex CLI",
-    icon: "Code",
-    description: "OpenAI's coding assistant",
-  },
-  {
-    name: "VS Code",
-    icon: "FileCode",
-    description: "Extensions for VS Code",
-  },
-  {
-    name: "Cursor",
-    icon: "MousePointer",
-    description: "AI-powered code editor",
-  },
-  {
-    name: "Custom",
-    icon: "Settings",
-    description: "Your own agent setup",
-  },
+  { name: "Claude Code", icon: "Terminal" },
+  { name: "Codex CLI", icon: "Code" },
+  { name: "VS Code", icon: "FileCode" },
+  { name: "Cursor", icon: "MousePointer" },
+  { name: "Custom", icon: "Settings" },
 ]
 
-interface SupportedAgentsProps {
-  className?: string
-}
-
-export function SupportedAgents({ className }: SupportedAgentsProps) {
+export function SupportedAgents() {
   return (
-    <section className={cx("py-16 md:py-24", className)}>
-      <div className="text-center mb-12">
-        <H2 size="h2">Supported Agents</H2>
-        <p className="mt-4 text-secondary-foreground max-w-2xl mx-auto">
-          SkillUse works with all major AI coding assistants.
-        </p>
-      </div>
+    <>
+      <Intro alignment="center">
+        <IntroTitle size="h2">Supported Agents</IntroTitle>
+        <IntroDescription>Works with all major AI coding assistants.</IntroDescription>
+      </Intro>
 
-      <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+      <Stack className="justify-center gap-6 md:gap-8">
         {agents.map((agent) => (
-          <AgentCard key={agent.name} {...agent} />
+          <AgentBadge key={agent.name} {...agent} />
         ))}
-      </div>
-    </section>
+      </Stack>
+    </>
   )
 }
 
-function AgentCard({ name, icon, description }: Agent) {
+function AgentBadge({ name, icon }: Agent) {
   return (
-    <div className="flex flex-col items-center gap-3 p-6 w-40 rounded-lg border border-border bg-card hover:bg-accent transition-colors">
-      <div className="flex size-12 items-center justify-center rounded-lg bg-muted text-foreground">
-        <Icon name={icon} className="size-6" />
+    <Stack size="sm" direction="column" className="items-center">
+      <div className="flex size-12 items-center justify-center rounded-lg border bg-card">
+        <Icon name={icon} className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-center">
-        <h3 className="font-medium text-sm text-foreground">{name}</h3>
-        <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-      </div>
-    </div>
+      <span className="text-xs text-muted-foreground">{name}</span>
+    </Stack>
   )
 }
