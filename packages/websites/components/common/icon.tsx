@@ -2,8 +2,10 @@ import { icons, type LucideIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 import { cx } from "~/utils/cva"
 
+export type IconName = keyof typeof icons
+
 type IconProps = ComponentProps<LucideIcon> & {
-  name: keyof typeof icons
+  name: IconName
 }
 
 export const Icon = ({ name, className, ...props }: IconProps) => {

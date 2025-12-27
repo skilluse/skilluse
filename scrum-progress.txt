@@ -1,3 +1,32 @@
+# GitHub App Migration Sprint
+
+## Current Sprint (GitHub App Migration)
+- [x] task01-create-github-app - Create GitHub App (manual)
+- [x] task02-oauth-service - OAuth service for installations
+- [ ] task03-update-login - Update login command
+- [ ] task04-manage-command - Installation management UI
+- [ ] task05-repository-picker - Repository picker component
+- [ ] task06-migration-docs - Update documentation
+
+## Completed (GitHub App Migration)
+- [x] task01-create-github-app
+- [x] task02-oauth-service
+
+### [2025-12-27] Session - task02-oauth-service
+- Working on: task02-oauth-service
+- Completed: F001, F002, F003, F004, F005, F006
+- In progress: None
+- Commits: cc4e3ef
+- Notes:
+  - Added GitHub App installation types: Installation, Repository, InstallationToken
+  - Implemented getUserInstallations() - GET /user/installations
+  - Implemented getInstallationRepositories() - GET /user/installations/{id}/repositories
+  - Implemented getInstallationToken() - POST /user/installations/{id}/access_tokens
+  - Updated login command to use GitHub App client ID
+  - All types exported from services/index.ts
+
+---
+
 # Config Refactor Sprint
 
 ## Current Sprint (Config Refactor)
@@ -81,7 +110,7 @@
 ## Current Sprint (Website)
 - [x] web01-project-setup - Initialize Next.js, copy components
 - [x] web02-core-layout - Header, footer, layout
-- [ ] web03-landing-page - Hero, features, CTA
+- [x] web03-landing-page - Hero, features, CTA
 - [ ] web04-blog-setup - Blog listing and posts
 - [ ] web05-docs-setup - Documentation with sidebar
 - [ ] web06-polish - SEO, OG images, sitemap
@@ -89,6 +118,7 @@
 ## Completed (Website)
 - [x] web01-project-setup
 - [x] web02-core-layout
+- [x] web03-landing-page
 
 ### [2025-12-27] Website Planning
 - Created website-design.md with full specification
@@ -123,3 +153,18 @@
   - Navigation config for reusable nav items
   - Fixed missing components: kbd, pagination-link
   - Fixed lucide-react icon names compatibility
+
+### [2025-12-27] Session - web03-landing-page
+- Working on: web03-landing-page
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008
+- In progress: None
+- Notes:
+  - Created Hero section with tagline, description, CTA buttons
+  - Added TerminalDemo component with dark terminal styling
+  - Created Features section with 4 feature cards (responsive grid)
+  - Created HowItWorks section with 3 numbered steps and code examples
+  - Created SupportedAgents section with agent cards
+  - Created CTA section with gradient background
+  - Assembled landing page with all sections
+  - Added IconName type export to Icon component
+  - All sections mobile responsive with proper breakpoints

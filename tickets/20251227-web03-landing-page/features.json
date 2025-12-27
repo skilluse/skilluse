@@ -2,7 +2,7 @@
   "ticket": "web03-landing-page",
   "title": "Landing Page",
   "priority": 3,
-  "status": "pending",
+  "status": "completed",
   "dependencies": ["web02-core-layout"],
   "parallelizable": true,
   "features": [
@@ -17,7 +17,7 @@
         "Add 'Get Started' button (primary)",
         "Add 'View on GitHub' button (secondary, links to GitHub)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F002",
@@ -29,7 +29,7 @@
         "Display success message output",
         "Style with dark background like real terminal"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F003",
@@ -42,7 +42,7 @@
         "Each card has icon, title, description",
         "Responsive: 1 col mobile, 2 col tablet, 4 col desktop"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F004",
@@ -55,7 +55,7 @@
         "Each step has command example",
         "Clear visual flow between steps"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F005",
@@ -67,7 +67,7 @@
         "Show agent cards/badges",
         "Include: Claude Code, Codex CLI, VS Code, Cursor, Custom"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F006",
@@ -80,7 +80,7 @@
         "Add 'Read the Docs' button linking to /docs",
         "Distinct background styling"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F007",
@@ -92,7 +92,7 @@
         "Verify sections have proper spacing",
         "Page scrolls smoothly"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F008",
@@ -104,8 +104,8 @@
         "Buttons are tappable size",
         "No horizontal overflow"
       ],
-      "passes": false
+      "passes": true
     }
   ],
-  "completed_at": null
+  "completed_at": "2025-12-27"
 }
