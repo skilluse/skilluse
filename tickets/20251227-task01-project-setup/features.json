@@ -1,0 +1,76 @@
+{
+  "ticket": "task01-project-setup",
+  "title": "Project Setup",
+  "priority": 1,
+  "status": "pending",
+  "created_at": "2025-12-27",
+  "completed_at": null,
+  "dependencies": [],
+  "features": [
+    {
+      "id": "F001",
+      "category": "setup",
+      "description": "npm package initialized with correct name and configuration",
+      "steps": [
+        "Check packages/cli/package.json exists",
+        "Verify name is 'skilluse'",
+        "Verify bin entry points to correct file"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "setup",
+      "description": "TypeScript configured with React JSX support",
+      "steps": [
+        "Check tsconfig.json exists",
+        "Verify jsx is set to 'react-jsx'",
+        "Run tsc --noEmit successfully"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "setup",
+      "description": "Ink and Pastel dependencies installed",
+      "steps": [
+        "Check ink is in dependencies",
+        "Check pastel is in dependencies",
+        "Check react is in dependencies"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "CLI entry point runs without error",
+      "steps": [
+        "Run npx skilluse --help",
+        "Verify output shows help text",
+        "Verify no errors in console"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "structure",
+      "description": "Project structure matches architecture",
+      "steps": [
+        "Verify src/index.tsx exists",
+        "Verify src/app.tsx exists",
+        "Verify directories: commands/, components/, services/, config/, hooks/, types/"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

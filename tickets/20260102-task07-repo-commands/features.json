@@ -1,0 +1,106 @@
+{
+  "ticket": "task07-repo-commands",
+  "title": "Repo Management Commands",
+  "priority": 6,
+  "status": "pending",
+  "created_at": "2025-12-27",
+  "completed_at": null,
+  "dependencies": ["task04-auth-commands", "task05-config-store", "task06-repo-discovery"],
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "repo add command adds repo to config",
+      "steps": [
+        "Run skilluse repo add owner/repo",
+        "Complete path selection",
+        "Verify repo is in config.repos",
+        "Verify paths are stored correctly"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "repo add with --path skips interactive mode",
+      "steps": [
+        "Run skilluse repo add owner/repo --path skills/",
+        "Verify no interactive UI",
+        "Verify repo added with specified path"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "repo edit allows modifying paths",
+      "steps": [
+        "Add a repo first",
+        "Run skilluse repo edit owner/repo",
+        "Modify path selection",
+        "Verify config is updated"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "repo remove deletes repo from config",
+      "steps": [
+        "Add a repo first",
+        "Run skilluse repo remove owner/repo",
+        "Confirm removal",
+        "Verify repo is removed from config"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "repo list shows all configured repos",
+      "steps": [
+        "Add 2-3 repos",
+        "Run skilluse repo list",
+        "Verify table shows all repos",
+        "Verify default repo is marked"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "repo use sets default repo",
+      "steps": [
+        "Add multiple repos",
+        "Run skilluse repo use owner/repo",
+        "Verify config.defaultRepo is updated",
+        "Run repo list, verify marker moved"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F007",
+      "category": "functional",
+      "description": "repo sync refreshes skill index",
+      "steps": [
+        "Add a repo",
+        "Run skilluse repo sync",
+        "Verify GitHub API is called",
+        "Verify success message shown"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 2,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

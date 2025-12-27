@@ -1,0 +1,93 @@
+{
+  "ticket": "task08-skill-search",
+  "title": "Skill Search",
+  "priority": 7,
+  "status": "pending",
+  "created_at": "2025-12-27",
+  "completed_at": null,
+  "dependencies": ["task05-config-store", "task07-repo-commands"],
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Search command finds skills by name",
+      "steps": [
+        "Add repo with skills",
+        "Run skilluse search code-review",
+        "Verify matching skill is displayed",
+        "Verify skill details are shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Search matches description text",
+      "steps": [
+        "Search for word only in description",
+        "Verify skill is found",
+        "Verify match context is shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Search with --all flag searches all repos",
+      "steps": [
+        "Add multiple repos with different skills",
+        "Run skilluse search keyword --all",
+        "Verify results from all repos are shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "ui",
+      "description": "Search results show skill metadata",
+      "steps": [
+        "Run search command",
+        "Verify name is displayed",
+        "Verify description is displayed",
+        "Verify repo source is displayed",
+        "Verify type (claude/codex) is displayed"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "No results message when no matches",
+      "steps": [
+        "Search for nonexistent skill",
+        "Verify 'no skills found' message",
+        "Verify suggestion to check repos"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "Parse SKILL.md frontmatter for metadata",
+      "steps": [
+        "Fetch skill with SKILL.md",
+        "Verify name is extracted",
+        "Verify description is extracted",
+        "Verify type is extracted",
+        "Verify version is extracted"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "ticket": "task04-auth-commands",
+  "title": "Authentication Commands",
+  "priority": 4,
+  "status": "pending",
+  "created_at": "2025-12-27",
+  "completed_at": null,
+  "dependencies": ["task02-ui-components", "task03-oauth-flow", "task05-config-store"],
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Login command starts OAuth flow and stores token",
+      "steps": [
+        "Run skilluse login",
+        "Verify device code is displayed",
+        "Complete authentication in browser",
+        "Verify success message shows username",
+        "Verify token is stored in config"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Login command detects existing session",
+      "steps": [
+        "Run skilluse login when already logged in",
+        "Verify message shows already authenticated",
+        "Verify existing token is preserved"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Logout command clears authentication",
+      "steps": [
+        "Run skilluse logout when logged in",
+        "Verify success message is shown",
+        "Verify token is removed from config",
+        "Run skilluse whoami",
+        "Verify not authenticated message"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Whoami command shows current user",
+      "steps": [
+        "Run skilluse whoami when logged in",
+        "Verify username is displayed",
+        "Verify avatar URL or profile link shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "error",
+      "description": "Whoami shows error when not authenticated",
+      "steps": [
+        "Run skilluse whoami when not logged in",
+        "Verify 'not authenticated' message",
+        "Verify hint to run login"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

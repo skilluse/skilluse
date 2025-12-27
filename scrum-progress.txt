@@ -1,0 +1,62 @@
+# Scrum Progress Log
+
+## Project: SkillUse CLI
+Created: 2025-12-27
+
+## Overview
+CLI tool for managing and installing AI Coding Agent Skills (Claude Code Skills, Codex Skills, etc.)
+
+## Current Sprint
+- [ ] task01-project-setup
+- [ ] task02-ui-components
+- [ ] task03-oauth-flow
+- [ ] task04-auth-commands
+- [ ] task05-config-store
+- [ ] task06-repo-discovery
+- [ ] task07-repo-commands
+- [ ] task08-skill-search
+- [ ] task09-skill-install
+- [ ] task10-polish
+
+## Completed
+(none yet)
+
+## Ticket Dependencies Graph
+```
+task01-project-setup
+    ├── task02-ui-components
+    │       └── task04-auth-commands
+    ├── task03-oauth-flow
+    │       ├── task04-auth-commands
+    │       └── task06-repo-discovery
+    └── task05-config-store
+            ├── task04-auth-commands
+            ├── task07-repo-commands
+            ├── task08-skill-search
+            └── task09-skill-install
+
+task06-repo-discovery
+    └── task07-repo-commands
+
+task07-repo-commands
+    ├── task08-skill-search
+    └── task09-skill-install
+
+task09-skill-install
+    └── task10-polish
+```
+
+## Recommended Order
+1. task01-project-setup (no deps)
+2. task02-ui-components (needs task01)
+3. task03-oauth-flow (needs task01)
+4. task05-config-store (needs task01)
+5. task04-auth-commands (needs task02, task03, task05)
+6. task06-repo-discovery (needs task01, task02, task03)
+7. task07-repo-commands (needs task04, task05, task06)
+8. task08-skill-search (needs task05, task07)
+9. task09-skill-install (needs task05, task07, task08)
+10. task10-polish (needs all)
+
+## Session Log
+[2025-12-27 00:00] Project initialized with 10 tickets
