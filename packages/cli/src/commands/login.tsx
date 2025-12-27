@@ -141,7 +141,7 @@ export default function Login({ options: opts }: Props) {
         // If we can't fetch installations, show prompt to install
         setState({
           phase: "no_installation",
-          installUrl: "https://github.com/apps/skilluse-cli/installations/new",
+          installUrl: "https://github.com/apps/skilluse/installations/new",
         });
         exit();
         return;
@@ -151,7 +151,7 @@ export default function Login({ options: opts }: Props) {
         // No installations, prompt user to install
         setState({
           phase: "no_installation",
-          installUrl: "https://github.com/apps/skilluse-cli/installations/new",
+          installUrl: "https://github.com/apps/skilluse/installations/new",
         });
         exit();
         return;
