@@ -23,9 +23,15 @@ export {
   setDefaultRepo,
   addInstalledSkill,
   removeInstalledSkill,
+  setInstallations,
+  getInstallations,
+  setDefaultInstallation,
+  getDefaultInstallation,
+  clearInstallations,
   type Config,
   type RepoConfig,
   type InstalledSkill,
+  type StoredInstallation,
 } from "./store.js";
 
 export {
@@ -37,9 +43,19 @@ export {
 } from "./paths.js";
 
 export {
+  // Legacy (deprecated)
   getCredentials,
   setCredentials,
   clearCredentials,
   isKeychainAvailable,
   type Credentials,
+  // New GitHub App credential functions
+  setUserCredentials,
+  getUserCredentials,
+  getCachedInstallationToken,
+  setCachedInstallationToken,
+  clearInstallationTokenCache,
+  clearAllCredentials,
+  type UserCredentials,
+  type InstallationTokenCache,
 } from "./credentials.js";

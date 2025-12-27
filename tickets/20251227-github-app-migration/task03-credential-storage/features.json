@@ -2,7 +2,7 @@
   "ticket": "task03-credential-storage",
   "title": "Update Credential Storage",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "dependencies": ["task01-create-github-app"],
   "parallelizable": true,
   "features": [
@@ -16,7 +16,7 @@
         "Verify returned token matches stored token",
         "Verify returned username matches stored username"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F002",
@@ -28,7 +28,7 @@
         "Verify returned list contains all stored installations",
         "Verify installation properties are preserved"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F003",
@@ -40,7 +40,7 @@
         "Call getDefaultInstallation",
         "Verify correct installation ID is returned"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F004",
@@ -52,7 +52,7 @@
         "Verify token is returned if not expired",
         "Verify null is returned if token is expired"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F005",
@@ -64,7 +64,7 @@
         "Verify getUserCredentials returns null",
         "Verify getInstallations returns empty array"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "F006",
@@ -75,8 +75,8 @@
         "Verify token is in keychain or encrypted file",
         "Verify token is not in plain text config"
       ],
-      "passes": false
+      "passes": true
     }
   ],
-  "completed_at": null
+  "completed_at": "2025-12-27"
 }

@@ -18,16 +18,32 @@ export interface InstalledSkill {
   scope: "local" | "global";
 }
 
+/**
+ * Stored installation info (metadata, not secret)
+ * Simplified version of the OAuth Installation type
+ */
+export interface StoredInstallation {
+  id: number;
+  account: string;
+  accountType: "User" | "Organization";
+  repositorySelection: "all" | "selected";
+}
+
 export interface Config {
   defaultRepo: string | null;
   repos: RepoConfig[];
   installed: InstalledSkill[];
+  // GitHub App installation metadata
+  installations: StoredInstallation[];
+  defaultInstallationId: number | null;
 }
 
 const defaultConfig: Config = {
   defaultRepo: null,
   repos: [],
   installed: [],
+  installations: [],
+  defaultInstallationId: null,
 };
 
 const store = new Conf<Config>({
@@ -41,6 +57,8 @@ export function getConfig(): Config {
     defaultRepo: store.get("defaultRepo"),
     repos: store.get("repos"),
     installed: store.get("installed"),
+    installations: store.get("installations"),
+    defaultInstallationId: store.get("defaultInstallationId"),
   };
 }
 
@@ -84,4 +102,44 @@ export function removeInstalledSkill(name: string): void {
   const installed = store.get("installed");
   const filtered = installed.filter((s) => s.name !== name);
   store.set("installed", filtered);
+}
+
+// ============================================================================
+// GitHub App Installation Management
+// ============================================================================
+
+/**
+ * Store the list of GitHub App installations the user has access to.
+ */
+export function setInstallations(installations: StoredInstallation[]): void {
+  store.set("installations", installations);
+}
+
+/**
+ * Get the list of stored GitHub App installations.
+ */
+export function getInstallations(): StoredInstallation[] {
+  return store.get("installations");
+}
+
+/**
+ * Set the default installation ID for operations.
+ */
+export function setDefaultInstallation(installationId: number): void {
+  store.set("defaultInstallationId", installationId);
+}
+
+/**
+ * Get the default installation ID.
+ */
+export function getDefaultInstallation(): number | null {
+  return store.get("defaultInstallationId");
+}
+
+/**
+ * Clear all installation-related data.
+ */
+export function clearInstallations(): void {
+  store.set("installations", []);
+  store.set("defaultInstallationId", null);
 }
