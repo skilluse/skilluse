@@ -71,17 +71,17 @@ Three-column layout on desktop:
 
 On mobile: sidebar in drawer, no TOC.
 
-### Docs Sidebar (`components/web/docs/docs-sidebar.tsx`)
+### Docs Sidebar (`components/docs/docs-sidebar.tsx`)
 - Collapsible section groups
 - Active page highlighted
 - Mobile: slide-out drawer
 
-### Docs TOC (`components/web/docs/docs-toc.tsx`)
+### Docs TOC (`components/docs/docs-toc.tsx`)
 - Extract h2/h3 headings from content
 - Scrollspy to highlight current section
 - Click to scroll to heading
 
-### Docs Pagination (`components/web/docs/docs-pagination.tsx`)
+### Docs Pagination (`components/docs/docs-pagination.tsx`)
 - Previous page link
 - Next page link
 - Based on navigation order
@@ -110,6 +110,18 @@ See features.json for testable criteria.
 - web01-project-setup (content-collections)
 - web02-core-layout (layout)
 - web07-cli-landing-page (CLI theme variables and typography)
+- web09-layout-review (component structure)
+
+## Component Structure
+```
+packages/websites/components/
+├── home/         # Home page sections
+├── layout/       # Header, footer, container, nav
+├── shared/       # Utilities: link, icon, prose, mdx
+├── ui/           # shadcn components: button, card, dialog
+├── posts/        # Blog components (web04)
+└── docs/         # Docs components (new)
+```
 
 ## Theme Integration
 The docs pages should use the CLI theme variables from web07:

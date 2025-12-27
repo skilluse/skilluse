@@ -50,14 +50,14 @@ const posts = defineCollection({
 - MDX content with prose styling
 - Share buttons at bottom
 
-### Post Card (`components/web/posts/post-card.tsx`)
+### Post Card (`components/posts/post-card.tsx`)
 - Optional cover image
 - Title
 - Description (truncated)
 - Published date
 - Link to full post
 
-### MDX Components (`components/web/mdx-components.tsx`)
+### MDX Components (`components/shared/mdx-components.tsx`)
 - Code blocks with syntax highlighting
 - Custom headings with anchor links
 - Images with optimization
@@ -85,6 +85,18 @@ See features.json for testable criteria.
 - web01-project-setup (content-collections config)
 - web02-core-layout (layout, breadcrumbs)
 - web07-cli-landing-page (CLI theme variables and typography)
+- web09-layout-review (component structure)
+
+## Component Structure
+```
+packages/websites/components/
+├── home/         # Home page sections
+├── layout/       # Header, footer, container, nav
+├── shared/       # Utilities: link, icon, prose, mdx
+├── ui/           # shadcn components: button, card, dialog
+├── posts/        # Blog components (new)
+└── docs/         # Docs components (web05)
+```
 
 ## Theme Integration
 The blog pages should use the CLI theme variables from web07:

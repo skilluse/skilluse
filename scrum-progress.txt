@@ -154,8 +154,10 @@
 - [x] web02-core-layout - Header, footer, layout
 - [x] web03-landing-page - Hero, features, CTA
 - [x] web07-cli-landing-page - CLI terminal hero with IBM Plex Mono
-- [ ] web04-blog-setup - Blog listing and posts
-- [ ] web05-docs-setup - Documentation with sidebar
+- [x] web08-color-scheme - Black/white color scheme update
+- [ ] web09-layout-review - Review and fix homepage layout issues
+- [ ] web04-blog-setup - Blog listing and posts (depends on web09)
+- [ ] web05-docs-setup - Documentation with sidebar (depends on web09)
 - [ ] web06-polish - SEO, OG images, sitemap
 
 ## Completed (Website)
@@ -163,6 +165,7 @@
 - [x] web02-core-layout
 - [x] web03-landing-page
 - [x] web07-cli-landing-page
+- [x] web08-color-scheme
 
 ### [2025-12-27] Website Planning
 - Created website-design.md with full specification
