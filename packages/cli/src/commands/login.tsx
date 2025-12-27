@@ -8,6 +8,11 @@ import {
   openBrowser,
   getCredentials,
   setCredentials,
+  getUserInstallations,
+  setInstallations,
+  setDefaultInstallation,
+  type Installation,
+  type StoredInstallation,
 } from "../services/index.js";
 
 // GitHub App Client ID for Skilluse CLI
@@ -31,7 +36,9 @@ type LoginState =
   | { phase: "already_logged_in"; username: string }
   | { phase: "requesting_code" }
   | { phase: "waiting_for_auth"; userCode: string; verificationUri: string }
-  | { phase: "success"; username: string }
+  | { phase: "fetching_installations" }
+  | { phase: "no_installation"; installUrl: string }
+  | { phase: "success"; username: string; installations: StoredInstallation[] }
   | { phase: "error"; message: string };
 
 export default function Login({ options: opts }: Props) {
@@ -100,10 +107,11 @@ export default function Login({ options: opts }: Props) {
 
       // Fetch user info from GitHub
       let username: string;
+      const accessToken = result.token.access_token;
       try {
         const userResponse = await fetch("https://api.github.com/user", {
           headers: {
-            Authorization: `Bearer ${result.token.access_token}`,
+            Authorization: `Bearer ${accessToken}`,
             Accept: "application/vnd.github+json",
           },
         });
@@ -121,9 +129,50 @@ export default function Login({ options: opts }: Props) {
       }
 
       // Store credentials
-      await setCredentials(result.token.access_token, username);
+      await setCredentials(accessToken, username);
 
-      setState({ phase: "success", username });
+      // Fetch GitHub App installations
+      setState({ phase: "fetching_installations" });
+
+      let installations: Installation[];
+      try {
+        installations = await getUserInstallations(accessToken);
+      } catch (err) {
+        // If we can't fetch installations, show prompt to install
+        setState({
+          phase: "no_installation",
+          installUrl: "https://github.com/apps/skilluse-cli/installations/new",
+        });
+        exit();
+        return;
+      }
+
+      if (installations.length === 0) {
+        // No installations, prompt user to install
+        setState({
+          phase: "no_installation",
+          installUrl: "https://github.com/apps/skilluse-cli/installations/new",
+        });
+        exit();
+        return;
+      }
+
+      // Convert to StoredInstallation and save
+      const storedInstallations: StoredInstallation[] = installations.map((inst) => ({
+        id: inst.id,
+        account: inst.account.login,
+        accountType: inst.account.type,
+        repositorySelection: inst.repository_selection,
+      }));
+
+      await setInstallations(storedInstallations);
+
+      // If single installation, set as default
+      if (storedInstallations.length === 1) {
+        await setDefaultInstallation(storedInstallations[0].id);
+      }
+
+      setState({ phase: "success", username, installations: storedInstallations });
       exit();
     }
 
@@ -166,11 +215,46 @@ export default function Login({ options: opts }: Props) {
         </Box>
       );
 
+    case "fetching_installations":
+      return <Spinner text="Fetching GitHub App installations..." />;
+
+    case "no_installation":
+      return (
+        <Box flexDirection="column">
+          <StatusMessage type="warning">
+            You need to install Skilluse CLI on your GitHub account
+          </StatusMessage>
+          <Box marginTop={1}>
+            <Text>Open: </Text>
+            <Text color="cyan" bold>
+              {state.installUrl}
+            </Text>
+          </Box>
+          <Box marginTop={1}>
+            <Text dimColor>Then run 'skilluse login' again.</Text>
+          </Box>
+        </Box>
+      );
+
     case "success":
       return (
-        <StatusMessage type="success">
-          Logged in as {state.username}
-        </StatusMessage>
+        <Box flexDirection="column">
+          <StatusMessage type="success">
+            Logged in as {state.username}
+          </StatusMessage>
+          {state.installations.length > 0 && (
+            <Box marginTop={1} flexDirection="column">
+              <Text dimColor>
+                {state.installations.length} installation{state.installations.length > 1 ? "s" : ""} found:
+              </Text>
+              {state.installations.map((inst) => (
+                <Text key={inst.id} dimColor>
+                  • {inst.account} ({inst.accountType.toLowerCase()})
+                </Text>
+              ))}
+            </Box>
+          )}
+        </Box>
       );
 
     case "error":

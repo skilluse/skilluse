@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Box, Text, useApp } from "ink";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
-import { getCredentials } from "../services/index.js";
+import {
+  getCredentials,
+  getInstallations,
+  type StoredInstallation,
+} from "../services/index.js";
 
 export const options = z.object({});
 
@@ -20,7 +24,7 @@ interface GitHubUser {
 type WhoamiState =
   | { phase: "checking" }
   | { phase: "not_logged_in" }
-  | { phase: "logged_in"; user: GitHubUser }
+  | { phase: "logged_in"; user: GitHubUser; installations: StoredInstallation[] }
   | { phase: "error"; message: string };
 
 export default function Whoami(_props: Props) {
@@ -63,7 +67,8 @@ export default function Whoami(_props: Props) {
         }
 
         const userData = (await response.json()) as GitHubUser;
-        setState({ phase: "logged_in", user: userData });
+        const installations = getInstallations();
+        setState({ phase: "logged_in", user: userData, installations });
       } catch (err) {
         setState({
           phase: "error",
@@ -102,6 +107,25 @@ export default function Whoami(_props: Props) {
             )}
           </Box>
           <Text dimColor>{state.user.html_url}</Text>
+          {state.installations.length > 0 && (
+            <Box marginTop={1} flexDirection="column">
+              <Text>GitHub App Installations:</Text>
+              {state.installations.map((inst) => (
+                <Text key={inst.id} dimColor>
+                  • {inst.account} ({inst.accountType.toLowerCase()}) -{" "}
+                  {inst.repositorySelection === "all" ? "all repositories" : "selected repositories"}
+                </Text>
+              ))}
+              <Box marginTop={1}>
+                <Text dimColor>Use 'skilluse repos' to see accessible repositories.</Text>
+              </Box>
+            </Box>
+          )}
+          {state.installations.length === 0 && (
+            <Box marginTop={1}>
+              <Text color="yellow">No GitHub App installations found.</Text>
+            </Box>
+          )}
         </Box>
       );
 

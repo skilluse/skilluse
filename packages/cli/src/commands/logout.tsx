@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useApp } from "ink";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
-import { getCredentials, clearCredentials } from "../services/index.js";
+import {
+  getCredentials,
+  clearAllCredentials,
+  clearInstallations,
+} from "../services/index.js";
 
 export const options = z.object({});
 
@@ -30,9 +34,10 @@ export default function Logout(_props: Props) {
         return;
       }
 
-      // Clear credentials
+      // Clear all credentials (user token, token cache) and installations
       try {
-        await clearCredentials();
+        await clearAllCredentials();
+        clearInstallations();
         setState({ phase: "success" });
       } catch (err) {
         setState({
