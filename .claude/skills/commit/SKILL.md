@@ -82,7 +82,7 @@ BREAKING CHANGE: `extends` key in config file is now used for extending other co
 feat(api)!: send an email to the customer when a product is shipped
 ```
 
-### Both `!` and BREAKING CHANGE footer
+### Breaking change with exclamation mark and footer
 ```
 chore!: drop support for Node 6
 
