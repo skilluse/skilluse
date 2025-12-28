@@ -81,39 +81,81 @@ packages/cli/
 - `figures`: Terminal icon symbols
 - `zod`: Runtime type validation
 
+## Modern CLI Design Principles
+
+Inspired by modern CLI tools (gh, vercel, fly, railway):
+
+| Principle | Implementation |
+|-----------|---------------|
+| Concise commands | Avoid deep nesting (no `config set project` style) |
+| Smart defaults | `skilluse` with no args shows status overview |
+| JSON for scripting | All list commands support `--json` |
+| Context override | Global `--repo` flag for any command |
+| Quiet mode | `-q` for scripting (exit code only) |
+
 ## Command Design
 
 ```bash
+# Status (zero-arg UX)
+skilluse                    # Status overview: user, repo, skills count
+skilluse status [--json]    # Explicit status command
+
 # Authentication
-skilluse login              # Start GitHub OAuth authentication
+skilluse login [--force]    # GitHub OAuth authentication
 skilluse logout             # Clear authentication
-skilluse whoami             # Show current user
+skilluse whoami [--json]    # Show current user + installations
 
 # Repo Management
+skilluse repo               # Show current/default repo
+skilluse repo list [--json] # List all configured repos
+skilluse repo use <owner/repo>      # Set default repo
 skilluse repo add <owner/repo>      # Add repo (interactive path selection)
 skilluse repo add <owner/repo> --path <path>  # Add repo (specify path)
 skilluse repo edit <owner/repo>     # Edit repo path configuration
 skilluse repo remove <owner/repo>   # Remove repo
-skilluse repo list                  # List all repos
-skilluse repo use <owner/repo>      # Set default repo
-skilluse repo sync [owner/repo]     # Refresh index
+skilluse repo update [owner/repo]   # Update skill index
 
 # Skill Operations
-skilluse search <keyword>                   # Search in default repo
-skilluse search <keyword> --all             # Search in all repos
-skilluse install <skill-name>               # Install locally (default)
+skilluse search <keyword> [--repo <repo>]   # Search (default repo)
+skilluse search <keyword> --all             # Search all repos
+skilluse install <skill-name> [--repo <repo>]  # Install from repo
 skilluse install <skill-name> --local       # Explicit local install
 skilluse install <skill-name> --global      # Global install (~/.claude/skills/)
 skilluse install <skill-name> --target <path>  # Custom location
 skilluse install <owner/repo>/<skill-name>  # Install from specific repo
 skilluse uninstall <skill-name>             # Uninstall skill
-skilluse list                               # List installed skills
+skilluse list [--json]                      # List installed skills
 skilluse list --outdated                    # List outdated skills
 skilluse upgrade [skill-name]               # Upgrade skill (no args = upgrade all)
 skilluse info <skill-name>                  # Show skill details
 ```
 
+### Global Flags
+```bash
+--repo <owner/repo>   # Override default repo for this command
+--json                # Output as JSON (for list/query commands)
+-q, --quiet           # Suppress output, exit code only
+```
+
 ## UI Design
+
+### Status Overview (skilluse with no args)
+```
+┌─────────────────────────────────────────────────────┐
+│  skilluse                                           │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  User:     @username                                │
+│  Repo:     anthropics/claude-skills (default)       │
+│  Skills:   3 installed (1 outdated)                 │
+│                                                     │
+│  Quick actions:                                     │
+│    skilluse search <query>    Search skills         │
+│    skilluse repos             List repos            │
+│    skilluse list --outdated   Check updates         │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
 
 ### Login Flow
 ```

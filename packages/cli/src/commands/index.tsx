@@ -1,6 +1,13 @@
-import React from "react";
-import { Box, Text } from "ink";
+import React, { useState, useEffect } from "react";
+import { Box, Text, useApp } from "ink";
 import { z } from "zod";
+import { Spinner, StatusMessage } from "../components/index.js";
+import {
+  getCredentials,
+  getConfig,
+  getInstallations,
+  type StoredInstallation,
+} from "../services/index.js";
 
 export const options = z.object({});
 
@@ -8,15 +15,157 @@ interface Props {
   options: z.infer<typeof options>;
 }
 
+interface GitHubUser {
+  login: string;
+  name: string | null;
+}
+
+type StatusState =
+  | { phase: "checking" }
+  | { phase: "not_logged_in" }
+  | {
+      phase: "logged_in";
+      user: GitHubUser;
+      defaultRepo: string | null;
+      installedCount: number;
+      repoCount: number;
+      installations: StoredInstallation[];
+    }
+  | { phase: "error"; message: string };
+
 export default function Index(_props: Props) {
-  return (
-    <Box flexDirection="column" padding={1}>
-      <Text color="green" bold>
-        skilluse - AI Coding Agent Skills Manager
-      </Text>
-      <Text dimColor>
-        {"\n"}Use --help to see available commands
-      </Text>
-    </Box>
-  );
+  const { exit } = useApp();
+  const [state, setState] = useState<StatusState>({ phase: "checking" });
+
+  useEffect(() => {
+    async function checkStatus() {
+      // Check if logged in
+      const credentials = await getCredentials();
+      if (!credentials) {
+        setState({ phase: "not_logged_in" });
+        exit();
+        return;
+      }
+
+      // Fetch user info from GitHub
+      try {
+        const response = await fetch("https://api.github.com/user", {
+          headers: {
+            Authorization: `Bearer ${credentials.token}`,
+            Accept: "application/vnd.github+json",
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            setState({ phase: "not_logged_in" });
+          } else {
+            setState({
+              phase: "error",
+              message: `GitHub API error: ${response.status}`,
+            });
+          }
+          exit();
+          return;
+        }
+
+        const userData = (await response.json()) as GitHubUser;
+        const config = getConfig();
+        const installations = getInstallations();
+
+        setState({
+          phase: "logged_in",
+          user: userData,
+          defaultRepo: config.defaultRepo,
+          installedCount: config.installed.length,
+          repoCount: config.repos.length,
+          installations,
+        });
+      } catch (err) {
+        setState({
+          phase: "error",
+          message: err instanceof Error ? err.message : "Failed to fetch status",
+        });
+      }
+
+      exit();
+    }
+
+    checkStatus();
+  }, [exit]);
+
+  switch (state.phase) {
+    case "checking":
+      return <Spinner text="Loading..." />;
+
+    case "not_logged_in":
+      return (
+        <Box flexDirection="column" padding={1}>
+          <Box marginBottom={1}>
+            <Text color="green" bold>
+              skilluse
+            </Text>
+            <Text> - AI Coding Agent Skills Manager</Text>
+          </Box>
+          <StatusMessage type="warning">Not logged in</StatusMessage>
+          <Box marginTop={1} flexDirection="column">
+            <Text bold>Quick Start:</Text>
+            <Text dimColor>  skilluse login     Authenticate with GitHub</Text>
+            <Text dimColor>  skilluse --help    Show all commands</Text>
+          </Box>
+        </Box>
+      );
+
+    case "logged_in":
+      return (
+        <Box flexDirection="column" padding={1}>
+          <Box marginBottom={1}>
+            <Text color="green" bold>
+              skilluse
+            </Text>
+            <Text> - AI Coding Agent Skills Manager</Text>
+          </Box>
+
+          <Box flexDirection="column" marginBottom={1}>
+            <Box>
+              <Text>Logged in as </Text>
+              <Text color="green" bold>
+                {state.user.login}
+              </Text>
+              {state.user.name && <Text dimColor> ({state.user.name})</Text>}
+            </Box>
+          </Box>
+
+          <Box flexDirection="column" marginBottom={1}>
+            <Box>
+              <Text>Default repo: </Text>
+              {state.defaultRepo ? (
+                <Text color="cyan">{state.defaultRepo}</Text>
+              ) : (
+                <Text dimColor>(not set)</Text>
+              )}
+            </Box>
+            <Box>
+              <Text>Configured repos: </Text>
+              <Text>{state.repoCount}</Text>
+            </Box>
+            <Box>
+              <Text>Installed skills: </Text>
+              <Text>{state.installedCount}</Text>
+            </Box>
+          </Box>
+
+          <Box marginTop={1} flexDirection="column">
+            <Text bold>Quick Actions:</Text>
+            <Text dimColor>  skilluse repo add owner/repo   Add a skill repository</Text>
+            <Text dimColor>  skilluse list                  Browse available skills</Text>
+            <Text dimColor>  skilluse install skill-name    Install a skill</Text>
+            <Text dimColor>  skilluse --help                Show all commands</Text>
+          </Box>
+        </Box>
+      );
+
+    case "error":
+      return <StatusMessage type="error">{state.message}</StatusMessage>;
+  }
 }
