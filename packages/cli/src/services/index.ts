@@ -28,7 +28,6 @@ export {
   setDefaultInstallation,
   getDefaultInstallation,
   clearInstallations,
-  isFirstRun,
   type Config,
   type RepoConfig,
   type InstalledSkill,
@@ -60,9 +59,3 @@ export {
   type UserCredentials,
   type InstallationTokenCache,
 } from "./credentials.js";
-
-export {
-  checkForUpdate,
-  getCurrentVersion,
-  type UpdateInfo,
-} from "./update.js";

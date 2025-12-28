@@ -6,10 +6,7 @@ import {
   getCredentials,
   getConfig,
   getInstallations,
-  checkForUpdate,
-  getCurrentVersion,
   type StoredInstallation,
-  type UpdateInfo,
 } from "../services/index.js";
 
 export const options = z.object({});
@@ -33,7 +30,6 @@ type StatusState =
       installedCount: number;
       repoCount: number;
       installations: StoredInstallation[];
-      updateInfo: UpdateInfo | null;
     }
   | { phase: "error"; message: string };
 
@@ -77,9 +73,6 @@ export default function Index(_props: Props) {
         const config = getConfig();
         const installations = getInstallations();
 
-        // Check for updates (non-blocking, uses cache)
-        const updateInfo = await checkForUpdate();
-
         setState({
           phase: "logged_in",
           user: userData,
@@ -87,7 +80,6 @@ export default function Index(_props: Props) {
           installedCount: config.installed.length,
           repoCount: config.repos.length,
           installations,
-          updateInfo,
         });
       } catch (err) {
         setState({
@@ -111,34 +103,15 @@ export default function Index(_props: Props) {
         <Box flexDirection="column" padding={1}>
           <Box marginBottom={1}>
             <Text color="green" bold>
-              Welcome to skilluse!
+              skilluse
             </Text>
+            <Text> - AI Coding Agent Skills Manager</Text>
           </Box>
-
-          <Text dimColor>Let's get you set up:</Text>
-
+          <StatusMessage type="warning">Not logged in</StatusMessage>
           <Box marginTop={1} flexDirection="column">
-            <Box>
-              <Text color="cyan">  1. </Text>
-              <Text>skilluse login      </Text>
-              <Text dimColor>Connect to GitHub</Text>
-            </Box>
-            <Box>
-              <Text color="cyan">  2. </Text>
-              <Text>skilluse repo add   </Text>
-              <Text dimColor>Add a skill repository</Text>
-            </Box>
-            <Box>
-              <Text color="cyan">  3. </Text>
-              <Text>skilluse search     </Text>
-              <Text dimColor>Find skills to install</Text>
-            </Box>
-          </Box>
-
-          <Box marginTop={1}>
-            <Text>Run </Text>
-            <Text color="green">skilluse login</Text>
-            <Text> to get started.</Text>
+            <Text bold>Quick Start:</Text>
+            <Text dimColor>  skilluse login     Authenticate with GitHub</Text>
+            <Text dimColor>  skilluse --help    Show all commands</Text>
           </Box>
         </Box>
       );
@@ -146,19 +119,11 @@ export default function Index(_props: Props) {
     case "logged_in":
       return (
         <Box flexDirection="column" padding={1}>
-          {/* Version and update notification */}
           <Box marginBottom={1}>
             <Text color="green" bold>
               skilluse
             </Text>
-            <Text dimColor> v{getCurrentVersion()}</Text>
-            {state.updateInfo?.hasUpdate && (
-              <Text color="yellow">
-                {" "}
-                (update available: v{state.updateInfo.latestVersion} - run 'npm
-                update -g skilluse')
-              </Text>
-            )}
+            <Text> - AI Coding Agent Skills Manager</Text>
           </Box>
 
           <Box flexDirection="column" marginBottom={1}>
