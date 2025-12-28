@@ -5,15 +5,11 @@ export {
   openBrowser,
   sleep,
   getUserInstallations,
-  getInstallationRepositories,
-  getInstallationToken,
   type DeviceCodeResponse,
   type AccessTokenResponse,
   type OAuthError,
   type PollResult,
   type Installation,
-  type Repository,
-  type InstallationToken,
 } from "./oauth.js";
 
 export {

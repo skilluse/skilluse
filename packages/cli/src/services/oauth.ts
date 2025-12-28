@@ -17,20 +17,6 @@ export interface Installation {
   permissions: Record<string, string>;
 }
 
-export interface Repository {
-  id: number;
-  name: string;
-  full_name: string;
-  private: boolean;
-}
-
-export interface InstallationToken {
-  token: string;
-  expires_at: string;
-  permissions: Record<string, string>;
-  repositories?: Repository[];
-}
-
 // ============================================================================
 // OAuth Device Flow Types
 // ============================================================================
@@ -257,11 +243,6 @@ interface InstallationsResponse {
   installations: Installation[];
 }
 
-interface RepositoriesResponse {
-  total_count: number;
-  repositories: Repository[];
-}
-
 /**
  * Get all GitHub App installations for the authenticated user
  */
@@ -283,62 +264,4 @@ export async function getUserInstallations(
 
   const data = (await response.json()) as InstallationsResponse;
   return data.installations;
-}
-
-/**
- * Get repositories accessible by a specific installation
- */
-export async function getInstallationRepositories(
-  userToken: string,
-  installationId: number
-): Promise<Repository[]> {
-  const response = await fetch(
-    `${GITHUB_API_URL}/user/installations/${installationId}/repositories`,
-    {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${userToken}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    }
-  );
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(
-      `Failed to get installation repositories: ${response.status} - ${error}`
-    );
-  }
-
-  const data = (await response.json()) as RepositoriesResponse;
-  return data.repositories;
-}
-
-/**
- * Get an installation access token for API operations
- */
-export async function getInstallationToken(
-  userToken: string,
-  installationId: number
-): Promise<InstallationToken> {
-  const response = await fetch(
-    `${GITHUB_API_URL}/user/installations/${installationId}/access_tokens`,
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${userToken}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    }
-  );
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(
-      `Failed to get installation token: ${response.status} - ${error}`
-    );
-  }
-
-  return (await response.json()) as InstallationToken;
 }

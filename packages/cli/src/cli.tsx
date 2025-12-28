@@ -10,10 +10,8 @@ import React from "react";
 import { render } from "ink";
 
 // Import all commands statically
-import Demo, { options as demoOptions } from "./commands/demo.js";
 import Login, { options as loginOptions } from "./commands/login.js";
 import Logout from "./commands/logout.js";
-import Skills from "./commands/skills.js";
 import List, { options as listOptions } from "./commands/list.js";
 import Search, { args as searchArgs, options as searchOptions } from "./commands/search.js";
 import Install, { args as installArgs, options as installOptions } from "./commands/install.js";
@@ -46,16 +44,6 @@ program
     process.exit(0);
   });
 
-// demo command
-program
-  .command("demo")
-  .description("Demo UI components")
-  .option("-a, --all", "Show all components")
-  .action((opts) => {
-    const options = demoOptions.parse(opts);
-    render(<Demo options={options} />);
-  });
-
 // login command
 program
   .command("login")
@@ -72,14 +60,6 @@ program
   .description("Clear stored credentials")
   .action(() => {
     render(<Logout options={{}} />);
-  });
-
-// skills command
-program
-  .command("skills")
-  .description("List installed skills")
-  .action(() => {
-    render(<Skills options={{}} />);
   });
 
 // list command
