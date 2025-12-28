@@ -1,3 +1,27 @@
+# Skill Installation Sprint
+
+## Current Sprint (Skill Install)
+- [x] task09-skill-install - Skill installation commands
+
+## Completed (Skill Install)
+- [x] task09-skill-install
+
+### [2025-12-28] Session - task09-skill-install
+- Working on: task09-skill-install
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008
+- In progress: None
+- Commits: 87e5d93
+- Notes:
+  - Created install.tsx for downloading skills from GitHub to local/global .claude/skills/
+  - Created uninstall.tsx with confirmation prompt and --force flag
+  - Created upgrade.tsx to check for updates and re-download files
+  - Created info.tsx to show skill metadata from SKILL.md frontmatter
+  - Updated list.tsx with --outdated flag to check for skill updates
+  - All commands include progress UI with step indicators and progress bar
+  - Tracks commit SHA for version comparison
+
+---
+
 # Bun Build & Release Sprint
 
 ## Current Sprint (Bun Build)
@@ -206,8 +230,8 @@
 - [x] web07-cli-landing-page - CLI terminal hero with IBM Plex Mono
 - [x] web08-color-scheme - Black/white color scheme update
 - [ ] web09-layout-review - Review and fix homepage layout issues
-- [ ] web04-blog-setup - Blog listing and posts (depends on web09)
-- [ ] web05-docs-setup - Documentation with sidebar (depends on web09)
+- [x] web04-blog-setup - Blog listing and posts
+- [ ] web05-docs-setup - Documentation with sidebar
 - [ ] web06-polish - SEO, OG images, sitemap
 
 ## Completed (Website)
@@ -216,6 +240,22 @@
 - [x] web03-landing-page
 - [x] web07-cli-landing-page
 - [x] web08-color-scheme
+- [x] web04-blog-setup
+
+### [2025-12-28] Session - web04-blog-setup
+- Working on: web04-blog-setup
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008
+- In progress: None
+- Commits: 6b0cdd0
+- Notes:
+  - Configured content-collections for MDX posts with Zod schema
+  - Added rehype-slug, rehype-autolink-headings, rehype-pretty-code plugins
+  - Created sample getting-started.mdx blog post
+  - Created PostCard component with title, description, date, reading time
+  - Created ShareButtons component (Twitter, LinkedIn, copy link)
+  - Created /blog listing page with sorted posts
+  - Created /blog/[slug] detail page with MDXContent rendering
+  - Added breadcrumb navigation and prose styling for MDX
 
 ### [2025-12-27] Website Planning
 - Created website-design.md with full specification
