@@ -58,7 +58,7 @@
         "Verify shows all repos with paths",
         "Verify default repo is marked"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {

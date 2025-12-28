@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, useApp } from "ink";
 import { z } from "zod";
-import { Spinner, StatusMessage } from "../components/index.js";
+import { Spinner, StatusMessage } from "../../components/index.js";
 import {
   getCredentials,
   getConfig,
   type RepoConfig,
-} from "../services/index.js";
+} from "../../services/index.js";
 
 export const options = z.object({});
 
