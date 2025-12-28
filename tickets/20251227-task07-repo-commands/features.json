@@ -45,7 +45,7 @@
         "Run skilluse repo",
         "Verify shows current/default repo info"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
