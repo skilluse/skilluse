@@ -2,20 +2,20 @@ import Conf from "conf";
 import { configPath } from "./paths.js";
 
 export interface RepoConfig {
-  repo: string; // "owner/repo"
-  branch: string;
-  paths: string[];
+	repo: string; // "owner/repo"
+	branch: string;
+	paths: string[];
 }
 
 export interface InstalledSkill {
-  name: string;
-  repo: string;
-  repoPath: string;
-  commitSha: string;
-  version: string;
-  type: string;
-  installedPath: string;
-  scope: "local" | "global";
+	name: string;
+	repo: string;
+	repoPath: string;
+	commitSha: string;
+	version: string;
+	type: string;
+	installedPath: string;
+	scope: "local" | "global";
 }
 
 /**
@@ -23,85 +23,85 @@ export interface InstalledSkill {
  * Simplified version of the OAuth Installation type
  */
 export interface StoredInstallation {
-  id: number;
-  account: string;
-  accountType: "User" | "Organization";
-  repositorySelection: "all" | "selected";
+	id: number;
+	account: string;
+	accountType: "User" | "Organization";
+	repositorySelection: "all" | "selected";
 }
 
 export interface Config {
-  defaultRepo: string | null;
-  repos: RepoConfig[];
-  installed: InstalledSkill[];
-  // GitHub App installation metadata
-  installations: StoredInstallation[];
-  defaultInstallationId: number | null;
+	defaultRepo: string | null;
+	repos: RepoConfig[];
+	installed: InstalledSkill[];
+	// GitHub App installation metadata
+	installations: StoredInstallation[];
+	defaultInstallationId: number | null;
 }
 
 const defaultConfig: Config = {
-  defaultRepo: null,
-  repos: [],
-  installed: [],
-  installations: [],
-  defaultInstallationId: null,
+	defaultRepo: null,
+	repos: [],
+	installed: [],
+	installations: [],
+	defaultInstallationId: null,
 };
 
 const store = new Conf<Config>({
-  projectName: "skilluse",
-  cwd: configPath,
-  defaults: defaultConfig,
+	projectName: "skilluse",
+	cwd: configPath,
+	defaults: defaultConfig,
 });
 
 export function getConfig(): Config {
-  return {
-    defaultRepo: store.get("defaultRepo"),
-    repos: store.get("repos"),
-    installed: store.get("installed"),
-    installations: store.get("installations"),
-    defaultInstallationId: store.get("defaultInstallationId"),
-  };
+	return {
+		defaultRepo: store.get("defaultRepo"),
+		repos: store.get("repos"),
+		installed: store.get("installed"),
+		installations: store.get("installations"),
+		defaultInstallationId: store.get("defaultInstallationId"),
+	};
 }
 
 export function addRepo(repo: RepoConfig): void {
-  const repos = store.get("repos");
-  const existingIndex = repos.findIndex((r) => r.repo === repo.repo);
-  if (existingIndex >= 0) {
-    repos[existingIndex] = repo;
-  } else {
-    repos.push(repo);
-  }
-  store.set("repos", repos);
+	const repos = store.get("repos");
+	const existingIndex = repos.findIndex((r) => r.repo === repo.repo);
+	if (existingIndex >= 0) {
+		repos[existingIndex] = repo;
+	} else {
+		repos.push(repo);
+	}
+	store.set("repos", repos);
 }
 
 export function removeRepo(repoName: string): void {
-  const repos = store.get("repos");
-  const filtered = repos.filter((r) => r.repo !== repoName);
-  store.set("repos", filtered);
+	const repos = store.get("repos");
+	const filtered = repos.filter((r) => r.repo !== repoName);
+	store.set("repos", filtered);
 
-  if (store.get("defaultRepo") === repoName) {
-    store.set("defaultRepo", null);
-  }
+	if (store.get("defaultRepo") === repoName) {
+		store.set("defaultRepo", null);
+	}
 }
 
 export function setDefaultRepo(repoName: string): void {
-  store.set("defaultRepo", repoName);
+	store.set("defaultRepo", repoName);
 }
 
 export function addInstalledSkill(skill: InstalledSkill): void {
-  const installed = store.get("installed");
-  const existingIndex = installed.findIndex((s) => s.name === skill.name);
-  if (existingIndex >= 0) {
-    installed[existingIndex] = skill;
-  } else {
-    installed.push(skill);
-  }
-  store.set("installed", installed);
+	const installed = store.get("installed");
+	const existingIndex = installed.findIndex((s) => s.name === skill.name);
+	if (existingIndex >= 0) {
+		installed[existingIndex] = skill;
+	} else {
+		installed.push(skill);
+	}
+	store.set("installed", installed);
 }
 
 export function removeInstalledSkill(name: string): void {
-  const installed = store.get("installed");
-  const filtered = installed.filter((s) => s.name !== name);
-  store.set("installed", filtered);
+	const installed = store.get("installed");
+	const filtered = installed.filter((s) => s.name !== name);
+	store.set("installed", filtered);
 }
 
 // ============================================================================
@@ -112,34 +112,34 @@ export function removeInstalledSkill(name: string): void {
  * Store the list of GitHub App installations the user has access to.
  */
 export function setInstallations(installations: StoredInstallation[]): void {
-  store.set("installations", installations);
+	store.set("installations", installations);
 }
 
 /**
  * Get the list of stored GitHub App installations.
  */
 export function getInstallations(): StoredInstallation[] {
-  return store.get("installations");
+	return store.get("installations");
 }
 
 /**
  * Set the default installation ID for operations.
  */
 export function setDefaultInstallation(installationId: number): void {
-  store.set("defaultInstallationId", installationId);
+	store.set("defaultInstallationId", installationId);
 }
 
 /**
  * Get the default installation ID.
  */
 export function getDefaultInstallation(): number | null {
-  return store.get("defaultInstallationId");
+	return store.get("defaultInstallationId");
 }
 
 /**
  * Clear all installation-related data.
  */
 export function clearInstallations(): void {
-  store.set("installations", []);
-  store.set("defaultInstallationId", null);
+	store.set("installations", []);
+	store.set("defaultInstallationId", null);
 }

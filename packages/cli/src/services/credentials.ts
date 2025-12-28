@@ -11,10 +11,10 @@
  * - Installation token → Memory cache (short-lived, 1 hour)
  */
 
-import crypto from "crypto";
-import fs from "fs/promises";
-import os from "os";
-import path from "path";
+import crypto from "node:crypto";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import keytar from "keytar";
 import { dataPath } from "./paths.js";
 
@@ -23,19 +23,19 @@ const CREDENTIALS_FILE = "credentials.enc";
 
 /** @deprecated Use UserCredentials instead */
 export interface Credentials {
-  token: string;
-  user: string;
+	token: string;
+	user: string;
 }
 
 export interface UserCredentials {
-  token: string;
-  userName: string;
+	token: string;
+	userName: string;
 }
 
 export interface InstallationTokenCache {
-  installationId: number;
-  token: string;
-  expiresAt: Date;
+	installationId: number;
+	token: string;
+	expiresAt: Date;
 }
 
 // In-memory cache for short-lived installation tokens
@@ -48,90 +48,90 @@ let keychainAvailable: boolean | null = null;
  * Check if the system keychain is available and working.
  */
 export async function isKeychainAvailable(): Promise<boolean> {
-  if (keychainAvailable !== null) {
-    return keychainAvailable;
-  }
+	if (keychainAvailable !== null) {
+		return keychainAvailable;
+	}
 
-  try {
-    // Try a test operation to see if keychain is working
-    const testKey = "__keychain_test__";
-    await keytar.setPassword(SERVICE_NAME, testKey, "test");
-    await keytar.deletePassword(SERVICE_NAME, testKey);
-    keychainAvailable = true;
-  } catch {
-    keychainAvailable = false;
-  }
+	try {
+		// Try a test operation to see if keychain is working
+		const testKey = "__keychain_test__";
+		await keytar.setPassword(SERVICE_NAME, testKey, "test");
+		await keytar.deletePassword(SERVICE_NAME, testKey);
+		keychainAvailable = true;
+	} catch {
+		keychainAvailable = false;
+	}
 
-  return keychainAvailable;
+	return keychainAvailable;
 }
 
 /**
  * Get stored credentials from keychain or encrypted file.
  */
 export async function getCredentials(): Promise<Credentials | null> {
-  if (await isKeychainAvailable()) {
-    return getCredentialsFromKeychain();
-  }
-  return getCredentialsFromFile();
+	if (await isKeychainAvailable()) {
+		return getCredentialsFromKeychain();
+	}
+	return getCredentialsFromFile();
 }
 
 /**
  * Store credentials in keychain or encrypted file.
  */
 export async function setCredentials(
-  token: string,
-  user: string
+	token: string,
+	user: string,
 ): Promise<void> {
-  if (await isKeychainAvailable()) {
-    await setCredentialsToKeychain(token, user);
-  } else {
-    await setCredentialsToFile(token, user);
-  }
+	if (await isKeychainAvailable()) {
+		await setCredentialsToKeychain(token, user);
+	} else {
+		await setCredentialsToFile(token, user);
+	}
 }
 
 /**
  * Clear stored credentials from both keychain and encrypted file.
  */
 export async function clearCredentials(): Promise<void> {
-  // Clear from keychain
-  try {
-    await keytar.deletePassword(SERVICE_NAME, "github-token");
-    await keytar.deletePassword(SERVICE_NAME, "github-user");
-  } catch {
-    // Ignore keychain errors
-  }
+	// Clear from keychain
+	try {
+		await keytar.deletePassword(SERVICE_NAME, "github-token");
+		await keytar.deletePassword(SERVICE_NAME, "github-user");
+	} catch {
+		// Ignore keychain errors
+	}
 
-  // Clear encrypted file
-  try {
-    const filePath = path.join(dataPath, CREDENTIALS_FILE);
-    await fs.unlink(filePath);
-  } catch {
-    // Ignore file errors (file may not exist)
-  }
+	// Clear encrypted file
+	try {
+		const filePath = path.join(dataPath, CREDENTIALS_FILE);
+		await fs.unlink(filePath);
+	} catch {
+		// Ignore file errors (file may not exist)
+	}
 }
 
 // --- Keychain operations ---
 
 async function getCredentialsFromKeychain(): Promise<Credentials | null> {
-  try {
-    const token = await keytar.getPassword(SERVICE_NAME, "github-token");
-    const user = await keytar.getPassword(SERVICE_NAME, "github-user");
+	try {
+		const token = await keytar.getPassword(SERVICE_NAME, "github-token");
+		const user = await keytar.getPassword(SERVICE_NAME, "github-user");
 
-    if (token && user) {
-      return { token, user };
-    }
-    return null;
-  } catch {
-    return null;
-  }
+		if (token && user) {
+			return { token, user };
+		}
+		return null;
+	} catch {
+		return null;
+	}
 }
 
 async function setCredentialsToKeychain(
-  token: string,
-  user: string
+	token: string,
+	user: string,
 ): Promise<void> {
-  await keytar.setPassword(SERVICE_NAME, "github-token", token);
-  await keytar.setPassword(SERVICE_NAME, "github-user", user);
+	await keytar.setPassword(SERVICE_NAME, "github-token", token);
+	await keytar.setPassword(SERVICE_NAME, "github-user", user);
 }
 
 // --- Encrypted file operations ---
@@ -141,63 +141,63 @@ async function setCredentialsToKeychain(
  * This provides basic protection against copying the file to another machine.
  */
 function deriveKey(): Buffer {
-  const machineInfo = `${os.hostname()}:${os.userInfo().username}:${SERVICE_NAME}`;
-  return crypto.scryptSync(machineInfo, "skilluse-salt", 32);
+	const machineInfo = `${os.hostname()}:${os.userInfo().username}:${SERVICE_NAME}`;
+	return crypto.scryptSync(machineInfo, "skilluse-salt", 32);
 }
 
 function encrypt(data: string): string {
-  const key = deriveKey();
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
+	const key = deriveKey();
+	const iv = crypto.randomBytes(16);
+	const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
 
-  let encrypted = cipher.update(data, "utf8", "hex");
-  encrypted += cipher.final("hex");
+	let encrypted = cipher.update(data, "utf8", "hex");
+	encrypted += cipher.final("hex");
 
-  const authTag = cipher.getAuthTag();
+	const authTag = cipher.getAuthTag();
 
-  // Format: iv:authTag:encryptedData
-  return `${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted}`;
+	// Format: iv:authTag:encryptedData
+	return `${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted}`;
 }
 
 function decrypt(encryptedData: string): string {
-  const [ivHex, authTagHex, encrypted] = encryptedData.split(":");
+	const [ivHex, authTagHex, encrypted] = encryptedData.split(":");
 
-  const key = deriveKey();
-  const iv = Buffer.from(ivHex, "hex");
-  const authTag = Buffer.from(authTagHex, "hex");
+	const key = deriveKey();
+	const iv = Buffer.from(ivHex, "hex");
+	const authTag = Buffer.from(authTagHex, "hex");
 
-  const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
-  decipher.setAuthTag(authTag);
+	const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
+	decipher.setAuthTag(authTag);
 
-  let decrypted = decipher.update(encrypted, "hex", "utf8");
-  decrypted += decipher.final("utf8");
+	let decrypted = decipher.update(encrypted, "hex", "utf8");
+	decrypted += decipher.final("utf8");
 
-  return decrypted;
+	return decrypted;
 }
 
 async function getCredentialsFromFile(): Promise<Credentials | null> {
-  try {
-    const filePath = path.join(dataPath, CREDENTIALS_FILE);
-    const encryptedData = await fs.readFile(filePath, "utf8");
-    const decrypted = decrypt(encryptedData);
-    return JSON.parse(decrypted) as Credentials;
-  } catch {
-    return null;
-  }
+	try {
+		const filePath = path.join(dataPath, CREDENTIALS_FILE);
+		const encryptedData = await fs.readFile(filePath, "utf8");
+		const decrypted = decrypt(encryptedData);
+		return JSON.parse(decrypted) as Credentials;
+	} catch {
+		return null;
+	}
 }
 
 async function setCredentialsToFile(
-  token: string,
-  user: string
+	token: string,
+	user: string,
 ): Promise<void> {
-  const credentials: Credentials = { token, user };
-  const encrypted = encrypt(JSON.stringify(credentials));
+	const credentials: Credentials = { token, user };
+	const encrypted = encrypt(JSON.stringify(credentials));
 
-  // Ensure data directory exists
-  await fs.mkdir(dataPath, { recursive: true });
+	// Ensure data directory exists
+	await fs.mkdir(dataPath, { recursive: true });
 
-  const filePath = path.join(dataPath, CREDENTIALS_FILE);
-  await fs.writeFile(filePath, encrypted, { mode: 0o600 }); // Owner read/write only
+	const filePath = path.join(dataPath, CREDENTIALS_FILE);
+	await fs.writeFile(filePath, encrypted, { mode: 0o600 }); // Owner read/write only
 }
 
 // ============================================================================
@@ -208,23 +208,23 @@ async function setCredentialsToFile(
  * Store user credentials (token and username) securely.
  */
 export async function setUserCredentials(
-  token: string,
-  userName: string
+	token: string,
+	userName: string,
 ): Promise<void> {
-  // Reuse existing implementation with new interface
-  await setCredentials(token, userName);
+	// Reuse existing implementation with new interface
+	await setCredentials(token, userName);
 }
 
 /**
  * Get user credentials from secure storage.
  */
 export async function getUserCredentials(): Promise<UserCredentials | null> {
-  const creds = await getCredentials();
-  if (!creds) return null;
-  return {
-    token: creds.token,
-    userName: creds.user,
-  };
+	const creds = await getCredentials();
+	if (!creds) return null;
+	return {
+		token: creds.token,
+		userName: creds.user,
+	};
 }
 
 // ============================================================================
@@ -236,36 +236,36 @@ export async function getUserCredentials(): Promise<UserCredentials | null> {
  * Returns null if no valid token is cached.
  */
 export function getCachedInstallationToken(
-  installationId: number
+	installationId: number,
 ): InstallationTokenCache | null {
-  const cached = installationTokenCache.get(installationId);
-  if (!cached) return null;
+	const cached = installationTokenCache.get(installationId);
+	if (!cached) return null;
 
-  // Check if token is expired (with 5 minute buffer for safety)
-  const bufferMs = 5 * 60 * 1000;
-  if (new Date(cached.expiresAt).getTime() - bufferMs < Date.now()) {
-    // Token is expired or about to expire, remove it
-    installationTokenCache.delete(installationId);
-    return null;
-  }
+	// Check if token is expired (with 5 minute buffer for safety)
+	const bufferMs = 5 * 60 * 1000;
+	if (new Date(cached.expiresAt).getTime() - bufferMs < Date.now()) {
+		// Token is expired or about to expire, remove it
+		installationTokenCache.delete(installationId);
+		return null;
+	}
 
-  return cached;
+	return cached;
 }
 
 /**
  * Cache an installation token.
  */
 export function setCachedInstallationToken(
-  cache: InstallationTokenCache
+	cache: InstallationTokenCache,
 ): void {
-  installationTokenCache.set(cache.installationId, cache);
+	installationTokenCache.set(cache.installationId, cache);
 }
 
 /**
  * Clear all cached installation tokens.
  */
 export function clearInstallationTokenCache(): void {
-  installationTokenCache.clear();
+	installationTokenCache.clear();
 }
 
 /**
@@ -273,9 +273,9 @@ export function clearInstallationTokenCache(): void {
  * Note: Installation list and default installation are cleared via store.ts
  */
 export async function clearAllCredentials(): Promise<void> {
-  // Clear user credentials
-  await clearCredentials();
+	// Clear user credentials
+	await clearCredentials();
 
-  // Clear installation token cache
-  clearInstallationTokenCache();
+	// Clear installation token cache
+	clearInstallationTokenCache();
 }

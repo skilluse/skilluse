@@ -1,67 +1,71 @@
 {
-  "name": "skilluse",
-  "version": "0.1.0",
-  "description": "CLI tool for managing and installing AI Coding Agent Skills",
-  "main": "dist/index.js",
-  "bin": {
-    "skilluse": "./dist/index.js"
-  },
-  "files": [
-    "dist/**/*.js",
-    "dist/**/*.d.ts",
-    "README.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jiweiyuan/skilluse.git",
-    "directory": "packages/cli"
-  },
-  "homepage": "https://github.com/jiweiyuan/skilluse",
-  "bugs": {
-    "url": "https://github.com/jiweiyuan/skilluse/issues"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "dev": "bun --watch src/index.tsx",
-    "build": "bun build src/index.tsx --outdir dist --target node --external react-devtools-core",
-    "build:bin": "bun build src/cli.tsx --compile --minify --sourcemap --define 'process.env.DEV=\"false\"' --outfile dist/skilluse",
-    "build:all": "bun run scripts/build-all.ts",
-    "typecheck": "tsc --noEmit",
-    "start": "bun dist/index.js",
-    "prepublishOnly": "bun run build"
-  },
-  "keywords": [
-    "cli",
-    "skills",
-    "claude-code",
-    "codex",
-    "ai-agent"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "conf": "^15.0.2",
-    "env-paths": "^3.0.0",
-    "figures": "^6.1.0",
-    "ink": "^5.2.1",
-    "ink-select-input": "^6.2.0",
-    "ink-spinner": "^5.0.0",
-    "ink-text-input": "^6.0.0",
-    "keytar": "^7.9.0",
-    "pastel": "^2.0.0",
-    "react": "^18.2.0",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@types/node": "^22.10.2",
-    "@types/react": "^18.2.45",
-    "react-devtools-core": "^7.0.1",
-    "typescript": "^5.7.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "type": "module"
+	"name": "skilluse",
+	"version": "0.1.0",
+	"description": "CLI tool for managing and installing AI Coding Agent Skills",
+	"main": "dist/index.js",
+	"bin": {
+		"skilluse": "./dist/index.js"
+	},
+	"files": [
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
+		"README.md"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jiweiyuan/skilluse.git",
+		"directory": "packages/cli"
+	},
+	"homepage": "https://github.com/jiweiyuan/skilluse",
+	"bugs": {
+		"url": "https://github.com/jiweiyuan/skilluse/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"dev": "bun --watch src/index.tsx",
+		"build": "bun build src/index.tsx --outdir dist --target node --external react-devtools-core",
+		"build:bin": "bun build src/cli.tsx --compile --minify --sourcemap --define 'process.env.DEV=\"false\"' --outfile dist/skilluse",
+		"build:all": "bun run scripts/build-all.ts",
+		"typecheck": "tsc --noEmit",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"check": "biome check .",
+		"start": "bun dist/index.js",
+		"prepublishOnly": "bun run build"
+	},
+	"keywords": [
+		"cli",
+		"skills",
+		"claude-code",
+		"codex",
+		"ai-agent"
+	],
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"conf": "^15.0.2",
+		"env-paths": "^3.0.0",
+		"figures": "^6.1.0",
+		"ink": "^5.2.1",
+		"ink-select-input": "^6.2.0",
+		"ink-spinner": "^5.0.0",
+		"ink-text-input": "^6.0.0",
+		"keytar": "^7.9.0",
+		"pastel": "^2.0.0",
+		"react": "^18.2.0",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.10",
+		"@types/node": "^22.10.2",
+		"@types/react": "^18.2.45",
+		"react-devtools-core": "^7.0.1",
+		"typescript": "^5.7.2"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"type": "module"
 }
