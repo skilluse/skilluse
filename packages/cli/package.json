@@ -6,11 +6,31 @@
   "bin": {
     "skilluse": "./dist/index.js"
   },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiweiyuan/skilluse.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/jiweiyuan/skilluse",
+  "bugs": {
+    "url": "https://github.com/jiweiyuan/skilluse/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc -w",
-    "start": "node dist/index.js",
-    "prepublishOnly": "npm run build"
+    "dev": "bun --watch src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target node --external react-devtools-core",
+    "build:bin": "bun build src/cli.tsx --compile --minify --sourcemap --define 'process.env.DEV=\"false\"' --outfile dist/skilluse",
+    "build:all": "bun run scripts/build-all.ts",
+    "typecheck": "tsc --noEmit",
+    "start": "bun dist/index.js",
+    "prepublishOnly": "bun run build"
   },
   "keywords": [
     "cli",
@@ -37,6 +57,7 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@types/react": "^18.2.45",
+    "react-devtools-core": "^7.0.1",
     "typescript": "^5.7.2"
   },
   "engines": {

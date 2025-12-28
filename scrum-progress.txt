@@ -1,3 +1,53 @@
+# Bun Build & Release Sprint
+
+## Current Sprint (Bun Build)
+- [x] build01-bun-release - Bun build & multi-platform release
+
+## Completed (Bun Build)
+- [x] build01-bun-release
+
+### [2025-12-28] Session - build01-bun-release
+- Working on: build01-bun-release
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008, F009, F010
+- In progress: None
+- Notes:
+  - Migrated development workflow to Bun (bun install, bun run dev/build/typecheck)
+  - Created src/cli.tsx for static command imports (Pastel uses dynamic fs scanning)
+  - Created scripts/build-all.ts for cross-platform builds (6 targets)
+  - Created .github/workflows/release.yml for automated releases
+  - Created .github/workflows/ci.yml for PR checks
+  - Created scripts/install.sh for native installation
+  - Updated package.json with NPM publish configuration
+  - Created docs/homebrew/skilluse.rb formula template
+  - Added version management with --version-verbose for build time
+  - Release workflow generates SHA256 checksums
+
+---
+
+# CLI Polish Sprint
+
+## Current Sprint (CLI Polish)
+- [x] task12-cli-polish - Error handling & onboarding
+
+## Completed (CLI Polish)
+- [x] task12-cli-polish
+
+### [2025-12-28] Session - task12-cli-polish
+- Working on: task12-cli-polish
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008, F009
+- In progress: None
+- Notes:
+  - Created CLIError component for structured error messages with causes and suggestions
+  - Updated repo remove to use CLIError and show affected skills count
+  - Updated not_logged_in state to show welcome onboarding with numbered steps
+  - F003-F005 (help text) already provided by Pastel framework
+  - F006-F007 (confirmation prompts) already implemented, enhanced with affected skills
+  - Created update.ts service to check npm registry for newer versions
+  - Version check cached for 24 hours to avoid slowing down CLI
+  - Fixed version to read from package.json instead of hardcoded value
+
+---
+
 # GitHub App Migration Sprint
 
 ## Current Sprint (GitHub App Migration)

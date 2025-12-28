@@ -1,0 +1,119 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  BUN_VERSION: "1.3"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          # Linux builds (can cross-compile from ubuntu)
+          - os: ubuntu-latest
+            target: bun-linux-x64
+            artifact: skilluse-linux-x64
+          - os: ubuntu-latest
+            target: bun-linux-x64-baseline
+            artifact: skilluse-linux-x64-baseline
+          - os: ubuntu-latest
+            target: bun-linux-arm64
+            artifact: skilluse-linux-arm64
+          # macOS builds
+          - os: macos-13  # Intel runner
+            target: bun-darwin-x64
+            artifact: skilluse-darwin-x64
+          - os: macos-14  # ARM64 runner (Apple Silicon)
+            target: bun-darwin-arm64
+            artifact: skilluse-darwin-arm64
+          # Windows builds
+          - os: windows-latest
+            target: bun-windows-x64
+            artifact: skilluse-windows-x64.exe
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+        working-directory: packages/cli
+
+      - name: Build binary
+        run: |
+          bun build src/cli.tsx --compile --minify --sourcemap \
+            --define 'process.env.DEV="false"' \
+            --define 'process.env.VERSION="${{ github.ref_name }}"' \
+            --define 'process.env.BUILD_TIME="${{ github.event.head_commit.timestamp }}"' \
+            --target=${{ matrix.target }} \
+            --outfile dist/${{ matrix.artifact }}
+        working-directory: packages/cli
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: packages/cli/dist/${{ matrix.artifact }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum skilluse-* > checksums-sha256.txt
+          cat checksums-sha256.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/skilluse-*
+            artifacts/checksums-sha256.txt
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+
+  npm:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install and build for NPM
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+        working-directory: packages/cli
+
+      - name: Publish to NPM
+        run: npm publish --access public
+        working-directory: packages/cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

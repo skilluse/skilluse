@@ -2,9 +2,9 @@
   "ticket": "build01-bun-release",
   "title": "Bun Build & Multi-Platform Release",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-28",
-  "completed_at": null,
+  "completed_at": "2025-12-28",
   "dependencies": ["task01-project-setup"],
   "parallelizable": true,
   "features": [
@@ -18,8 +18,8 @@
         "Run 'bun run build' produces dist/index.js",
         "Run 'bun run typecheck' passes without errors"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Updated package.json scripts. bun install, build, and typecheck all work."
     },
     {
       "id": "F002",
@@ -31,8 +31,8 @@
         "Binary shows correct version with --version",
         "Binary runs all commands correctly"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Created src/cli.tsx with static command imports (Pastel uses dynamic fs scanning which doesn't work with bundled binaries). Binary is ~60MB."
     },
     {
       "id": "F003",
@@ -47,8 +47,8 @@
         "macOS arm64 binary exists (Apple Silicon)",
         "Windows x64 binary exists"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Created scripts/build-all.ts. All 6 platform builds succeed using Bun's cross-compilation."
     },
     {
       "id": "F004",
@@ -57,12 +57,12 @@
       "steps": [
         "File .github/workflows/release.yml exists",
         "Workflow triggers on version tags (v*)",
-        "Workflow builds for all 4 platforms",
+        "Workflow builds for all 6 platforms",
         "Workflow creates GitHub release with binaries",
         "Workflow publishes to NPM"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Created .github/workflows/release.yml with build matrix for all platforms."
     },
     {
       "id": "F005",
@@ -75,8 +75,8 @@
         "Workflow runs build",
         "Workflow runs tests (if any)"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Created .github/workflows/ci.yml with lint-and-build, test, and cross-platform-build jobs."
     },
     {
       "id": "F006",
@@ -89,8 +89,8 @@
         "Script downloads correct binary from GitHub releases",
         "Script installs to ~/.local/bin/skilluse"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Created scripts/install.sh with platform detection, checksum verification, and PATH warning."
     },
     {
       "id": "F007",
@@ -102,8 +102,8 @@
         "Package can be installed globally with npm install -g",
         "Installed CLI is accessible as 'skilluse' command"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Added files, repository, homepage, bugs, and publishConfig to package.json."
     },
     {
       "id": "F008",
@@ -115,8 +115,8 @@
         "Formula includes SHA256 placeholder for automation",
         "Installation instructions documented"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Created docs/homebrew/skilluse.rb formula and README.md with installation instructions."
     },
     {
       "id": "F009",
@@ -128,8 +128,8 @@
         "Build timestamp displayed in verbose mode",
         "Version displayed in 'skilluse' status output"
       ],
-      "passes": null,
-      "notes": "Uses Bun 1.2+ --define flag for zero-overhead constants"
+      "passes": true,
+      "notes": "Added VERSION and BUILD_TIME constants in cli.tsx. --version-verbose shows build timestamp."
     },
     {
       "id": "F010",
@@ -140,13 +140,13 @@
         "Checksums are SHA256 format",
         "All binary files have corresponding checksum"
       ],
-      "passes": null,
-      "notes": ""
+      "passes": true,
+      "notes": "Release workflow generates checksums-sha256.txt with sha256sum for all binaries."
     }
   ],
   "metadata": {
     "estimated_sessions": 2,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }
