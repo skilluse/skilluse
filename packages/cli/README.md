@@ -8,115 +8,93 @@ CLI tool for managing and installing AI Coding Agent Skills.
 npm install -g skilluse
 ```
 
+## Quick Start
+
+```bash
+# Login to GitHub
+skilluse login
+
+# Add a skill repository
+skilluse repo add owner/skill-repo
+
+# Search for skills
+skilluse search code-review
+
+# Install a skill
+skilluse install code-review
+
+# List installed skills
+skilluse list
+```
+
+## Commands
+
+### Authentication
+
+| Command | Description |
+|---------|-------------|
+| `skilluse` | Show status (user, repos, installed count) |
+| `skilluse login` | Authenticate with GitHub |
+| `skilluse logout` | Clear stored credentials |
+
+### Repository Management
+
+| Command | Description |
+|---------|-------------|
+| `skilluse repo list` | List configured repositories |
+| `skilluse repo add <repo>` | Add a skill repository |
+| `skilluse repo remove <name>` | Remove a repository |
+| `skilluse repo use <name>` | Set default repository |
+| `skilluse repo edit <name>` | Edit repository settings |
+
+### Skill Management
+
+| Command | Description |
+|---------|-------------|
+| `skilluse search <keyword>` | Search for skills |
+| `skilluse install <skill>` | Install skill locally |
+| `skilluse install <skill> --global` | Install globally |
+| `skilluse uninstall <skill>` | Remove installed skill |
+| `skilluse upgrade [skill]` | Upgrade skill(s) to latest |
+| `skilluse list` | List installed skills |
+| `skilluse list --outdated` | Show skills with updates |
+| `skilluse info <skill>` | Show skill details |
+
 ## Authentication
 
-Skilluse uses GitHub for authentication via a GitHub App. This provides secure access to your repositories with fine-grained permissions.
+Skilluse uses GitHub App OAuth for authentication.
 
 ### First-Time Login
 
-1. Run the login command:
-   ```bash
-   skilluse login
-   ```
-
-2. The CLI will provide a code and open your browser to GitHub's device activation page.
-
-3. Enter the code when prompted by GitHub.
-
-4. **Install the GitHub App**: If this is your first time, you'll be prompted to install the Skilluse GitHub App. Click the provided link to install it on your personal account or organization.
-
-5. Select which repositories the app can access:
-   - **All repositories**: Access to all current and future repositories
-   - **Select repositories**: Choose specific repositories
-
-6. Once installed, the CLI will automatically detect your installation and show a success message.
-
-### Returning Users
-
-If you're already logged in, running `skilluse login` will show your current session. Use `--force` to re-authenticate:
-
-```bash
-skilluse login --force
-```
+1. Run `skilluse login`
+2. Enter the code shown in your browser
+3. Install the GitHub App when prompted
+4. Select repository access (all or specific repos)
 
 ### Managing Repository Access
 
-After initial setup, you can modify repository access at any time:
-
-1. Go to https://github.com/settings/installations
-2. Find "Skilluse" and click "Configure"
-3. Update repository access permissions
-
-To view your current repository access:
-
-```bash
-skilluse repos
-```
-
-### Checking Your Session
-
-View your current authentication status and installations:
-
-```bash
-skilluse whoami
-```
-
-This shows:
-- Your GitHub username and profile URL
-- GitHub App installations (personal/organization accounts)
-- Repository selection mode for each installation
+Modify access at: https://github.com/settings/installations
 
 ### Logging Out
-
-To clear your credentials:
 
 ```bash
 skilluse logout
 ```
 
-This removes:
-- User OAuth token from secure storage
-- All stored installations
-- Cached installation tokens
+## Install Locations
 
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `skilluse login` | Authenticate with GitHub |
-| `skilluse logout` | Clear stored credentials |
-| `skilluse whoami` | Show current user and installations |
-| `skilluse repos` | List accessible repositories |
+| Scope | Path |
+|-------|------|
+| Local | `./.claude/skills/<name>/` |
+| Global | `~/.claude/skills/<name>/` |
 
 ## Security
 
-- **User tokens** are stored in your system's secure credential storage:
-  - macOS: Keychain
-  - Windows: Credential Manager
-  - Linux: Secret Service (libsecret)
-- **Installation tokens** are short-lived (1 hour) and cached in memory
-- **Repository access** is controlled entirely through GitHub's permission system
-
-## Troubleshooting
-
-### "No installations found"
-
-If you see this after login:
-1. Install the GitHub App from: https://github.com/apps/skilluse
-2. Run `skilluse login --force` to refresh your session
-
-### "Installation token expired"
-
-Installation tokens auto-refresh. If you see persistent issues:
-1. Check your installation is still active at https://github.com/settings/installations
-2. Re-run your command
-
-### "Not logged in"
-
-Run `skilluse login` to authenticate.
+- **User tokens** stored in system keychain (macOS/Windows/Linux)
+- **Fallback** to encrypted file if keychain unavailable
 
 ## Environment Variables
 
 | Variable | Description |
 |----------|-------------|
-| `SKILLUSE_GITHUB_CLIENT_ID` | Override the GitHub App client ID (development only) |
+| `SKILLUSE_GITHUB_CLIENT_ID` | Override GitHub App client ID (dev only) |
