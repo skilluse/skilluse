@@ -96,7 +96,7 @@
         "Confirm removal",
         "Verify repo is removed from config"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -109,7 +109,7 @@
         "Verify default is updated",
         "Run repo list, verify marker moved"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -122,7 +122,7 @@
         "Verify GitHub API is called",
         "Verify success message shown"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -135,7 +135,7 @@
         "Modify path selection",
         "Verify config is updated"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -147,7 +147,7 @@
         "Run skilluse repos",
         "Verify output matches skilluse repo list"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -159,7 +159,7 @@
         "Run skilluse skills",
         "Verify shows installed skills"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     }
   ],
