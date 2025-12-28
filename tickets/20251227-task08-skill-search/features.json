@@ -2,9 +2,9 @@
   "ticket": "task08-skill-search",
   "title": "Skill Search",
   "priority": 7,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-27",
-  "completed_at": null,
+  "completed_at": "2025-12-28",
   "dependencies": ["task05-config-store", "task07-repo-commands"],
   "parallelizable": false,
   "features": [
@@ -18,8 +18,8 @@
         "Verify matching skill is displayed",
         "Verify skill details are shown"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Tested with 'skilluse search commit' - found commit skill"
     },
     {
       "id": "F002",
@@ -30,8 +30,8 @@
         "Verify skill is found",
         "Verify match context is shown"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Tested with 'skilluse search scrum' - found task-plan and task-work"
     },
     {
       "id": "F003",
@@ -42,8 +42,8 @@
         "Run skilluse search keyword --all",
         "Verify results from all repos are shown"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Tested with --all flag, searches all configured repos"
     },
     {
       "id": "F004",
@@ -56,8 +56,8 @@
         "Verify repo source is displayed",
         "Verify type (claude/codex) is displayed"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Shows name, description, repo, version, and type when available"
     },
     {
       "id": "F005",
@@ -68,8 +68,8 @@
         "Verify 'no skills found' message",
         "Verify suggestion to check repos"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Shows 'No skills found' with suggestion to check repos"
     },
     {
       "id": "F006",
@@ -82,13 +82,13 @@
         "Verify type is extracted",
         "Verify version is extracted"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Parses YAML frontmatter for name, description, type, version, tags"
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }
