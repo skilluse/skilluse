@@ -27,7 +27,6 @@ import RepoList from "./commands/repo/list.js";
 import RepoAdd, { args as repoAddArgs, options as repoAddOptions } from "./commands/repo/add.js";
 import RepoRemove, { args as repoRemoveArgs, options as repoRemoveOptions } from "./commands/repo/remove.js";
 import RepoEdit, { args as repoEditArgs, options as repoEditOptions } from "./commands/repo/edit.js";
-import RepoSync, { args as repoSyncArgs, options as repoSyncOptions } from "./commands/repo/sync.js";
 import RepoUse, { args as repoUseArgs } from "./commands/repo/use.js";
 
 // Version injected via --define at build time, fallback to package.json
@@ -187,15 +186,6 @@ repoCmd
     const args = repoEditArgs.parse([name]);
     const options = repoEditOptions.parse(opts);
     render(<RepoEdit args={args} options={options} />);
-  });
-
-repoCmd
-  .command("sync [name]")
-  .description("Sync repository metadata")
-  .action((name, _opts) => {
-    const args = repoSyncArgs.parse([name || undefined]);
-    const options = repoSyncOptions.parse({});
-    render(<RepoSync args={args} options={options} />);
   });
 
 repoCmd
