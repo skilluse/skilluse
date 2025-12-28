@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, useApp, useInput } from "ink";
 import { z } from "zod";
-import { Spinner, StatusMessage } from "../../components/index.js";
+import { Spinner, StatusMessage, CLIError } from "../../components/index.js";
 import {
   getCredentials,
   removeRepo,
@@ -26,7 +26,7 @@ type RemoveState =
   | { phase: "checking" }
   | { phase: "not_logged_in" }
   | { phase: "not_found"; repo: string }
-  | { phase: "confirm"; repo: string }
+  | { phase: "confirm"; repo: string; affectedSkills: number }
   | { phase: "success"; repo: string }
   | { phase: "cancelled" }
   | { phase: "error"; message: string };
@@ -53,6 +53,11 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
         return;
       }
 
+      // Count skills that will be affected
+      const affectedSkills = config.installed.filter(
+        (skill) => skill.repo === repoArg
+      ).length;
+
       // If force flag, remove directly
       if (opts.force) {
         removeRepo(repoArg);
@@ -62,7 +67,7 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
       }
 
       // Otherwise, prompt for confirmation
-      setState({ phase: "confirm", repo: repoArg });
+      setState({ phase: "confirm", repo: repoArg, affectedSkills });
     }
 
     checkAndRemove();
@@ -95,20 +100,24 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
 
     case "not_logged_in":
       return (
-        <Box flexDirection="column">
-          <StatusMessage type="error">Not authenticated</StatusMessage>
-          <Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
-        </Box>
+        <CLIError
+          message="Not authenticated"
+          causes={["Your session may have expired", "You haven't logged in yet"]}
+          suggestion="Run 'skilluse login' to authenticate with GitHub"
+        />
       );
 
     case "not_found":
       return (
-        <Box flexDirection="column">
-          <StatusMessage type="error">
-            Repository {state.repo} not found in config
-          </StatusMessage>
-          <Text dimColor>Run 'skilluse repo list' to see configured repos.</Text>
-        </Box>
+        <CLIError
+          message="Repository not found in config"
+          context={state.repo}
+          causes={[
+            "The repository was never added",
+            "It may have been removed already",
+          ]}
+          suggestion="Run 'skilluse repo list' to see configured repos"
+        />
       );
 
     case "confirm":
@@ -117,6 +126,14 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
           <Text>
             Remove repository <Text color="cyan">{state.repo}</Text>?
           </Text>
+          {state.affectedSkills > 0 && (
+            <Box marginTop={1}>
+              <Text color="yellow">
+                This will untrack {state.affectedSkills} installed skill
+                {state.affectedSkills === 1 ? "" : "s"} from this repository.
+              </Text>
+            </Box>
+          )}
           <Box marginTop={1}>
             <Text dimColor>Press Y to confirm, N to cancel</Text>
           </Box>

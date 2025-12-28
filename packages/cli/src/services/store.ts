@@ -143,3 +143,16 @@ export function clearInstallations(): void {
   store.set("installations", []);
   store.set("defaultInstallationId", null);
 }
+
+// ============================================================================
+// First-Run Detection
+// ============================================================================
+
+/**
+ * Check if this is a first run (no repos configured).
+ * Used to show onboarding flow for new users.
+ */
+export function isFirstRun(): boolean {
+  const repos = store.get("repos");
+  return repos.length === 0;
+}

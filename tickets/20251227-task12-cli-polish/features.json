@@ -2,9 +2,9 @@
   "ticket": "task12-cli-polish",
   "title": "CLI Polish - Error Handling & Onboarding",
   "priority": 8,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-28",
-  "completed_at": null,
+  "completed_at": "2025-12-28",
   "dependencies": ["task07-repo-commands"],
   "parallelizable": true,
   "features": [
@@ -18,8 +18,8 @@
         "Verify shows possible causes",
         "Verify shows suggested next command"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Created CLIError component with structured error messages"
     },
     {
       "id": "F002",
@@ -32,8 +32,8 @@
         "Verify shows numbered setup steps",
         "Verify shows login hint"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Updated not_logged_in state to show welcome with numbered steps"
     },
     {
       "id": "F003",
@@ -44,8 +44,8 @@
         "Verify lists all command groups",
         "Verify shows brief description for each"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Provided by Pastel framework"
     },
     {
       "id": "F004",
@@ -56,8 +56,8 @@
         "Verify lists all repo subcommands",
         "Verify shows description for each"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Provided by Pastel framework"
     },
     {
       "id": "F005",
@@ -69,8 +69,8 @@
         "Verify shows --branch option",
         "Verify shows usage example"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Provided by Pastel framework with zod option descriptions"
     },
     {
       "id": "F006",
@@ -83,8 +83,8 @@
         "Verify shows what will be affected",
         "Press N, verify repo not removed"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Updated to show affected skills count in confirmation"
     },
     {
       "id": "F007",
@@ -96,8 +96,8 @@
         "Verify no prompt shown",
         "Verify repo removed immediately"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already implemented with --force flag"
     },
     {
       "id": "F008",
@@ -109,8 +109,8 @@
         "Verify shows update available message",
         "Verify shows update command"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Created update.ts service to check npm registry"
     },
     {
       "id": "F009",
@@ -121,13 +121,13 @@
         "Verify npm registry only called once",
         "Verify second run uses cached result"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "24-hour cache via Conf store with CACHE_DURATION"
     }
   ],
   "metadata": {
     "estimated_sessions": 2,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }
