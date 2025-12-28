@@ -14,7 +14,6 @@ import Demo, { options as demoOptions } from "./commands/demo.js";
 import Login, { options as loginOptions } from "./commands/login.js";
 import Logout from "./commands/logout.js";
 import Whoami from "./commands/whoami.js";
-import Repos from "./commands/repos.js";
 import Skills from "./commands/skills.js";
 import List, { options as listOptions } from "./commands/list.js";
 import Search, { args as searchArgs, options as searchOptions } from "./commands/search.js";
@@ -83,14 +82,6 @@ program
   .description("Show current user info")
   .action(() => {
     render(<Whoami options={{}} />);
-  });
-
-// repos command
-program
-  .command("repos")
-  .description("List accessible GitHub repositories")
-  .action(() => {
-    render(<Repos options={{}} />);
   });
 
 // skills command
