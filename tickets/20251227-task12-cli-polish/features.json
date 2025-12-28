@@ -1,0 +1,133 @@
+{
+  "ticket": "task12-cli-polish",
+  "title": "CLI Polish - Error Handling & Onboarding",
+  "priority": 8,
+  "status": "pending",
+  "created_at": "2025-12-28",
+  "completed_at": null,
+  "dependencies": ["task07-repo-commands"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "ux",
+      "description": "Error messages include actionable suggestions",
+      "steps": [
+        "Trigger a 'repo not found' error",
+        "Verify error shows ✗ symbol",
+        "Verify shows possible causes",
+        "Verify shows suggested next command"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "ux",
+      "description": "First run shows onboarding flow",
+      "steps": [
+        "Remove config file to simulate first run",
+        "Run skilluse",
+        "Verify shows welcome message",
+        "Verify shows numbered setup steps",
+        "Verify shows login hint"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "ux",
+      "description": "skilluse --help shows command overview",
+      "steps": [
+        "Run skilluse --help",
+        "Verify lists all command groups",
+        "Verify shows brief description for each"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "ux",
+      "description": "skilluse repo --help shows subcommands",
+      "steps": [
+        "Run skilluse repo --help",
+        "Verify lists all repo subcommands",
+        "Verify shows description for each"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "ux",
+      "description": "skilluse repo add --help shows options",
+      "steps": [
+        "Run skilluse repo add --help",
+        "Verify shows --path option",
+        "Verify shows --branch option",
+        "Verify shows usage example"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "ux",
+      "description": "repo remove prompts for confirmation",
+      "steps": [
+        "Add a repo first",
+        "Run skilluse repo remove owner/repo",
+        "Verify shows confirmation prompt",
+        "Verify shows what will be affected",
+        "Press N, verify repo not removed"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F007",
+      "category": "ux",
+      "description": "repo remove --force skips confirmation",
+      "steps": [
+        "Add a repo first",
+        "Run skilluse repo remove owner/repo --force",
+        "Verify no prompt shown",
+        "Verify repo removed immediately"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F008",
+      "category": "ux",
+      "description": "Update notification shows when available",
+      "steps": [
+        "Mock npm registry to return newer version",
+        "Run skilluse",
+        "Verify shows update available message",
+        "Verify shows update command"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F009",
+      "category": "ux",
+      "description": "Version check is cached (not on every run)",
+      "steps": [
+        "Run skilluse twice within 1 hour",
+        "Verify npm registry only called once",
+        "Verify second run uses cached result"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 2,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}
