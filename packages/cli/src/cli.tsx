@@ -18,6 +18,10 @@ import Repos from "./commands/repos.js";
 import Skills from "./commands/skills.js";
 import List, { options as listOptions } from "./commands/list.js";
 import Search, { args as searchArgs, options as searchOptions } from "./commands/search.js";
+import Install, { args as installArgs, options as installOptions } from "./commands/install.js";
+import Uninstall, { args as uninstallArgs, options as uninstallOptions } from "./commands/uninstall.js";
+import Upgrade, { args as upgradeArgs } from "./commands/upgrade.js";
+import Info, { args as infoArgs } from "./commands/info.js";
 
 // Import repo subcommands
 import RepoIndex from "./commands/repo/index.js";
@@ -100,8 +104,8 @@ program
 // list command
 program
   .command("list")
-  .description("List skills from a repository")
-  .option("-r, --repo <repo>", "Repository to list skills from")
+  .description("List installed skills")
+  .option("-o, --outdated", "Show only outdated skills")
   .action((opts) => {
     const options = listOptions.parse(opts);
     render(<List options={options} />);
@@ -116,6 +120,46 @@ program
     const args = searchArgs.parse([keyword]);
     const options = searchOptions.parse(opts);
     render(<Search args={args} options={options} />);
+  });
+
+// install command
+program
+  .command("install <skill-name>")
+  .description("Install a skill")
+  .option("-g, --global", "Install globally to ~/.claude/skills/")
+  .action((skillName, opts) => {
+    const args = installArgs.parse([skillName]);
+    const options = installOptions.parse(opts);
+    render(<Install args={args} options={options} />);
+  });
+
+// uninstall command
+program
+  .command("uninstall <skill-name>")
+  .description("Uninstall a skill")
+  .option("-f, --force", "Skip confirmation")
+  .action((skillName, opts) => {
+    const args = uninstallArgs.parse([skillName]);
+    const options = uninstallOptions.parse(opts);
+    render(<Uninstall args={args} options={options} />);
+  });
+
+// upgrade command
+program
+  .command("upgrade [skill-name]")
+  .description("Upgrade skill(s) to latest version")
+  .action((skillName) => {
+    const args = upgradeArgs.parse([skillName]);
+    render(<Upgrade args={args} options={{}} />);
+  });
+
+// info command
+program
+  .command("info <skill-name>")
+  .description("Show skill details")
+  .action((skillName) => {
+    const args = infoArgs.parse([skillName]);
+    render(<Info args={args} options={{}} />);
   });
 
 // repo command group
