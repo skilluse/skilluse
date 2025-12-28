@@ -71,7 +71,7 @@
         "Verify repo is in config",
         "Verify paths are stored correctly"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -83,7 +83,7 @@
         "Verify no interactive UI",
         "Verify repo added with specified path"
       ],
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
