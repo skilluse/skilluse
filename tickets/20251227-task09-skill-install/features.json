@@ -70,7 +70,7 @@
         "Verify scope (local/global) shown"
       ],
       "passes": true,
-      "notes": "List command shows name, version, scope, repo, and installedPath for each skill. Skills command is an alias. Tested with empty state showing correct message."
+      "notes": "List command shows name, version, scope, repo, and installedPath for each skill. Tested with empty state showing correct message."
     },
     {
       "id": "F006",
@@ -114,7 +114,8 @@
   ],
   "metadata": {
     "estimated_sessions": 2,
-    "actual_sessions": 1,
-    "blockers": []
+    "actual_sessions": 2,
+    "blockers": [],
+    "cleanup_notes": "Session 2: Removed redundant commands (repos, whoami, skills, demo, repo sync), added Biome for formatting/linting"
   }
 }

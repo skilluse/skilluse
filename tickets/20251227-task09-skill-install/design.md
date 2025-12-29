@@ -67,3 +67,13 @@ See `features.json` for testable criteria.
 ## Out of Scope
 - Skill execution
 - Dependency management between skills
+
+## CLI Cleanup (Session 2)
+During implementation review, the following redundant commands were removed:
+- `repos` - Confused with `repo`, removed
+- `whoami` - Info shown in root `skilluse` command
+- `skills` - Alias for `list`, removed to simplify
+- `demo` - Development only, removed
+- `repo sync` - Unnecessary, data fetched on demand
+
+Added Biome for code formatting and linting.

@@ -6,7 +6,20 @@
 ## Completed (Skill Install)
 - [x] task09-skill-install
 
-### [2025-12-28] Session - task09-skill-install
+### [2025-12-28] Session #2 - CLI cleanup and Biome setup
+- Working on: task09-skill-install (cleanup)
+- Completed: CLI cleanup, Biome setup
+- In progress: None
+- Commits: 042cbf3
+- Notes:
+  - Removed redundant commands: repos, whoami, skills, demo, repo sync
+  - Removed unused code: getInstallationRepositories, getInstallationToken
+  - Updated README.md with current 12 commands
+  - Added Biome for formatting and linting (replaces Prettier/ESLint)
+  - Fixed all lint issues: node:protocol imports, unused imports, useCallback
+  - Added format/lint/check scripts to package.json
+
+### [2025-12-28] Session #1 - task09-skill-install
 - Working on: task09-skill-install
 - Completed: F001, F002, F003, F004, F005, F006, F007, F008
 - In progress: None
