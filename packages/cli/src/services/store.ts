@@ -16,6 +16,7 @@ export interface InstalledSkill {
 	type: string;
 	installedPath: string;
 	scope: "local" | "global";
+	agent: string; // Agent ID this skill was installed for
 }
 
 /**
@@ -36,6 +37,8 @@ export interface Config {
 	// GitHub App installation metadata
 	installations: StoredInstallation[];
 	defaultInstallationId: number | null;
+	// Multi-agent support
+	currentAgent: string;
 }
 
 const defaultConfig: Config = {
@@ -44,6 +47,7 @@ const defaultConfig: Config = {
 	installed: [],
 	installations: [],
 	defaultInstallationId: null,
+	currentAgent: "claude",
 };
 
 const store = new Conf<Config>({
@@ -59,7 +63,26 @@ export function getConfig(): Config {
 		installed: store.get("installed"),
 		installations: store.get("installations"),
 		defaultInstallationId: store.get("defaultInstallationId"),
+		currentAgent: store.get("currentAgent"),
 	};
+}
+
+// ============================================================================
+// Multi-Agent Support
+// ============================================================================
+
+/**
+ * Get the currently selected agent ID.
+ */
+export function getCurrentAgent(): string {
+	return store.get("currentAgent");
+}
+
+/**
+ * Set the current agent by ID.
+ */
+export function setCurrentAgent(agentId: string): void {
+	store.set("currentAgent", agentId);
 }
 
 export function addRepo(repo: RepoConfig): void {

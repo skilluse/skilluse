@@ -1,10 +1,25 @@
 # Multi-Agent Support Sprint
 
 ## Current Sprint (Multi-Agent)
-- [ ] task14-multi-agent-support - Support multiple AI agents with agent-specific paths
+- [x] task14-multi-agent-support - Support multiple AI agents with agent-specific paths
 
 ## Completed (Multi-Agent)
-(none yet)
+- [x] task14-multi-agent-support
+
+### [2025-12-29] Session #1 - task14-multi-agent-support
+- Working on: task14-multi-agent-support
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008, F009, F010, F011, F012
+- In progress: None
+- Notes:
+  - Created services/agents.ts with AgentConfig and 9 supported agents
+  - Added currentAgent to store.ts with getter/setter (default: claude)
+  - Created agent command group: agent (list) and agent use <id>
+  - Updated install command to use current agent's path and --agent flag
+  - Updated list command with --all flag to show skills for all agents
+  - Updated uninstall to filter by current agent
+  - Added unified install source parsing: repo name, owner/repo, owner/repo/path, local path
+  - Added local path installation with fs.cp
+  - Updated status command to show current agent and skill count
 
 ---
 
@@ -252,7 +267,7 @@
 - [x] web03-landing-page - Hero, features, CTA
 - [x] web07-cli-landing-page - CLI terminal hero with IBM Plex Mono
 - [x] web08-color-scheme - Black/white color scheme update
-- [ ] web09-layout-review - Review and fix homepage layout issues
+- [x] web09-layout-review - Review and fix homepage layout issues
 - [x] web04-blog-setup - Blog listing and posts
 - [x] web05-docs-setup - Documentation with sidebar
 - [ ] web06-polish - SEO, OG images, sitemap
@@ -263,6 +278,7 @@
 - [x] web03-landing-page
 - [x] web07-cli-landing-page
 - [x] web08-color-scheme
+- [x] web09-layout-review
 - [x] web04-blog-setup
 - [x] web05-docs-setup
 
@@ -270,7 +286,7 @@
 - Working on: web05-docs-setup
 - Completed: F001, F002, F003, F004, F005, F006, F007, F008
 - In progress: None
-- Commits: 524b3b2
+- Commits: 70ac47d
 - Notes:
   - Fixed baseline issue: Breadcrumbs component used `name` not `label`
   - Configured docs collection in content-collections.ts with heading extraction

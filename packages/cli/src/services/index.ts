@@ -42,14 +42,23 @@ export {
 	type Config,
 	clearInstallations,
 	getConfig,
+	getCurrentAgent,
 	getDefaultInstallation,
 	getInstallations,
 	type InstalledSkill,
 	type RepoConfig,
 	removeInstalledSkill,
 	removeRepo,
+	setCurrentAgent,
 	type StoredInstallation,
 	setDefaultInstallation,
 	setDefaultRepo,
 	setInstallations,
 } from "./store.js";
+export {
+	type AgentConfig,
+	AGENTS,
+	getAgent,
+	getSkillsPath,
+	listAgents,
+} from "./agents.js";

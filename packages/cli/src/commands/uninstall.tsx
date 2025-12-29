@@ -4,7 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
+	getAgent,
 	getConfig,
+	getCurrentAgent,
 	type InstalledSkill,
 	removeInstalledSkill,
 } from "../services/index.js";
@@ -22,7 +24,7 @@ interface Props {
 
 type UninstallState =
 	| { phase: "checking" }
-	| { phase: "not_found"; skillName: string }
+	| { phase: "not_found"; skillName: string; agentName: string }
 	| { phase: "confirming"; skill: InstalledSkill }
 	| { phase: "uninstalling"; skill: InstalledSkill }
 	| { phase: "success"; skill: InstalledSkill }
@@ -99,12 +101,19 @@ export default function Uninstall({ args: [skillName], options: opts }: Props) {
 
 	useEffect(() => {
 		const config = getConfig();
+		const currentAgentId = getCurrentAgent();
+		const agentInfo = getAgent(currentAgentId);
+		const agentName = agentInfo?.name || currentAgentId;
+
+		// Find skill matching name AND current agent
 		const skill = config.installed.find(
-			(s) => s.name.toLowerCase() === skillName.toLowerCase(),
+			(s) =>
+				s.name.toLowerCase() === skillName.toLowerCase() &&
+				(s.agent === currentAgentId || !s.agent), // Include legacy skills without agent field
 		);
 
 		if (!skill) {
-			setState({ phase: "not_found", skillName });
+			setState({ phase: "not_found", skillName, agentName });
 			exit();
 			return;
 		}
@@ -136,10 +145,15 @@ export default function Uninstall({ args: [skillName], options: opts }: Props) {
 			return (
 				<Box flexDirection="column">
 					<StatusMessage type="error">
-						Skill "{state.skillName}" is not installed
+						Skill "{state.skillName}" is not installed for {state.agentName}
 					</StatusMessage>
 					<Box marginTop={1}>
 						<Text dimColor>Run 'skilluse list' to see installed skills.</Text>
+					</Box>
+					<Box>
+						<Text dimColor>
+							Run 'skilluse list --all' to see skills for all agents.
+						</Text>
 					</Box>
 				</Box>
 			);

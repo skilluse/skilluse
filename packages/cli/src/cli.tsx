@@ -32,6 +32,9 @@ import RepoRemove, {
 	options as repoRemoveOptions,
 } from "./commands/repo/remove.js";
 import RepoUse, { args as repoUseArgs } from "./commands/repo/use.js";
+// Import agent subcommands
+import AgentIndex from "./commands/agent/index.js";
+import AgentUse, { args as agentUseArgs } from "./commands/agent/use.js";
 import Search, {
 	args as searchArgs,
 	options as searchOptions,
@@ -82,6 +85,7 @@ program
 	.command("list")
 	.description("List installed skills")
 	.option("-o, --outdated", "Show only outdated skills")
+	.option("-a, --all", "Show skills for all agents")
 	.action((opts) => {
 		const options = listOptions.parse(opts);
 		render(<List options={options} />);
@@ -102,7 +106,8 @@ program
 program
 	.command("install <skill-name>")
 	.description("Install a skill")
-	.option("-g, --global", "Install globally to ~/.claude/skills/")
+	.option("-g, --global", "Install globally to agent's global skills path")
+	.option("-a, --agent <agent>", "Override current agent (e.g., cursor, claude)")
 	.action((skillName, opts) => {
 		const args = installArgs.parse([skillName]);
 		const options = installOptions.parse(opts);
@@ -194,6 +199,24 @@ repoCmd
 // Default action shows help when just 'repo' is called
 repoCmd.action(() => {
 	render(<RepoIndex options={{}} />);
+});
+
+// agent command group
+const agentCmd = program
+	.command("agent")
+	.description("Manage AI coding agents");
+
+agentCmd
+	.command("use <agent-id>")
+	.description("Switch to a different agent")
+	.action((agentId) => {
+		const args = agentUseArgs.parse([agentId]);
+		render(<AgentUse args={args} options={{}} />);
+	});
+
+// Default action shows supported agents when just 'agent' is called
+agentCmd.action(() => {
+	render(<AgentIndex options={{}} />);
 });
 
 program.parse();

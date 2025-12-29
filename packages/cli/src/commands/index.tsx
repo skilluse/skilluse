@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
+	getAgent,
 	getConfig,
 	getCredentials,
+	getCurrentAgent,
 	getInstallations,
 	type StoredInstallation,
 } from "../services/index.js";
@@ -30,6 +32,8 @@ type StatusState =
 			installedCount: number;
 			repoCount: number;
 			installations: StoredInstallation[];
+			currentAgent: string;
+			agentName: string;
 	  }
 	| { phase: "error"; message: string };
 
@@ -72,14 +76,24 @@ export default function Index(_props: Props) {
 				const userData = (await response.json()) as GitHubUser;
 				const config = getConfig();
 				const installations = getInstallations();
+				const currentAgent = getCurrentAgent();
+				const agentInfo = getAgent(currentAgent);
+				const agentName = agentInfo?.name || currentAgent;
+
+				// Count skills for current agent
+				const installedCount = config.installed.filter(
+					(s) => s.agent === currentAgent || !s.agent,
+				).length;
 
 				setState({
 					phase: "logged_in",
 					user: userData,
 					defaultRepo: config.defaultRepo,
-					installedCount: config.installed.length,
+					installedCount,
 					repoCount: config.repos.length,
 					installations,
+					currentAgent,
+					agentName,
 				});
 			} catch (err) {
 				setState({
@@ -139,6 +153,15 @@ export default function Index(_props: Props) {
 
 					<Box flexDirection="column" marginBottom={1}>
 						<Box>
+							<Text>Current agent: </Text>
+							<Text color="cyan">{state.agentName}</Text>
+							<Text dimColor> ({state.currentAgent})</Text>
+						</Box>
+						<Box>
+							<Text>Installed skills: </Text>
+							<Text>{state.installedCount}</Text>
+						</Box>
+						<Box>
 							<Text>Default repo: </Text>
 							{state.defaultRepo ? (
 								<Text color="cyan">{state.defaultRepo}</Text>
@@ -149,10 +172,6 @@ export default function Index(_props: Props) {
 						<Box>
 							<Text>Configured repos: </Text>
 							<Text>{state.repoCount}</Text>
-						</Box>
-						<Box>
-							<Text>Installed skills: </Text>
-							<Text>{state.installedCount}</Text>
 						</Box>
 					</Box>
 

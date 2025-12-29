@@ -1,14 +1,17 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { basename, isAbsolute, join } from "node:path";
 import { Box, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { ProgressBar, Spinner, StatusMessage } from "../components/index.js";
 import {
 	addInstalledSkill,
+	getAgent,
 	getConfig,
 	getCredentials,
+	getCurrentAgent,
+	getSkillsPath,
 	type InstalledSkill,
 	type RepoConfig,
 } from "../services/index.js";
@@ -19,7 +22,11 @@ export const options = z.object({
 	global: z
 		.boolean()
 		.default(false)
-		.describe("Install globally to ~/.claude/skills/"),
+		.describe("Install globally to agent's global skills path"),
+	agent: z
+		.string()
+		.optional()
+		.describe("Override current agent (e.g., cursor, claude)"),
 });
 
 interface Props {
@@ -100,6 +107,43 @@ function parseFrontmatter(content: string): Record<string, unknown> {
 	}
 
 	return result;
+}
+
+/**
+ * Install source types for unified installation
+ */
+type InstallSource =
+	| { type: "repo"; name: string } // "pdf" -> from configured repos
+	| { type: "github"; owner: string; repo: string; path?: string } // "owner/repo" or "owner/repo/path"
+	| { type: "local"; path: string }; // "./path" or "/absolute/path"
+
+/**
+ * Parse an install source string into a structured type
+ */
+function parseInstallSource(source: string): InstallSource {
+	// Local path: starts with "./" or "/" or is an absolute path
+	if (source.startsWith("./") || source.startsWith("/") || isAbsolute(source)) {
+		return { type: "local", path: source };
+	}
+
+	// GitHub path: contains "/"
+	if (source.includes("/")) {
+		const parts = source.split("/");
+		if (parts.length === 2) {
+			// owner/repo format
+			return { type: "github", owner: parts[0], repo: parts[1] };
+		}
+		// owner/repo/path format
+		return {
+			type: "github",
+			owner: parts[0],
+			repo: parts[1],
+			path: parts.slice(2).join("/"),
+		};
+	}
+
+	// Default: repo skill name
+	return { type: "repo", name: source };
 }
 
 /**
@@ -288,13 +332,211 @@ async function downloadSkillFiles(
 	}
 }
 
+/**
+ * Fetch skill metadata from a GitHub repo at a specific path
+ */
+async function fetchGitHubSkill(
+	token: string,
+	owner: string,
+	repo: string,
+	path?: string,
+	branch = "main",
+): Promise<{ skill: SkillMetadata; commitSha: string } | null> {
+	const fullRepo = `${owner}/${repo}`;
+	const skillPath = path || "";
+
+	try {
+		// Get the commit SHA for this ref
+		const refUrl = `https://api.github.com/repos/${fullRepo}/commits/${branch}`;
+		const refResponse = await fetch(refUrl, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+				Accept: "application/vnd.github+json",
+				"X-GitHub-Api-Version": "2022-11-28",
+			},
+		});
+
+		if (!refResponse.ok) {
+			return null;
+		}
+
+		const refData = (await refResponse.json()) as { sha: string };
+		const commitSha = refData.sha;
+
+		// Fetch SKILL.md
+		const skillMdPath = skillPath ? `${skillPath}/SKILL.md` : "SKILL.md";
+		const skillMdUrl = `https://api.github.com/repos/${fullRepo}/contents/${skillMdPath}?ref=${branch}`;
+		const skillResponse = await fetch(skillMdUrl, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+				Accept: "application/vnd.github.raw+json",
+				"X-GitHub-Api-Version": "2022-11-28",
+			},
+		});
+
+		if (!skillResponse.ok) {
+			return null;
+		}
+
+		const content = await skillResponse.text();
+		const frontmatter = parseFrontmatter(content);
+
+		// Derive skill name from path or repo name
+		const skillName = path ? basename(path) : repo;
+
+		return {
+			skill: {
+				name: String(frontmatter.name || skillName),
+				description: String(frontmatter.description || ""),
+				type: frontmatter.type ? String(frontmatter.type) : undefined,
+				version: frontmatter.version ? String(frontmatter.version) : "1.0.0",
+				author: frontmatter.author ? String(frontmatter.author) : undefined,
+				repo: fullRepo,
+				path: skillPath,
+			},
+			commitSha,
+		};
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Install from a local directory path
+ */
+async function installFromLocalPath(
+	sourcePath: string,
+	targetDir: string,
+): Promise<SkillMetadata> {
+	// Check if source exists
+	const sourceStats = await stat(sourcePath);
+	if (!sourceStats.isDirectory()) {
+		throw new Error(`Source is not a directory: ${sourcePath}`);
+	}
+
+	// Check for SKILL.md
+	const skillMdPath = join(sourcePath, "SKILL.md");
+	let frontmatter: Record<string, unknown> = {};
+	try {
+		const content = await readFile(skillMdPath, "utf-8");
+		frontmatter = parseFrontmatter(content);
+	} catch {
+		// SKILL.md is optional for local installs
+	}
+
+	// Copy the directory
+	await mkdir(targetDir, { recursive: true });
+	await cp(sourcePath, targetDir, { recursive: true });
+
+	const skillName = basename(sourcePath);
+	return {
+		name: String(frontmatter.name || skillName),
+		description: String(frontmatter.description || ""),
+		type: frontmatter.type ? String(frontmatter.type) : undefined,
+		version: frontmatter.version ? String(frontmatter.version) : "1.0.0",
+		author: frontmatter.author ? String(frontmatter.author) : undefined,
+		repo: "local",
+		path: sourcePath,
+	};
+}
+
 export default function Install({ args: [skillName], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<InstallState>({ phase: "checking" });
 
 	useEffect(() => {
 		async function install() {
-			// Check if logged in
+			// Determine which agent to use (--agent flag or current agent)
+			const agentId = opts.agent || getCurrentAgent();
+			const agent = getAgent(agentId);
+			if (!agent) {
+				setState({
+					phase: "error",
+					message: `Unknown agent: ${agentId}`,
+				});
+				exit();
+				return;
+			}
+
+			const scope = opts.global ? "global" : "local";
+			const config = getConfig();
+
+			// Parse install source
+			const source = parseInstallSource(skillName);
+
+			// Handle local path installation (no auth needed)
+			if (source.type === "local") {
+				const sourcePath = isAbsolute(source.path)
+					? source.path
+					: join(process.cwd(), source.path);
+
+				try {
+					const derivedName = basename(sourcePath);
+					const baseDir = getSkillsPath(agentId, scope);
+					const installPath = join(baseDir, derivedName);
+
+					const steps: InstallStep[] = [
+						{ label: "Checking source directory", status: "done" },
+						{ label: "Copying files", status: "in_progress" },
+						{
+							label: `Installing to ${agent.localPath}/${derivedName}`,
+							status: "pending",
+						},
+						{ label: "Verifying installation", status: "pending" },
+					];
+
+					setState({
+						phase: "installing",
+						skill: {
+							name: derivedName,
+							description: "",
+							repo: "local",
+							path: sourcePath,
+						},
+						scope,
+						steps,
+						progress: 25,
+					});
+
+					const skill = await installFromLocalPath(sourcePath, installPath);
+
+					// Update steps
+					steps[1].status = "done";
+					steps[2].status = "done";
+					steps[3].status = "done";
+
+					// Record in config
+					const installedSkill: InstalledSkill = {
+						name: skill.name,
+						repo: "local",
+						repoPath: sourcePath,
+						commitSha: "local",
+						version: skill.version || "1.0.0",
+						type: skill.type || "skill",
+						installedPath: installPath,
+						scope,
+						agent: agentId,
+					};
+					addInstalledSkill(installedSkill);
+
+					setState({
+						phase: "success",
+						skill,
+						installedPath: installPath,
+					});
+					exit();
+					return;
+				} catch (err) {
+					setState({
+						phase: "error",
+						message: err instanceof Error ? err.message : "Installation failed",
+					});
+					exit();
+					return;
+				}
+			}
+
+			// For GitHub and repo sources, we need authentication
 			const credentials = await getCredentials();
 			if (!credentials) {
 				setState({ phase: "not_logged_in" });
@@ -302,7 +544,106 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				return;
 			}
 
-			const config = getConfig();
+			// Handle GitHub direct installation (owner/repo or owner/repo/path)
+			if (source.type === "github") {
+				setState({ phase: "searching", repo: `${source.owner}/${source.repo}` });
+
+				const result = await fetchGitHubSkill(
+					credentials.token,
+					source.owner,
+					source.repo,
+					source.path,
+				);
+
+				if (!result) {
+					setState({
+						phase: "not_found",
+						skillName: `${source.owner}/${source.repo}${source.path ? `/${source.path}` : ""}`,
+					});
+					exit();
+					return;
+				}
+
+				const { skill, commitSha } = result;
+				const baseDir = getSkillsPath(agentId, scope);
+				const installPath = join(baseDir, skill.name);
+
+				const steps: InstallStep[] = [
+					{ label: "Fetching skill metadata", status: "done" },
+					{ label: "Downloading files", status: "in_progress" },
+					{
+						label: `Installing to ${agent.localPath}/${skill.name}`,
+						status: "pending",
+					},
+					{ label: "Verifying installation", status: "pending" },
+				];
+
+				setState({
+					phase: "installing",
+					skill,
+					scope,
+					steps,
+					progress: 25,
+				});
+
+				try {
+					// Download files from GitHub
+					const skillPath = source.path || "";
+					await downloadSkillFiles(
+						credentials.token,
+						`${source.owner}/${source.repo}`,
+						skillPath,
+						"main",
+						installPath,
+						(downloaded, total) => {
+							const downloadProgress = 25 + (downloaded / total) * 50;
+							setState((prev) => {
+								if (prev.phase !== "installing") return prev;
+								return { ...prev, progress: Math.round(downloadProgress) };
+							});
+						},
+					);
+
+					// Update steps
+					steps[1].status = "done";
+					steps[2].status = "in_progress";
+					setState((prev) => {
+						if (prev.phase !== "installing") return prev;
+						return { ...prev, steps: [...steps], progress: 85 };
+					});
+
+					// Record in config
+					const installedSkill: InstalledSkill = {
+						name: skill.name,
+						repo: skill.repo,
+						repoPath: skill.path,
+						commitSha,
+						version: skill.version || "1.0.0",
+						type: skill.type || "skill",
+						installedPath: installPath,
+						scope,
+						agent: agentId,
+					};
+					addInstalledSkill(installedSkill);
+
+					steps[2].status = "done";
+					steps[3].status = "done";
+					setState({
+						phase: "success",
+						skill,
+						installedPath: installPath,
+					});
+				} catch (err) {
+					setState({
+						phase: "error",
+						message: err instanceof Error ? err.message : "Installation failed",
+					});
+				}
+				exit();
+				return;
+			}
+
+			// Handle repo skill name (search in configured repos)
 			if (config.repos.length === 0) {
 				setState({ phase: "no_repos" });
 				exit();
@@ -315,10 +656,10 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				setState({ phase: "searching", repo: repo.repo });
 			}
 
-			const results = await findSkill(credentials.token, allRepos, skillName);
+			const results = await findSkill(credentials.token, allRepos, source.name);
 
 			if (results.length === 0) {
-				setState({ phase: "not_found", skillName });
+				setState({ phase: "not_found", skillName: source.name });
 				exit();
 				return;
 			}
@@ -326,7 +667,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 			if (results.length > 1) {
 				setState({
 					phase: "conflict",
-					skillName,
+					skillName: source.name,
 					sources: results.map((r) => ({
 						repo: r.skill.repo,
 						path: r.skill.path,
@@ -338,12 +679,9 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 
 			// Single match - proceed with installation
 			const { skill, commitSha } = results[0];
-			const scope = opts.global ? "global" : "local";
 
-			// Determine install path
-			const baseDir = opts.global
-				? join(homedir(), ".claude", "skills")
-				: join(process.cwd(), ".claude", "skills");
+			// Determine install path using agent's path
+			const baseDir = getSkillsPath(agentId, scope);
 			const installPath = join(baseDir, skill.name);
 
 			// Initialize steps
@@ -351,7 +689,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				{ label: "Fetching skill metadata", status: "done" },
 				{ label: "Downloading files", status: "in_progress" },
 				{
-					label: `Installing to ${scope === "global" ? "~" : "."}/.claude/skills/${skill.name}`,
+					label: `Installing to ${agent.localPath}/${skill.name}`,
 					status: "pending",
 				},
 				{ label: "Verifying installation", status: "pending" },
@@ -404,6 +742,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 					type: skill.type || "skill",
 					installedPath: installPath,
 					scope,
+					agent: agentId,
 				};
 				addInstalledSkill(installedSkill);
 

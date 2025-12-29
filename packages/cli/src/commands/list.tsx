@@ -3,14 +3,17 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
+	getAgent,
 	getConfig,
 	getCredentials,
+	getCurrentAgent,
 	type InstalledSkill,
 	type RepoConfig,
 } from "../services/index.js";
 
 export const options = z.object({
 	outdated: z.boolean().default(false).describe("Show only outdated skills"),
+	all: z.boolean().default(false).describe("Show skills for all agents"),
 });
 
 interface Props {
@@ -27,7 +30,13 @@ type ListState =
 	| { phase: "checking" }
 	| { phase: "not_logged_in" }
 	| { phase: "checking_updates"; current: number; total: number }
-	| { phase: "success"; skills: SkillWithUpdate[]; showingOutdated: boolean }
+	| {
+			phase: "success";
+			skills: SkillWithUpdate[];
+			showingOutdated: boolean;
+			currentAgent: string;
+			showingAll: boolean;
+	  }
 	| { phase: "error"; message: string };
 
 /**
@@ -129,11 +138,24 @@ export default function List({ options: opts }: Props) {
 			}
 
 			const config = getConfig();
-			const skills = config.installed;
+			const currentAgent = getCurrentAgent();
+
+			// Filter skills by current agent unless --all is passed
+			const skills = opts.all
+				? config.installed
+				: config.installed.filter(
+						(s) => s.agent === currentAgent || !s.agent, // Include legacy skills without agent field
+					);
 
 			if (!opts.outdated) {
-				// Just show all installed skills
-				setState({ phase: "success", skills, showingOutdated: false });
+				// Just show installed skills
+				setState({
+					phase: "success",
+					skills,
+					showingOutdated: false,
+					currentAgent,
+					showingAll: opts.all,
+				});
 				exit();
 				return;
 			}
@@ -167,12 +189,14 @@ export default function List({ options: opts }: Props) {
 				phase: "success",
 				skills: skillsWithUpdates,
 				showingOutdated: true,
+				currentAgent,
+				showingAll: opts.all,
 			});
 			exit();
 		}
 
 		loadSkills();
-	}, [opts.outdated, exit]);
+	}, [opts.outdated, opts.all, exit]);
 
 	switch (state.phase) {
 		case "checking":
@@ -193,7 +217,10 @@ export default function List({ options: opts }: Props) {
 				/>
 			);
 
-		case "success":
+		case "success": {
+			const agentInfo = getAgent(state.currentAgent);
+			const agentName = agentInfo?.name || state.currentAgent;
+
 			if (state.skills.length === 0) {
 				if (state.showingOutdated) {
 					return (
@@ -206,7 +233,12 @@ export default function List({ options: opts }: Props) {
 				}
 				return (
 					<Box flexDirection="column">
-						<Text bold>Installed Skills</Text>
+						<Box>
+							<Text bold>Installed Skills</Text>
+							{!state.showingAll && (
+								<Text dimColor> ({agentName})</Text>
+							)}
+						</Box>
 						<Box marginTop={1}>
 							<Text dimColor>(no skills installed)</Text>
 						</Box>
@@ -215,6 +247,13 @@ export default function List({ options: opts }: Props) {
 								Run 'skilluse install skill-name' to install one.
 							</Text>
 						</Box>
+						{!state.showingAll && (
+							<Box>
+								<Text dimColor>
+									Run 'skilluse list --all' to see skills for all agents.
+								</Text>
+							</Box>
+						)}
 					</Box>
 				);
 			}
@@ -222,7 +261,12 @@ export default function List({ options: opts }: Props) {
 			if (state.showingOutdated) {
 				return (
 					<Box flexDirection="column">
-						<Text bold>Outdated Skills</Text>
+						<Box>
+							<Text bold>Outdated Skills</Text>
+							{!state.showingAll && (
+								<Text dimColor> ({agentName})</Text>
+							)}
+						</Box>
 						<Text> </Text>
 						{state.skills.map((skill) => (
 							<Box key={skill.name} flexDirection="column" marginBottom={1}>
@@ -232,6 +276,9 @@ export default function List({ options: opts }: Props) {
 									</Text>
 									<Text dimColor> v{skill.version}</Text>
 									<Text color="green"> → v{skill.latestVersion}</Text>
+									{state.showingAll && skill.agent && (
+										<Text dimColor> [{skill.agent}]</Text>
+									)}
 								</Box>
 								<Box marginLeft={2}>
 									<Text dimColor>
@@ -252,7 +299,12 @@ export default function List({ options: opts }: Props) {
 
 			return (
 				<Box flexDirection="column">
-					<Text bold>Installed Skills</Text>
+					<Box>
+						<Text bold>Installed Skills</Text>
+						{!state.showingAll && (
+							<Text dimColor> ({agentName})</Text>
+						)}
+					</Box>
 					<Text> </Text>
 					{state.skills.map((skill) => (
 						<Box key={skill.name} flexDirection="column" marginBottom={1}>
@@ -262,6 +314,9 @@ export default function List({ options: opts }: Props) {
 								</Text>
 								<Text dimColor> v{skill.version}</Text>
 								<Text dimColor> ({skill.scope})</Text>
+								{state.showingAll && skill.agent && (
+									<Text dimColor> [{skill.agent}]</Text>
+								)}
 							</Box>
 							<Box marginLeft={2}>
 								<Text dimColor>
@@ -270,8 +325,16 @@ export default function List({ options: opts }: Props) {
 							</Box>
 						</Box>
 					))}
+					{!state.showingAll && (
+						<Box marginTop={1}>
+							<Text dimColor>
+								Run 'skilluse list --all' to see skills for all agents.
+							</Text>
+						</Box>
+					)}
 				</Box>
 			);
+		}
 
 		case "error":
 			return <StatusMessage type="error">{state.message}</StatusMessage>;
