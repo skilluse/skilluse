@@ -1,10 +1,10 @@
 {
 	"name": "skilluse",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"description": "CLI tool for managing and installing AI Coding Agent Skills",
-	"main": "dist/index.js",
+	"main": "dist/cli.js",
 	"bin": {
-		"skilluse": "./dist/index.js"
+		"skilluse": "./dist/cli.js"
 	},
 	"files": [
 		"dist/**/*.js",
@@ -25,7 +25,7 @@
 	},
 	"scripts": {
 		"dev": "bun --watch src/index.tsx",
-		"build": "bun build src/index.tsx --outdir dist --target node --define 'process.env.DEV=\"false\"'",
+		"build": "bun build src/cli.tsx --outdir dist --target node --define 'process.env.DEV=\"false\"'",
 		"build:bin": "bun build src/cli.tsx --compile --minify --sourcemap --define 'process.env.DEV=\"false\"' --outfile dist/skilluse",
 		"build:all": "bun run scripts/build-all.ts",
 		"typecheck": "tsc --noEmit",

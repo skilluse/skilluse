@@ -44,9 +44,10 @@ import Uninstall, {
 	options as uninstallOptions,
 } from "./commands/uninstall.js";
 import Upgrade, { args as upgradeArgs } from "./commands/upgrade.js";
+import pkg from "../package.json" with { type: "json" };
 
 // Version injected via --define at build time, fallback to package.json
-const VERSION = process.env.VERSION || "0.1.0";
+const VERSION = process.env.VERSION || pkg.version;
 const BUILD_TIME = process.env.BUILD_TIME || new Date().toISOString();
 
 const program = new Command();
