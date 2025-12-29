@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { allPosts } from "content-collections";
-import { MDXContent } from "@content-collections/mdx/react";
+import { MDX } from "~/components/mdx/mdx";
 import { Breadcrumbs } from "~/components/layout/breadcrumbs";
 import { ShareButtons } from "~/components/posts/share-buttons";
 
@@ -80,9 +80,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </header>
 
       <section className="border border-border p-6">
-        <div className="prose prose-neutral dark:prose-invert max-w-none">
-          <MDXContent code={post.content} />
-        </div>
+        <MDX code={post.content} className="max-w-none!" />
       </section>
 
       <ShareButtons title={post.title} slug={post.slug} />
