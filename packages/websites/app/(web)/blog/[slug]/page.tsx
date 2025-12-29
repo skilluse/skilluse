@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { allPosts } from "content-collections";
 import { MDX } from "~/components/mdx/mdx";
@@ -56,7 +57,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
 
   return (
-    <article className="flex flex-col gap-6">
+    <article className="flex flex-col gap-8 md:gap-10 lg:gap-12">
       <Breadcrumbs
         items={[
           { name: "Home", href: "/" },
@@ -65,21 +66,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         ]}
       />
 
-      <header className="border border-border p-6">
-        <h1 className="text-2xl font-bold text-foreground">{post.title}</h1>
-        <p className="mt-2 text-muted-foreground">{post.description}</p>
-        <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <span>By {post.author.name}</span>
+      <header className="flex flex-col gap-6">
+        {post.image && (
+          <div className="aspect-[2/1] overflow-hidden">
+            <Image
+              src={post.image}
+              alt={post.title}
+              width={1280}
+              height={640}
+              priority
+              className="size-full object-cover"
+            />
           </div>
-          <span>·</span>
-          <time dateTime={post.publishedAt}>{formattedDate}</time>
-          <span>·</span>
-          <span>{post.readingTime} min read</span>
+        )}
+        <div>
+          <h1 className="text-2xl font-bold text-foreground md:text-3xl">{post.title}</h1>
+          <p className="mt-3 text-muted-foreground">{post.description}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <span>By {post.author.name}</span>
+            <span className="hidden sm:inline">·</span>
+            <time dateTime={post.publishedAt}>{formattedDate}</time>
+            <span className="hidden sm:inline">·</span>
+            <span>{post.readingTime} min read</span>
+          </div>
         </div>
       </header>
 
-      <section className="border border-border p-6">
+      <section>
         <MDX code={post.content} className="max-w-none!" />
       </section>
 

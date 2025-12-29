@@ -298,3 +298,36 @@ body {
   max-width: 100%;
   height: auto;
 }
+
+/* Heading anchor links */
+.prose :is(h1, h2, h3, h4, h5, h6) {
+  position: relative;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6) > a.anchor {
+  text-decoration: none;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6) > a.anchor::before {
+  content: "#";
+  position: absolute;
+  left: -1.5em;
+  opacity: 0;
+  color: var(--color-muted-foreground);
+  font-weight: normal;
+  transition: opacity 150ms ease-out;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6):hover > a.anchor::before {
+  opacity: 1;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6) > a.anchor:hover::before {
+  color: var(--color-primary);
+}
+
+/* Global link styles */
+a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 0.075em;
+}

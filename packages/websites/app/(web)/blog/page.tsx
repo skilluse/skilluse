@@ -32,19 +32,17 @@ export default function BlogPage() {
         </IntroDescription>
       </Intro>
 
-      <section className="border border-border">
-        <div className="p-6">
-          {sortedPosts.length === 0 ? (
-            <p className="text-muted-foreground">No posts yet. Check back soon!</p>
-          ) : (
-            <div className="flex flex-col">
-              {sortedPosts.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      {sortedPosts.length === 0 ? (
+        <section className="p-6">
+          <p className="text-muted-foreground">No posts yet. Check back soon!</p>
+        </section>
+      ) : (
+        <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {sortedPosts.map((post) => (
+            <PostCard key={post.slug} post={post} />
+          ))}
+        </section>
+      )}
     </div>
   );
 }
