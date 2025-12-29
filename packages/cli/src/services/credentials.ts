@@ -15,8 +15,18 @@ import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import keytar from "keytar";
 import { dataPath } from "./paths.js";
+
+// Lazy load keytar to avoid loading native module at startup
+// This allows --version and other commands to run without libsecret on Linux
+let keytarModule: typeof import("keytar") | null = null;
+
+async function getKeytar() {
+	if (!keytarModule) {
+		keytarModule = await import("keytar");
+	}
+	return keytarModule;
+}
 
 const SERVICE_NAME = "skilluse";
 const CREDENTIALS_FILE = "credentials.enc";
@@ -54,6 +64,7 @@ export async function isKeychainAvailable(): Promise<boolean> {
 
 	try {
 		// Try a test operation to see if keychain is working
+		const keytar = await getKeytar();
 		const testKey = "__keychain_test__";
 		await keytar.setPassword(SERVICE_NAME, testKey, "test");
 		await keytar.deletePassword(SERVICE_NAME, testKey);
@@ -95,6 +106,7 @@ export async function setCredentials(
 export async function clearCredentials(): Promise<void> {
 	// Clear from keychain
 	try {
+		const keytar = await getKeytar();
 		await keytar.deletePassword(SERVICE_NAME, "github-token");
 		await keytar.deletePassword(SERVICE_NAME, "github-user");
 	} catch {
@@ -114,6 +126,7 @@ export async function clearCredentials(): Promise<void> {
 
 async function getCredentialsFromKeychain(): Promise<Credentials | null> {
 	try {
+		const keytar = await getKeytar();
 		const token = await keytar.getPassword(SERVICE_NAME, "github-token");
 		const user = await keytar.getPassword(SERVICE_NAME, "github-user");
 
@@ -130,6 +143,7 @@ async function setCredentialsToKeychain(
 	token: string,
 	user: string,
 ): Promise<void> {
+	const keytar = await getKeytar();
 	await keytar.setPassword(SERVICE_NAME, "github-token", token);
 	await keytar.setPassword(SERVICE_NAME, "github-user", user);
 }
