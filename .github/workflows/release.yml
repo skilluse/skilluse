@@ -24,7 +24,7 @@ jobs:
             target: bun-linux-arm64
             artifact: skilluse-linux-arm64
           # macOS builds
-          - os: macos-13  # Intel runner
+          - os: macos-15  # Intel runner (macos-13 retired)
             target: bun-darwin-x64
             artifact: skilluse-darwin-x64
           - os: macos-14  # ARM64 runner (Apple Silicon)
