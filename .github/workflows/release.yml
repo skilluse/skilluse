@@ -94,6 +94,9 @@ jobs:
   npm:
     needs: release
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Required for OIDC Trusted Publishing
     steps:
       - uses: actions/checkout@v4
 
@@ -103,7 +106,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'  # npm CLI 11.5.1+ required for Trusted Publishing
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install and build for NPM
@@ -115,5 +118,4 @@ jobs:
       - name: Publish to NPM
         run: npm publish --access public
         working-directory: packages/cli
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # No NODE_AUTH_TOKEN needed - uses OIDC Trusted Publishing
