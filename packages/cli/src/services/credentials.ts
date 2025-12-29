@@ -1,35 +1,20 @@
 /**
- * Secure credential storage service.
+ * Credential storage service.
  *
- * Stores OAuth tokens securely using:
- * 1. System keychain (preferred) - macOS Keychain, Windows Credential Manager, Linux libsecret
- * 2. Encrypted file fallback - when keychain is unavailable
+ * Stores OAuth tokens in a plain JSON file with restricted permissions (0600).
+ * This follows the same pattern as gh, aws, npm, and docker CLIs.
  *
- * Storage strategy:
- * - User token → Keychain/encrypted file (sensitive)
- * - Installation list → Config file JSON via store.ts (metadata)
- * - Installation token → Memory cache (short-lived, 1 hour)
+ * Storage location (via env-paths):
+ * - macOS: ~/Library/Application Support/skilluse/auth.json
+ * - Linux: ~/.config/skilluse/auth.json
+ * - Windows: %APPDATA%/skilluse/auth.json
  */
 
-import crypto from "node:crypto";
 import fs from "node:fs/promises";
-import os from "node:os";
 import path from "node:path";
-import { dataPath } from "./paths.js";
+import { configPath } from "./paths.js";
 
-// Lazy load keytar to avoid loading native module at startup
-// This allows --version and other commands to run without libsecret on Linux
-let keytarModule: typeof import("keytar") | null = null;
-
-async function getKeytar() {
-	if (!keytarModule) {
-		keytarModule = await import("keytar");
-	}
-	return keytarModule;
-}
-
-const SERVICE_NAME = "skilluse";
-const CREDENTIALS_FILE = "credentials.enc";
+const AUTH_FILE = "auth.json";
 
 /** @deprecated Use UserCredentials instead */
 export interface Credentials {
@@ -48,90 +33,30 @@ export interface InstallationTokenCache {
 	expiresAt: Date;
 }
 
+interface AuthFile {
+	_comment: string;
+	token: string;
+	userName: string;
+}
+
 // In-memory cache for short-lived installation tokens
 const installationTokenCache = new Map<number, InstallationTokenCache>();
 
-// Cache keychain availability to avoid repeated checks
-let keychainAvailable: boolean | null = null;
-
-/**
- * Check if the system keychain is available and working.
- */
-export async function isKeychainAvailable(): Promise<boolean> {
-	if (keychainAvailable !== null) {
-		return keychainAvailable;
-	}
-
-	try {
-		// Try a test operation to see if keychain is working
-		const keytar = await getKeytar();
-		const testKey = "__keychain_test__";
-		await keytar.setPassword(SERVICE_NAME, testKey, "test");
-		await keytar.deletePassword(SERVICE_NAME, testKey);
-		keychainAvailable = true;
-	} catch {
-		keychainAvailable = false;
-	}
-
-	return keychainAvailable;
+function getAuthFilePath(): string {
+	return path.join(configPath, AUTH_FILE);
 }
 
 /**
- * Get stored credentials from keychain or encrypted file.
+ * Get stored credentials from auth file.
  */
 export async function getCredentials(): Promise<Credentials | null> {
-	if (await isKeychainAvailable()) {
-		return getCredentialsFromKeychain();
-	}
-	return getCredentialsFromFile();
-}
-
-/**
- * Store credentials in keychain or encrypted file.
- */
-export async function setCredentials(
-	token: string,
-	user: string,
-): Promise<void> {
-	if (await isKeychainAvailable()) {
-		await setCredentialsToKeychain(token, user);
-	} else {
-		await setCredentialsToFile(token, user);
-	}
-}
-
-/**
- * Clear stored credentials from both keychain and encrypted file.
- */
-export async function clearCredentials(): Promise<void> {
-	// Clear from keychain
 	try {
-		const keytar = await getKeytar();
-		await keytar.deletePassword(SERVICE_NAME, "github-token");
-		await keytar.deletePassword(SERVICE_NAME, "github-user");
-	} catch {
-		// Ignore keychain errors
-	}
+		const filePath = getAuthFilePath();
+		const content = await fs.readFile(filePath, "utf8");
+		const auth = JSON.parse(content) as AuthFile;
 
-	// Clear encrypted file
-	try {
-		const filePath = path.join(dataPath, CREDENTIALS_FILE);
-		await fs.unlink(filePath);
-	} catch {
-		// Ignore file errors (file may not exist)
-	}
-}
-
-// --- Keychain operations ---
-
-async function getCredentialsFromKeychain(): Promise<Credentials | null> {
-	try {
-		const keytar = await getKeytar();
-		const token = await keytar.getPassword(SERVICE_NAME, "github-token");
-		const user = await keytar.getPassword(SERVICE_NAME, "github-user");
-
-		if (token && user) {
-			return { token, user };
+		if (auth.token && auth.userName) {
+			return { token: auth.token, user: auth.userName };
 		}
 		return null;
 	} catch {
@@ -139,79 +64,37 @@ async function getCredentialsFromKeychain(): Promise<Credentials | null> {
 	}
 }
 
-async function setCredentialsToKeychain(
+/**
+ * Store credentials in auth file with restricted permissions.
+ */
+export async function setCredentials(
 	token: string,
 	user: string,
 ): Promise<void> {
-	const keytar = await getKeytar();
-	await keytar.setPassword(SERVICE_NAME, "github-token", token);
-	await keytar.setPassword(SERVICE_NAME, "github-user", user);
-}
+	const auth: AuthFile = {
+		_comment:
+			"GitHub OAuth token for skilluse CLI. Revoke at: https://github.com/settings/apps/authorizations",
+		token,
+		userName: user,
+	};
 
-// --- Encrypted file operations ---
+	// Ensure config directory exists
+	await fs.mkdir(configPath, { recursive: true });
+
+	const filePath = getAuthFilePath();
+	await fs.writeFile(filePath, JSON.stringify(auth, null, 2), { mode: 0o600 });
+}
 
 /**
- * Derive an encryption key from machine-specific information.
- * This provides basic protection against copying the file to another machine.
+ * Clear stored credentials.
  */
-function deriveKey(): Buffer {
-	const machineInfo = `${os.hostname()}:${os.userInfo().username}:${SERVICE_NAME}`;
-	return crypto.scryptSync(machineInfo, "skilluse-salt", 32);
-}
-
-function encrypt(data: string): string {
-	const key = deriveKey();
-	const iv = crypto.randomBytes(16);
-	const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
-
-	let encrypted = cipher.update(data, "utf8", "hex");
-	encrypted += cipher.final("hex");
-
-	const authTag = cipher.getAuthTag();
-
-	// Format: iv:authTag:encryptedData
-	return `${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted}`;
-}
-
-function decrypt(encryptedData: string): string {
-	const [ivHex, authTagHex, encrypted] = encryptedData.split(":");
-
-	const key = deriveKey();
-	const iv = Buffer.from(ivHex, "hex");
-	const authTag = Buffer.from(authTagHex, "hex");
-
-	const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
-	decipher.setAuthTag(authTag);
-
-	let decrypted = decipher.update(encrypted, "hex", "utf8");
-	decrypted += decipher.final("utf8");
-
-	return decrypted;
-}
-
-async function getCredentialsFromFile(): Promise<Credentials | null> {
+export async function clearCredentials(): Promise<void> {
 	try {
-		const filePath = path.join(dataPath, CREDENTIALS_FILE);
-		const encryptedData = await fs.readFile(filePath, "utf8");
-		const decrypted = decrypt(encryptedData);
-		return JSON.parse(decrypted) as Credentials;
+		const filePath = getAuthFilePath();
+		await fs.unlink(filePath);
 	} catch {
-		return null;
+		// Ignore errors (file may not exist)
 	}
-}
-
-async function setCredentialsToFile(
-	token: string,
-	user: string,
-): Promise<void> {
-	const credentials: Credentials = { token, user };
-	const encrypted = encrypt(JSON.stringify(credentials));
-
-	// Ensure data directory exists
-	await fs.mkdir(dataPath, { recursive: true });
-
-	const filePath = path.join(dataPath, CREDENTIALS_FILE);
-	await fs.writeFile(filePath, encrypted, { mode: 0o600 }); // Owner read/write only
 }
 
 // ============================================================================
@@ -225,12 +108,11 @@ export async function setUserCredentials(
 	token: string,
 	userName: string,
 ): Promise<void> {
-	// Reuse existing implementation with new interface
 	await setCredentials(token, userName);
 }
 
 /**
- * Get user credentials from secure storage.
+ * Get user credentials from storage.
  */
 export async function getUserCredentials(): Promise<UserCredentials | null> {
 	const creds = await getCredentials();

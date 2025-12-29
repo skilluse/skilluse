@@ -8,7 +8,6 @@ export {
 	getCredentials,
 	getUserCredentials,
 	type InstallationTokenCache,
-	isKeychainAvailable,
 	setCachedInstallationToken,
 	setCredentials,
 	// New GitHub App credential functions
