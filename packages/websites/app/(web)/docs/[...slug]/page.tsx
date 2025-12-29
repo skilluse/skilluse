@@ -23,13 +23,22 @@ export async function generateMetadata({ params }: DocsPageProps) {
 
   if (!doc) {
     return {
-      title: "Page Not Found | SkillUse",
+      title: "Page Not Found",
     }
   }
 
   return {
-    title: `${doc.title} | SkillUse Docs`,
+    title: doc.title,
     description: doc.description,
+    openGraph: {
+      title: `${doc.title} | SkillUse Docs`,
+      description: doc.description,
+      url: `/docs/${slugPath}`,
+      type: "article",
+    },
+    alternates: {
+      canonical: `/docs/${slugPath}`,
+    },
   }
 }
 

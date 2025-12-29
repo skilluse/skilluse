@@ -1,11 +1,21 @@
-import { allPosts } from "content-collections";
-import { PostCard } from "~/components/posts/post-card";
-import { Intro, IntroTitle, IntroDescription } from "~/components/shared/intro";
+import type { Metadata } from "next"
+import { allPosts } from "content-collections"
+import { PostCard } from "~/components/posts/post-card"
+import { Intro, IntroTitle, IntroDescription } from "~/components/shared/intro"
 
-export const metadata = {
-  title: "Blog | SkillUse",
+export const metadata: Metadata = {
+  title: "Blog",
   description: "Articles about AI agents, coding skills, and developer productivity",
-};
+  openGraph: {
+    title: "Blog | SkillUse",
+    description: "Articles about AI agents, coding skills, and developer productivity",
+    url: "/blog",
+    type: "website",
+  },
+  alternates: {
+    canonical: "/blog",
+  },
+}
 
 export default function BlogPage() {
   // Sort posts by date descending

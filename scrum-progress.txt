@@ -270,7 +270,7 @@
 - [x] web09-layout-review - Review and fix homepage layout issues
 - [x] web04-blog-setup - Blog listing and posts
 - [x] web05-docs-setup - Documentation with sidebar
-- [ ] web06-polish - SEO, OG images, sitemap
+- [x] web06-polish - SEO, OG images, sitemap
 
 ## Completed (Website)
 - [x] web01-project-setup
@@ -281,6 +281,22 @@
 - [x] web09-layout-review
 - [x] web04-blog-setup
 - [x] web05-docs-setup
+- [x] web06-polish
+
+### [2025-12-29] Session - web06-polish
+- Working on: web06-polish
+- Completed: F001, F002, F003, F004, F005, F006, F007, F008
+- In progress: None
+- Commits: 982fc5d
+- Notes:
+  - Added SEO metadata with openGraph and canonical URLs to all pages
+  - Created dynamic OG images using next/og ImageResponse
+  - Installed next-sitemap with postbuild script for sitemap/robots.txt generation
+  - Created 404 not-found page with friendly message and navigation links
+  - Created error boundary page with reset button and issue reporting
+  - Fixed mobile responsiveness for prose code blocks
+  - Verified all pages pass 375px viewport test
+  - Full site walkthrough: 14 pages tested, no broken links
 
 ### [2025-12-29] Session - web05-docs-setup
 - Working on: web05-docs-setup

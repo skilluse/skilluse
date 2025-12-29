@@ -20,13 +20,24 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 
   if (!post) {
     return {
-      title: "Post Not Found | SkillUse",
+      title: "Post Not Found",
     };
   }
 
   return {
-    title: `${post.title} | SkillUse Blog`,
+    title: post.title,
     description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      url: `/blog/${slug}`,
+      type: "article",
+      publishedTime: post.publishedAt,
+      authors: [post.author.name],
+    },
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
   };
 }
 

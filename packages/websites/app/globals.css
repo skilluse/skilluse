@@ -270,3 +270,31 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Prose code block overflow handling */
+.prose pre {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.prose code {
+  word-break: break-word;
+}
+
+.prose pre code {
+  word-break: normal;
+  white-space: pre;
+}
+
+/* Ensure prose content doesn't overflow on mobile */
+.prose {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.prose img,
+.prose video,
+.prose iframe {
+  max-width: 100%;
+  height: auto;
+}

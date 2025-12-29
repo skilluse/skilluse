@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/*
+
+# Host
+Host: https://skilluse.dev
+
+# Sitemaps
+Sitemap: https://skilluse.dev/sitemap.xml

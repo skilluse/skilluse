@@ -1,12 +1,22 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { allDocs } from "content-collections"
 import { MDXContent } from "@content-collections/mdx/react"
 import { DocsToc } from "~/components/docs/docs-toc"
 import { DocsPagination } from "~/components/docs/docs-pagination"
 
-export const metadata = {
-  title: "Documentation | SkillUse",
+export const metadata: Metadata = {
+  title: "Documentation",
   description: "Learn how to use SkillUse to share and install AI agent skills",
+  openGraph: {
+    title: "Documentation | SkillUse",
+    description: "Learn how to use SkillUse to share and install AI agent skills",
+    url: "/docs",
+    type: "website",
+  },
+  alternates: {
+    canonical: "/docs",
+  },
 }
 
 export default function DocsIndexPage() {
