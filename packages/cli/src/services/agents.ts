@@ -18,7 +18,7 @@ export interface AgentConfig {
 export const AGENTS: Record<string, AgentConfig> = {
 	claude: {
 		id: "claude",
-		name: "Claude Code",
+		name: "Claude",
 		description: "Anthropic Claude Code CLI",
 		localPath: ".claude/skills",
 		globalPath: join(homedir(), ".claude/skills"),
@@ -30,17 +30,10 @@ export const AGENTS: Record<string, AgentConfig> = {
 		localPath: ".cursor/skills",
 		globalPath: ".cursor/skills", // Cursor only supports project-level
 	},
-	amp: {
-		id: "amp",
-		name: "Amp",
-		description: "Sourcegraph Amp CLI",
-		localPath: ".amp/skills",
-		globalPath: join(homedir(), ".amp/skills"),
-	},
 	vscode: {
 		id: "vscode",
-		name: "VS Code / Copilot",
-		description: "Visual Studio Code with GitHub Copilot",
+		name: "VSCode",
+		description: "VS Code with GitHub Copilot",
 		localPath: ".github/skills",
 		globalPath: ".github/skills", // VS Code only supports project-level
 	},
@@ -51,19 +44,19 @@ export const AGENTS: Record<string, AgentConfig> = {
 		localPath: ".goose/skills",
 		globalPath: join(homedir(), ".config/goose/skills"),
 	},
-	opencode: {
-		id: "opencode",
-		name: "OpenCode",
-		description: "OpenCode CLI",
-		localPath: ".opencode/skills",
-		globalPath: join(homedir(), ".opencode/skills"),
-	},
 	codex: {
 		id: "codex",
 		name: "Codex",
 		description: "OpenAI Codex CLI",
 		localPath: ".codex/skills",
 		globalPath: join(homedir(), ".codex/skills"),
+	},
+	opencode: {
+		id: "opencode",
+		name: "OpenCode",
+		description: "OpenCode CLI",
+		localPath: ".opencode/skills",
+		globalPath: join(homedir(), ".opencode/skills"),
 	},
 	letta: {
 		id: "letta",
@@ -72,10 +65,10 @@ export const AGENTS: Record<string, AgentConfig> = {
 		localPath: ".letta/skills",
 		globalPath: join(homedir(), ".letta/skills"),
 	},
-	project: {
-		id: "project",
-		name: "Portable",
-		description: "Portable agent-agnostic skills directory",
+	other: {
+		id: "other",
+		name: "Other",
+		description: "Portable agent-agnostic skills",
 		localPath: ".skills",
 		globalPath: ".skills", // Portable is always project-level
 	},
