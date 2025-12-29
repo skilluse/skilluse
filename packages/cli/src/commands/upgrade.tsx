@@ -303,7 +303,7 @@ export default function Upgrade({ args: [skillName] }: Props) {
 					};
 					addInstalledSkill(updatedSkill);
 
-					upgraded.push(`${skill.name} → v${latestVersion}`);
+					upgraded.push(`${skill.name} -> v${latestVersion}`);
 				} catch {
 					// Skip failed upgrades
 				}
@@ -372,14 +372,14 @@ export default function Upgrade({ args: [skillName] }: Props) {
 					{state.upgrades.map((upgrade, i) => (
 						<Box key={upgrade.skill.name}>
 							<Text>
-								{i < state.current && <Text color="green">✔</Text>}
-								{i === state.current && <Text color="yellow">◐</Text>}
-								{i > state.current && <Text dimColor>○</Text>}
+								{i < state.current && <Text color="green">[x]</Text>}
+								{i === state.current && <Text color="yellow">[~]</Text>}
+								{i > state.current && <Text dimColor>[ ]</Text>}
 							</Text>
 							<Text> {upgrade.skill.name}</Text>
 							<Text dimColor>
 								{" "}
-								v{upgrade.skill.version} → v{upgrade.latestVersion}
+								v{upgrade.skill.version} {"->"} v{upgrade.latestVersion}
 							</Text>
 						</Box>
 					))}

@@ -275,7 +275,7 @@ export default function List({ options: opts }: Props) {
 										{skill.name}
 									</Text>
 									<Text dimColor> v{skill.version}</Text>
-									<Text color="green"> → v{skill.latestVersion}</Text>
+									<Text color="green"> {"->"} v{skill.latestVersion}</Text>
 									{state.showingAll && skill.agent && (
 										<Text dimColor> [{skill.agent}]</Text>
 									)}
