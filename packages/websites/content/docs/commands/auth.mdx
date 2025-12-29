@@ -1,0 +1,63 @@
+---
+title: Auth Commands
+description: Authentication commands for GitHub access
+order: 11
+---
+
+# Auth Commands
+
+SkillUse uses GitHub OAuth for authentication, enabling access to skills stored in public and private repositories.
+
+## login
+
+Authenticate with GitHub using device flow OAuth.
+
+```bash
+skilluse login
+```
+
+This command:
+1. Opens your browser to GitHub's device authorization page
+2. Prompts you to enter a verification code
+3. Stores the access token securely in your system keychain
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--force` | Re-authenticate even if already logged in |
+
+### Example
+
+```bash
+# First-time login
+skilluse login
+
+# Force re-authentication
+skilluse login --force
+```
+
+## logout
+
+Remove stored GitHub credentials.
+
+```bash
+skilluse logout
+```
+
+This clears:
+- Access token from system keychain
+- GitHub App installations from config
+
+## whoami
+
+Display information about the current authenticated user.
+
+```bash
+skilluse whoami
+```
+
+Shows:
+- GitHub username
+- Profile URL
+- GitHub App installation status

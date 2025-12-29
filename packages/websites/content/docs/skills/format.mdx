@@ -1,0 +1,111 @@
+---
+title: Skill Format
+description: SKILL.md file specification
+order: 22
+---
+
+# Skill Format
+
+Skills are defined in `SKILL.md` files with YAML frontmatter and markdown content.
+
+## File Structure
+
+```
+my-skill/
+  SKILL.md      # Required: skill definition
+  examples/     # Optional: example files
+  templates/    # Optional: code templates
+```
+
+## Frontmatter
+
+Required and optional fields in the YAML frontmatter:
+
+```yaml
+---
+name: my-skill           # Required: unique identifier
+description: Brief desc  # Required: one-line summary
+version: 1.0.0          # Optional: semver version
+author: Your Name       # Optional: skill author
+tags:                   # Optional: categorization
+  - code-review
+  - security
+---
+```
+
+### Required Fields
+
+| Field | Description |
+|-------|-------------|
+| `name` | Unique skill identifier (lowercase, hyphens) |
+| `description` | Brief one-line description |
+
+### Optional Fields
+
+| Field | Description |
+|-------|-------------|
+| `version` | Semantic version (e.g., 1.0.0) |
+| `author` | Skill creator name or handle |
+| `tags` | Array of category tags |
+
+## Content Sections
+
+### Title
+
+Start with a level-1 heading matching the skill name:
+
+```markdown
+# My Skill
+```
+
+### Description
+
+One or two paragraphs explaining what the skill does:
+
+```markdown
+This skill helps developers write consistent commit messages
+following the Conventional Commits specification.
+```
+
+### When to Use
+
+Describe scenarios when this skill applies:
+
+```markdown
+## When to Use
+
+Use this skill when:
+- Creating git commits
+- Writing changelog entries
+```
+
+### Instructions
+
+Detailed instructions for the AI agent:
+
+```markdown
+## Instructions
+
+1. Analyze the staged changes
+2. Determine the commit type (feat, fix, docs, etc.)
+3. Generate a commit message in format: type(scope): description
+```
+
+### Examples
+
+Concrete examples of expected behavior:
+
+```markdown
+## Examples
+
+Input: Added new login button
+Output: feat(auth): add login button to header
+```
+
+## Best Practices
+
+1. Keep instructions clear and concise
+2. Use bullet points and numbered lists
+3. Provide concrete examples
+4. Define scope boundaries (what to do and not do)
+5. Test with your target AI agent before sharing

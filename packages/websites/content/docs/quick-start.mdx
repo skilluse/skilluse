@@ -1,0 +1,91 @@
+---
+title: Quick Start
+description: Get up and running with SkillUse in minutes
+order: 3
+---
+
+# Quick Start
+
+This guide walks you through creating your first skill and installing it in your project.
+
+## Step 1: Create a Skill
+
+Create a `.claude/skills/` directory in your project and add a skill file:
+
+```bash
+mkdir -p .claude/skills/my-skill
+```
+
+Create `SKILL.md` with frontmatter and instructions:
+
+```markdown
+---
+name: my-skill
+description: A sample skill for demonstration
+version: 1.0.0
+---
+
+# My Skill
+
+This skill helps with [describe what it does].
+
+## When to Use
+
+Use this skill when [describe the scenario].
+
+## Instructions
+
+[Add your instructions here]
+```
+
+## Step 2: Test Locally
+
+Your AI agent (Claude Code, Cursor, etc.) will automatically detect skills in `.claude/skills/`. Test by asking your agent to use the skill.
+
+## Step 3: Share Your Skill
+
+To share skills across projects, push them to a GitHub repository. Then install with:
+
+```bash
+skilluse install owner/repo/path/to/skill
+```
+
+## Example Skills
+
+Here are some common skill patterns:
+
+### Code Review Skill
+
+```markdown
+---
+name: code-review
+description: Review code for best practices
+---
+
+# Code Review
+
+Review the provided code for:
+- Security vulnerabilities
+- Performance issues
+- Code style consistency
+- Potential bugs
+```
+
+### Git Commit Skill
+
+```markdown
+---
+name: commit
+description: Generate conventional commit messages
+---
+
+# Git Commit
+
+Generate a commit message following Conventional Commits format.
+Analyze staged changes and summarize in: type(scope): description
+```
+
+## Next Steps
+
+- [Skill Format](/docs/skills/format) - Learn about SKILL.md structure
+- [Creating Skills](/docs/skills/creating) - Best practices for skill design

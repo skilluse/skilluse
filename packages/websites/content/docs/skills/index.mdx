@@ -1,0 +1,61 @@
+---
+title: Skills Overview
+description: Understanding AI agent skills
+order: 20
+---
+
+# Skills
+
+Skills are reusable prompt templates that extend AI agent capabilities. They provide structured instructions for common tasks.
+
+## What is a Skill?
+
+A skill is a markdown file (SKILL.md) containing:
+- Frontmatter with metadata
+- Instructions for the AI agent
+- Examples and guidelines
+
+## Where Skills Live
+
+Skills are stored in `.claude/skills/` directories:
+
+| Location | Purpose |
+|----------|---------|
+| `./.claude/skills/` | Project-specific skills |
+| `~/.claude/skills/` | Global skills for all projects |
+
+## Skill Discovery
+
+AI agents automatically detect and load skills from these directories. When you ask an agent to perform a task, it can invoke matching skills.
+
+## Built-in vs Custom Skills
+
+### Built-in Skills
+
+Some AI agents come with built-in skills for common tasks:
+- Code generation
+- Git operations
+- File manipulation
+
+### Custom Skills
+
+You can create custom skills for:
+- Team-specific workflows
+- Domain knowledge
+- Code style enforcement
+- Review checklists
+
+## Skill Examples
+
+Common skill patterns include:
+
+- **Code Review** - Enforce coding standards
+- **Commit Messages** - Generate conventional commits
+- **Documentation** - Write consistent docs
+- **Testing** - Generate test cases
+- **Refactoring** - Apply specific patterns
+
+## Next Steps
+
+- [Creating Skills](/docs/skills/creating) - Build your own skills
+- [Skill Format](/docs/skills/format) - SKILL.md specification

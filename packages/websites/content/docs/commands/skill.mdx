@@ -1,0 +1,104 @@
+---
+title: Skill Commands
+description: Commands for installing and managing skills
+order: 13
+---
+
+# Skill Commands
+
+Install, update, and manage AI agent skills.
+
+## install
+
+Install a skill from a GitHub repository.
+
+```bash
+skilluse install <skill>
+```
+
+### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `skill` | Skill path: `owner/repo/path/to/skill` or just `skill-name` from configured repos |
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--global` | Install to global skills directory (~/.claude/skills) |
+
+### Example
+
+```bash
+# Install from full path
+skilluse install acme/skills/commit
+
+# Install from configured repo
+skilluse install commit
+
+# Install globally
+skilluse install commit --global
+```
+
+## uninstall
+
+Remove an installed skill.
+
+```bash
+skilluse uninstall <skill>
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--global` | Uninstall from global directory |
+| `--force` | Skip confirmation prompt |
+
+## upgrade
+
+Update a skill to its latest version.
+
+```bash
+skilluse upgrade <skill>
+```
+
+Compares the installed version's commit SHA with the latest in the repository.
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--global` | Upgrade global skill |
+| `--all` | Upgrade all installed skills |
+
+## list
+
+List all installed skills.
+
+```bash
+skilluse list
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--global` | List global skills |
+| `--outdated` | Show only skills with available updates |
+
+## info
+
+Show detailed information about a skill.
+
+```bash
+skilluse info <skill>
+```
+
+Displays:
+- Skill name and description
+- Version
+- Author
+- Installation path
+- Last updated

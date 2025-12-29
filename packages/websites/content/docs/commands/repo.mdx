@@ -1,0 +1,70 @@
+---
+title: Repo Commands
+description: Repository management commands
+order: 12
+---
+
+# Repo Commands
+
+Manage skill repositories that SkillUse can install from.
+
+## repo add
+
+Add a GitHub repository as a skill source.
+
+```bash
+skilluse repo add <owner/repo>
+```
+
+### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `owner/repo` | GitHub repository in owner/repo format |
+
+### Example
+
+```bash
+# Add a public skill repository
+skilluse repo add acme/skills
+
+# Add your own repository
+skilluse repo add myuser/my-skills
+```
+
+## repo list
+
+List all configured skill repositories.
+
+```bash
+skilluse repo list
+```
+
+Shows:
+- Repository name
+- Number of available skills
+- Default status
+
+## repo remove
+
+Remove a repository from the configuration.
+
+```bash
+skilluse repo remove <owner/repo>
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--force` | Skip confirmation prompt |
+
+### Example
+
+```bash
+# Remove with confirmation
+skilluse repo remove acme/skills
+
+# Remove without confirmation
+skilluse repo remove acme/skills --force
+```

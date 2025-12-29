@@ -1,0 +1,49 @@
+---
+title: Commands Overview
+description: Overview of all SkillUse CLI commands
+order: 10
+---
+
+# Commands
+
+SkillUse provides commands for authentication, repository management, and skill installation.
+
+## Command Categories
+
+### Authentication
+
+- `skilluse login` - Authenticate with GitHub
+- `skilluse logout` - Remove stored credentials
+- `skilluse whoami` - Show current user info
+
+### Repository Management
+
+- `skilluse repo add <owner/repo>` - Add a skill repository
+- `skilluse repo list` - List configured repositories
+- `skilluse repo remove <owner/repo>` - Remove a repository
+
+### Skill Management
+
+- `skilluse install <skill>` - Install a skill
+- `skilluse uninstall <skill>` - Remove an installed skill
+- `skilluse upgrade <skill>` - Upgrade to latest version
+- `skilluse list` - List installed skills
+- `skilluse info <skill>` - Show skill details
+
+## Global Options
+
+All commands support these options:
+
+| Option | Description |
+|--------|-------------|
+| `--help` | Show help for any command |
+| `--version` | Show CLI version |
+| `--global` | Apply to global skills directory |
+
+## Getting Help
+
+Run any command with `--help` for detailed usage:
+
+```bash
+skilluse install --help
+```

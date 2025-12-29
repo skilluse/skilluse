@@ -48,9 +48,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <article className="flex flex-col gap-6">
       <Breadcrumbs
         items={[
-          { label: "Home", href: "/" },
-          { label: "Blog", href: "/blog" },
-          { label: post.title },
+          { name: "Home", href: "/" },
+          { name: "Blog", href: "/blog" },
+          { name: post.title, href: "#" },
         ]}
       />
 

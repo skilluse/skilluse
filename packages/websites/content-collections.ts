@@ -5,6 +5,32 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import { z } from "zod";
 
+// Extract h2/h3 headings from markdown content
+type Heading = {
+  level: number;
+  text: string;
+  id: string;
+};
+
+function extractHeadings(content: string): Heading[] {
+  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
+  const headings: Heading[] = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = match[1].length;
+    const text = match[2].trim();
+    // Generate slug from text (same as rehype-slug)
+    const id = text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-");
+    headings.push({ level, text, id });
+  }
+
+  return headings;
+}
+
 const posts = defineCollection({
   name: "posts",
   directory: "content/posts",
@@ -60,6 +86,58 @@ const posts = defineCollection({
   },
 });
 
-export default defineConfig({
-  collections: [posts],
+const docs = defineCollection({
+  name: "docs",
+  directory: "content/docs",
+  include: "**/*.mdx",
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    order: z.number().optional().default(999),
+  }),
+  transform: async (document, context) => {
+    const content = await compileMDX(context, document, {
+      rehypePlugins: [
+        rehypeSlug,
+        [
+          rehypeAutolinkHeadings,
+          {
+            behavior: "wrap",
+            properties: {
+              className: ["anchor"],
+            },
+          },
+        ],
+        [
+          rehypePrettyCode,
+          {
+            theme: "github-dark",
+            keepBackground: true,
+          },
+        ],
+      ],
+    });
+    const headings = extractHeadings(document.content);
+
+    // Generate slug from file path (e.g., "commands/auth" or "index" -> "")
+    let slug = document._meta.path.replace(/\.mdx$/, "");
+    if (slug === "index") {
+      slug = "";
+    } else if (slug.endsWith("/index")) {
+      slug = slug.replace(/\/index$/, "");
+    }
+
+    return {
+      ...document,
+      content,
+      headings,
+      slug,
+    };
+  },
 });
+
+export default defineConfig({
+  collections: [posts, docs],
+});
+
+export type { Heading };

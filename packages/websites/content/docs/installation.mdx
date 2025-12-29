@@ -1,0 +1,51 @@
+---
+title: Installation
+description: How to install SkillUse on your system
+order: 2
+---
+
+# Installation
+
+SkillUse can be installed globally via npm, or run directly with npx.
+
+## Global Installation
+
+Install SkillUse globally to use the `skilluse` command anywhere:
+
+```bash
+npm install -g skilluse
+```
+
+After installation, verify it works:
+
+```bash
+skilluse --version
+```
+
+## Using npx
+
+You can also run SkillUse without installing it:
+
+```bash
+npx skilluse --help
+```
+
+## Requirements
+
+- Node.js 18 or later
+- npm, pnpm, or bun package manager
+
+## Authentication
+
+SkillUse requires GitHub authentication to install skills from private repositories. Run the login command:
+
+```bash
+skilluse login
+```
+
+This opens your browser for GitHub OAuth authentication. Once authenticated, you can access skills from your GitHub repositories.
+
+## Next Steps
+
+- [Quick Start](/docs/quick-start) - Create and install your first skill
+- [Commands](/docs/commands) - Learn about available CLI commands

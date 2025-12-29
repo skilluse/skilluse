@@ -1,0 +1,97 @@
+---
+title: Creating Skills
+description: How to create effective AI agent skills
+order: 21
+---
+
+# Creating Skills
+
+This guide covers best practices for creating skills that work well with AI agents.
+
+## Skill Structure
+
+Every skill needs a `SKILL.md` file with:
+
+1. Frontmatter (required metadata)
+2. Description (what the skill does)
+3. Instructions (how to use it)
+
+## Basic Template
+
+```markdown
+---
+name: my-skill
+description: Brief description of what this skill does
+version: 1.0.0
+---
+
+# My Skill
+
+[One paragraph explaining the skill's purpose]
+
+## When to Use
+
+Use this skill when [specific scenarios].
+
+## Instructions
+
+[Detailed instructions for the AI]
+```
+
+## Writing Good Instructions
+
+### Be Specific
+
+Instead of:
+> "Review the code"
+
+Write:
+> "Review the code for: 1) Security vulnerabilities 2) Performance issues 3) Code style violations"
+
+### Provide Examples
+
+Show the expected output format:
+
+```markdown
+## Output Format
+
+Provide feedback in this format:
+
+### Issues Found
+- [severity] Description of issue
+  - File: path/to/file.ts
+  - Line: 42
+  - Suggestion: How to fix it
+```
+
+### Set Boundaries
+
+Define what the skill should and shouldn't do:
+
+```markdown
+## Scope
+
+DO:
+- Check for SQL injection
+- Validate input sanitization
+
+DO NOT:
+- Modify code automatically
+- Run tests
+```
+
+## Testing Skills
+
+Test your skill by:
+
+1. Installing it locally
+2. Asking your AI agent to use it
+3. Verifying the output matches expectations
+
+## Sharing Skills
+
+Once tested, share skills by:
+
+1. Pushing to a GitHub repository
+2. Adding the repo: `skilluse repo add owner/repo`
+3. Installing: `skilluse install skill-name`
