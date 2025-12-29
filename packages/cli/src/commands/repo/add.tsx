@@ -1,9 +1,17 @@
 import { Box, Text, useApp, useInput } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { Spinner, StatusMessage } from "../../components/index.js";
+import {
+	MultiSelect,
+	type MultiSelectItem,
+	Select,
+	Spinner,
+	StatusMessage,
+} from "../../components/index.js";
 import {
 	addRepo,
+	discoverSkillPaths,
+	type DiscoveryResult,
 	getConfig,
 	getCredentials,
 	setDefaultRepo,
@@ -32,9 +40,16 @@ type AddState =
 	| { phase: "not_logged_in" }
 	| { phase: "invalid_repo" }
 	| { phase: "already_exists"; repo: string }
+	| { phase: "discovering"; repo: string }
+	| {
+			phase: "select_paths";
+			repo: string;
+			discovery: DiscoveryResult;
+	  }
+	| { phase: "no_skills_found"; repo: string }
 	| { phase: "input_path"; repo: string; currentPath: string }
 	| { phase: "saving"; repo: string }
-	| { phase: "success"; repo: string; path: string; isDefault: boolean }
+	| { phase: "success"; repo: string; paths: string[]; isDefault: boolean }
 	| { phase: "error"; message: string };
 
 export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
@@ -86,21 +101,104 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				setState({
 					phase: "success",
 					repo: repoArg,
-					path: opts.path || "(all paths)",
+					paths: paths.length > 0 ? paths : ["(all paths)"],
 					isDefault,
 				});
 				exit();
 				return;
 			}
 
-			// Interactive mode: prompt for path
-			setState({ phase: "input_path", repo: repoArg, currentPath: "" });
+			// Start discovery
+			setState({ phase: "discovering", repo: repoArg });
+
+			try {
+				const [owner, repo] = repoArg.split("/");
+				const discovery = await discoverSkillPaths(
+					owner,
+					repo,
+					opts.branch,
+					credentials.token,
+				);
+
+				if (discovery.totalSkills === 0) {
+					setState({ phase: "no_skills_found", repo: repoArg });
+				} else {
+					setState({
+						phase: "select_paths",
+						repo: repoArg,
+						discovery,
+					});
+				}
+			} catch (error) {
+				const message =
+					error instanceof Error ? error.message : "Unknown error";
+				setState({ phase: "error", message });
+				exit();
+			}
 		}
 
 		checkAndAdd();
 	}, [repoArg, opts.path, opts.branch, opts.default, exit]);
 
-	// Handle input for path
+	// Handle path selection submission
+	const handlePathsSelected = (selectedPaths: string[]) => {
+		const config = getConfig();
+
+		addRepo({
+			repo: repoArg,
+			branch: opts.branch,
+			paths: selectedPaths,
+		});
+
+		const isDefault = opts.default || config.repos.length === 0;
+		if (isDefault) {
+			setDefaultRepo(repoArg);
+		}
+
+		setState({
+			phase: "success",
+			repo: repoArg,
+			paths: selectedPaths.length > 0 ? selectedPaths : ["(all paths)"],
+			isDefault,
+		});
+		exit();
+	};
+
+	// Handle no skills found options
+	const handleNoSkillsOption = (option: { value: string }) => {
+		const config = getConfig();
+
+		switch (option.value) {
+			case "manual":
+				setState({ phase: "input_path", repo: repoArg, currentPath: "" });
+				break;
+			case "add_all":
+				addRepo({
+					repo: repoArg,
+					branch: opts.branch,
+					paths: [],
+				});
+
+				const isDefault = opts.default || config.repos.length === 0;
+				if (isDefault) {
+					setDefaultRepo(repoArg);
+				}
+
+				setState({
+					phase: "success",
+					repo: repoArg,
+					paths: ["(all paths)"],
+					isDefault,
+				});
+				exit();
+				break;
+			case "cancel":
+				exit();
+				break;
+		}
+	};
+
+	// Handle input for manual path entry
 	useInput(
 		(input, key) => {
 			if (state.phase !== "input_path") return;
@@ -111,20 +209,20 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				const paths = state.currentPath ? [state.currentPath] : [];
 
 				addRepo({
-					repo: state.repo,
+					repo: repoArg,
 					branch: opts.branch,
 					paths,
 				});
 
 				const isDefault = opts.default || config.repos.length === 0;
 				if (isDefault) {
-					setDefaultRepo(state.repo);
+					setDefaultRepo(repoArg);
 				}
 
 				setState({
 					phase: "success",
-					repo: state.repo,
-					path: state.currentPath || "(all paths)",
+					repo: repoArg,
+					paths: paths.length > 0 ? paths : ["(all paths)"],
 					isDefault,
 				});
 				exit();
@@ -187,6 +285,65 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				</Box>
 			);
 
+		case "discovering":
+			return <Spinner text={`Scanning ${state.repo} for skills...`} />;
+
+		case "select_paths": {
+			const items: MultiSelectItem[] = state.discovery.skillPaths.map((sp) => ({
+				label: sp.path,
+				value: sp.path,
+				hint: `${sp.skillCount} skill${sp.skillCount !== 1 ? "s" : ""}`,
+			}));
+
+			return (
+				<Box flexDirection="column">
+					<Text>
+						Found <Text color="green">{state.discovery.totalSkills}</Text> skill
+						{state.discovery.totalSkills !== 1 ? "s" : ""} in{" "}
+						<Text color="cyan">{state.repo}</Text>
+					</Text>
+					{state.discovery.truncated && (
+						<Text color="yellow">
+							Warning: Repository is large, some files may not be shown
+						</Text>
+					)}
+					<Box marginTop={1}>
+						<Text>Select skill paths to include:</Text>
+					</Box>
+					<Box marginTop={1}>
+						<MultiSelect
+							items={items}
+							onSubmit={handlePathsSelected}
+							onCancel={() => exit()}
+							initialSelected={items.map((i) => i.value)}
+						/>
+					</Box>
+				</Box>
+			);
+		}
+
+		case "no_skills_found":
+			return (
+				<Box flexDirection="column">
+					<StatusMessage type="warning">
+						No SKILL.md files found in {state.repo}
+					</StatusMessage>
+					<Box marginTop={1}>
+						<Text>What would you like to do?</Text>
+					</Box>
+					<Box marginTop={1}>
+						<Select
+							items={[
+								{ label: "Enter path manually", value: "manual" },
+								{ label: "Add repo anyway (all paths)", value: "add_all" },
+								{ label: "Cancel", value: "cancel" },
+							]}
+							onSelect={handleNoSkillsOption}
+						/>
+					</Box>
+				</Box>
+			);
+
 		case "input_path":
 			return (
 				<Box flexDirection="column">
@@ -196,7 +353,7 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 					<Box marginTop={1}>
 						<Text>Skill path (leave empty for all): </Text>
 						<Text color="green">{state.currentPath}</Text>
-						<Text color="gray">█</Text>
+						<Text color="gray">|</Text>
 					</Box>
 					<Box marginTop={1}>
 						<Text dimColor>Press Enter to confirm, Esc to cancel</Text>
@@ -211,7 +368,11 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 			return (
 				<Box flexDirection="column">
 					<StatusMessage type="success">Added {state.repo}</StatusMessage>
-					<Text dimColor>Path: {state.path}</Text>
+					{state.paths.map((path) => (
+						<Text key={path} dimColor>
+							Path: {path}
+						</Text>
+					))}
 					{state.isDefault && <Text dimColor>Set as default repository</Text>}
 				</Box>
 			);

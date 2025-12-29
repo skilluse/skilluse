@@ -2,9 +2,9 @@
   "ticket": "task06-repo-discovery",
   "title": "Repo Discovery & Path Selection",
   "priority": 5,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-27",
-  "completed_at": null,
+  "completed_at": "2025-12-29",
   "dependencies": ["task01-project-setup", "task02-ui-components", "task03-oauth-flow"],
   "parallelizable": false,
   "features": [
@@ -17,8 +17,8 @@
         "Verify GitHub API is called with correct params",
         "Verify list of paths with SKILL.md is returned"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented in services/discovery.ts using GitHub Trees API"
     },
     {
       "id": "F002",
@@ -29,8 +29,8 @@
         "Verify 'skills/' is identified as parent path",
         "Verify skill count per path is calculated"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "extractParentPaths() groups by top-level directory and counts skills"
     },
     {
       "id": "F003",
@@ -44,8 +44,8 @@
         "Press Enter to confirm",
         "Verify selected paths are returned"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "MultiSelect.tsx component with full keyboard navigation"
     },
     {
       "id": "F004",
@@ -58,8 +58,8 @@
         "Press 'a' again to deselect all",
         "Verify all paths are deselected"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Press 'a' toggles between select all and deselect all"
     },
     {
       "id": "F005",
@@ -70,8 +70,8 @@
         "Verify warning message is shown",
         "Verify options: specify path manually, add anyway, cancel"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Shows Select menu with 3 options when no skills found"
     },
     {
       "id": "F006",
@@ -82,13 +82,13 @@
         "Verify no interactive UI appears",
         "Verify repo is added with specified path"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Existing behavior preserved - --path bypasses discovery"
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }

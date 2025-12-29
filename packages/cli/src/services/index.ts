@@ -62,3 +62,9 @@ export {
 	getSkillsPath,
 	listAgents,
 } from "./agents.js";
+export {
+	discoverSkillPaths,
+	type DiscoveryResult,
+	extractParentPaths,
+	type SkillPath,
+} from "./discovery.js";
