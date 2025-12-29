@@ -9,7 +9,7 @@ export function Spinner({ text }: SpinnerProps) {
 	return (
 		<Box>
 			<Text color="cyan">
-				<InkSpinner type="line" />
+				<InkSpinner type="dots" />
 			</Text>
 			{text && <Text> {text}</Text>}
 		</Box>

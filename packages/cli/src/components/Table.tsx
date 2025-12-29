@@ -35,7 +35,7 @@ export function Table<T extends ScalarDict>({
 
 	const truncate = (str: string, maxLen: number) => {
 		if (str.length <= maxLen) return str;
-		return `${str.slice(0, maxLen - 2)}..`;
+		return `${str.slice(0, maxLen - 1)}…`;
 	};
 
 	const renderCell = (value: Scalar, width: number, isHeader = false) => {
@@ -49,7 +49,7 @@ export function Table<T extends ScalarDict>({
 		<Box>
 			<Text>
 				{widths
-					.map((w, i) => "-".repeat(w) + (i < widths.length - 1 ? "-+-" : ""))
+					.map((w, i) => "─".repeat(w) + (i < widths.length - 1 ? "─┼─" : ""))
 					.join("")}
 			</Text>
 		</Box>
@@ -63,7 +63,7 @@ export function Table<T extends ScalarDict>({
 					<Box key={String(col)}>
 						{/* biome-ignore lint/style/noNonNullAssertion: widths[i] guaranteed by cols */}
 						{renderCell(String(col), widths[i]!, true)}
-						{i < cols.length - 1 && <Text> | </Text>}
+						{i < cols.length - 1 && <Text> │ </Text>}
 					</Box>
 				))}
 			</Box>
@@ -76,7 +76,7 @@ export function Table<T extends ScalarDict>({
 						<Box key={String(col)}>
 							{/* biome-ignore lint/style/noNonNullAssertion: widths[i] guaranteed by cols */}
 							{renderCell(row[col], widths[i]!)}
-							{i < cols.length - 1 && <Text> | </Text>}
+							{i < cols.length - 1 && <Text> │ </Text>}
 						</Box>
 					))}
 				</Box>

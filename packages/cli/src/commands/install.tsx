@@ -862,10 +862,10 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 					{state.steps.map((step) => (
 						<Box key={step.label}>
 							<Text>
-								{step.status === "done" && <Text color="green">[x]</Text>}
-								{step.status === "in_progress" && <Text color="yellow">[~]</Text>}
-								{step.status === "pending" && <Text dimColor>[ ]</Text>}
-								{step.status === "error" && <Text color="red">[!]</Text>}
+								{step.status === "done" && <Text color="green">✔</Text>}
+								{step.status === "in_progress" && <Text color="yellow">◐</Text>}
+								{step.status === "pending" && <Text dimColor>○</Text>}
+								{step.status === "error" && <Text color="red">✖</Text>}
 							</Text>
 							<Text> {step.label}</Text>
 						</Box>

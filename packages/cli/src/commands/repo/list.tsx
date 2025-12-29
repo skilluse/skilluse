@@ -85,7 +85,7 @@ export default function RepoList(_props: Props) {
 							<Box key={repo.repo} flexDirection="column" marginBottom={1}>
 								<Box>
 									<Text color={isDefault ? "green" : undefined}>
-										{isDefault ? "* " : "  "}
+										{isDefault ? "● " : "○ "}
 									</Text>
 									<Text color={isDefault ? "cyan" : undefined} bold={isDefault}>
 										{repo.repo}
