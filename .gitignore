@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
-bun.lock
+
+# Legacy lockfiles (use bun.lock only)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
 
 # Build outputs
 dist/
