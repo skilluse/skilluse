@@ -1,4 +1,4 @@
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
@@ -12,7 +12,6 @@ import {
 	getGitHubErrorMessage,
 	type InstalledSkill,
 	isAuthRequired,
-	isRateLimited,
 	type RepoConfig,
 } from "../services/index.js";
 
@@ -130,6 +129,7 @@ async function checkForUpdate(
 export default function List({ options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<ListState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
 		async function loadSkills() {
@@ -152,7 +152,6 @@ export default function List({ options: opts }: Props) {
 					currentAgent,
 					showingAll: opts.all,
 				});
-				exit();
 				return;
 			}
 
@@ -182,7 +181,6 @@ export default function List({ options: opts }: Props) {
 							phase: "auth_required",
 							message: result.message,
 						});
-						exit();
 						return;
 					}
 
@@ -199,51 +197,57 @@ export default function List({ options: opts }: Props) {
 				currentAgent,
 				showingAll: opts.all,
 			});
-			exit();
 		}
 
 		loadSkills();
-	}, [opts.outdated, opts.all, exit]);
+	}, [opts.outdated, opts.all]);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Loading..." />;
+	// Add output item when data is ready (final states)
+	useEffect(() => {
+		const isFinalState =
+			state.phase === "success" ||
+			state.phase === "error" ||
+			state.phase === "auth_required";
 
-		case "auth_required":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">{state.message}</StatusMessage>
-				</Box>
-			);
+		if (isFinalState && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "checking_updates":
-			return (
-				<Spinner
-					text={`Checking for updates (${state.current}/${state.total})...`}
-				/>
-			);
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			// Use nextTick to ensure Static has completed rendering
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
 
-		case "success": {
+	const renderContent = () => {
+		if (state.phase === "auth_required") {
+			return <StatusMessage type="error">{state.message}</StatusMessage>;
+		}
+
+		if (state.phase === "error") {
+			return <StatusMessage type="error">{state.message}</StatusMessage>;
+		}
+
+		if (state.phase === "success") {
 			const agentInfo = getAgent(state.currentAgent);
 			const agentName = agentInfo?.name || state.currentAgent;
 
 			if (state.skills.length === 0) {
 				if (state.showingOutdated) {
 					return (
-						<Box flexDirection="column">
-							<StatusMessage type="success">
-								All skills are up to date
-							</StatusMessage>
-						</Box>
+						<StatusMessage type="success">
+							All skills are up to date
+						</StatusMessage>
 					);
 				}
 				return (
-					<Box flexDirection="column">
+					<>
 						<Box>
 							<Text bold>Installed Skills</Text>
-							{!state.showingAll && (
-								<Text dimColor> ({agentName})</Text>
-							)}
+							{!state.showingAll && <Text dimColor> ({agentName})</Text>}
 						</Box>
 						<Box marginTop={1}>
 							<Text dimColor>(no skills installed)</Text>
@@ -260,18 +264,16 @@ export default function List({ options: opts }: Props) {
 								</Text>
 							</Box>
 						)}
-					</Box>
+					</>
 				);
 			}
 
 			if (state.showingOutdated) {
 				return (
-					<Box flexDirection="column">
+					<>
 						<Box>
 							<Text bold>Outdated Skills</Text>
-							{!state.showingAll && (
-								<Text dimColor> ({agentName})</Text>
-							)}
+							{!state.showingAll && <Text dimColor> ({agentName})</Text>}
 						</Box>
 						<Text> </Text>
 						{state.skills.map((skill) => (
@@ -299,17 +301,15 @@ export default function List({ options: opts }: Props) {
 								skill-name' for one.
 							</Text>
 						</Box>
-					</Box>
+					</>
 				);
 			}
 
 			return (
-				<Box flexDirection="column">
+				<>
 					<Box>
 						<Text bold>Installed Skills</Text>
-						{!state.showingAll && (
-							<Text dimColor> ({agentName})</Text>
-						)}
+						{!state.showingAll && <Text dimColor> ({agentName})</Text>}
 					</Box>
 					<Text> </Text>
 					{state.skills.map((skill) => (
@@ -338,11 +338,32 @@ export default function List({ options: opts }: Props) {
 							</Text>
 						</Box>
 					)}
-				</Box>
+				</>
 			);
 		}
 
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+		return null;
+	};
+
+	return (
+		<>
+			{(state.phase === "checking" ||
+				state.phase === "checking_updates") && (
+				<Spinner
+					text={
+						state.phase === "checking_updates"
+							? `Checking for updates (${state.current}/${state.total})...`
+							: "Loading..."
+					}
+				/>
+			)}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }
