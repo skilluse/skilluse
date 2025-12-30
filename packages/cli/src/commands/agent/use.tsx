@@ -1,4 +1,4 @@
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../../components/index.js";
@@ -27,80 +27,96 @@ type UseState =
 export default function AgentUse({ args: [agentIdArg], options: _opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<UseState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
-		async function switchAgent() {
-			// Check if agent exists
-			const agent = getAgent(agentIdArg);
-			if (!agent) {
-				setState({ phase: "not_found", agentId: agentIdArg });
-				await new Promise((resolve) => setTimeout(resolve, 50));
-				exit();
-				return;
-			}
+		const agent = getAgent(agentIdArg);
+		if (!agent) {
+			setState({ phase: "not_found", agentId: agentIdArg });
+			return;
+		}
 
-			// Check if already current
-			const currentAgent = getCurrentAgent();
-			if (currentAgent === agentIdArg) {
-				setState({
-					phase: "already_current",
-					agentId: agentIdArg,
-					agentName: agent.name,
-				});
-				await new Promise((resolve) => setTimeout(resolve, 50));
-				exit();
-				return;
-			}
-
-			// Set as current
-			setCurrentAgent(agentIdArg);
+		const currentAgent = getCurrentAgent();
+		if (currentAgent === agentIdArg) {
 			setState({
-				phase: "success",
+				phase: "already_current",
 				agentId: agentIdArg,
 				agentName: agent.name,
 			});
-			await new Promise((resolve) => setTimeout(resolve, 50));
-			exit();
+			return;
 		}
-		switchAgent();
-	}, [agentIdArg, exit]);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Switching agent..." />;
+		setCurrentAgent(agentIdArg);
+		setState({
+			phase: "success",
+			agentId: agentIdArg,
+			agentName: agent.name,
+		});
+	}, [agentIdArg]);
 
-		case "not_found":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">
-						Unknown agent: {state.agentId}
-					</StatusMessage>
-					<Text dimColor>Run 'skilluse agent' to see available agents.</Text>
-				</Box>
-			);
+	useEffect(() => {
+		if (state.phase !== "checking" && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "already_current":
-			return (
-				<StatusMessage type="success">
-					{state.agentName} is already the current agent
-				</StatusMessage>
-			);
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
 
-		case "success":
-			return (
-				<Box flexDirection="column">
+	const renderContent = () => {
+		switch (state.phase) {
+			case "not_found":
+				return (
+					<>
+						<StatusMessage type="error">
+							Unknown agent: {state.agentId}
+						</StatusMessage>
+						<Text dimColor>Run 'skilluse agent' to see available agents.</Text>
+					</>
+				);
+
+			case "already_current":
+				return (
 					<StatusMessage type="success">
-						Switched to {state.agentName}
+						{state.agentName} is already the current agent
 					</StatusMessage>
-					<Box marginTop={1}>
-						<Text dimColor>
-							Skills will now be installed to {state.agentId}'s paths.
-						</Text>
-					</Box>
-				</Box>
-			);
+				);
 
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+			case "success":
+				return (
+					<>
+						<StatusMessage type="success">
+							Switched to {state.agentName}
+						</StatusMessage>
+						<Box marginTop={1}>
+							<Text dimColor>
+								Skills will now be installed to {state.agentId}'s paths.
+							</Text>
+						</Box>
+					</>
+				);
+
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			{state.phase === "checking" && <Spinner text="Switching agent..." />}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }

@@ -1,4 +1,4 @@
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../../components/index.js";
@@ -23,14 +23,13 @@ type RepoState =
 export default function Repo(_props: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<RepoState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
 		async function checkRepo() {
-			// Check if logged in
 			const credentials = await getCredentials();
 			if (!credentials) {
 				setState({ phase: "not_logged_in" });
-				exit();
 				return;
 			}
 
@@ -40,28 +39,43 @@ export default function Repo(_props: Props) {
 				defaultRepo: config.defaultRepo,
 				repos: config.repos,
 			});
-			exit();
 		}
 
 		checkRepo();
-	}, [exit]);
+	}, []);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Loading..." />;
+	useEffect(() => {
+		if (state.phase !== "checking" && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "not_logged_in":
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
+
+	const renderContent = () => {
+		if (state.phase === "not_logged_in") {
 			return (
-				<Box flexDirection="column">
+				<>
 					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
-				</Box>
+					<Text dimColor>
+						Run 'skilluse login' to authenticate with GitHub
+					</Text>
+				</>
 			);
+		}
 
-		case "success": {
+		if (state.phase === "error") {
+			return <StatusMessage type="error">{state.message}</StatusMessage>;
+		}
+
+		if (state.phase === "success") {
 			if (!state.defaultRepo) {
 				return (
-					<Box flexDirection="column">
+					<>
 						<Text bold>Current Repository</Text>
 						<Box marginTop={1}>
 							<Text dimColor>(no default repo set)</Text>
@@ -84,7 +98,7 @@ export default function Repo(_props: Props) {
 								</Text>
 							</Box>
 						)}
-					</Box>
+					</>
 				);
 			}
 
@@ -93,7 +107,7 @@ export default function Repo(_props: Props) {
 			);
 
 			return (
-				<Box flexDirection="column">
+				<>
 					<Text bold>Current Repository</Text>
 					<Box marginTop={1} flexDirection="column">
 						<Box>
@@ -125,11 +139,23 @@ export default function Repo(_props: Props) {
 							</Text>
 						</Box>
 					)}
-				</Box>
+				</>
 			);
 		}
 
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+		return null;
+	};
+
+	return (
+		<>
+			{state.phase === "checking" && <Spinner text="Loading..." />}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }
