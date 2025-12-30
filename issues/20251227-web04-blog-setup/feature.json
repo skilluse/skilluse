@@ -1,0 +1,120 @@
+{
+  "issue": "web04-blog-setup",
+  "title": "Blog Setup",
+  "priority": 4,
+  "status": "completed",
+  "dependencies": ["web01-project-setup", "web02-core-layout", "web07-cli-landing-page"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "content",
+      "description": "Posts collection configured",
+      "steps": [
+        "Define posts collection in content-collections.ts",
+        "Schema includes title, description, publishedAt, author",
+        "MDX compilation with rehype plugins",
+        "Collection exports allPosts"
+      ],
+      "passes": true,
+      "notes": "Using Zod schema with rehype-slug, rehype-autolink-headings, rehype-pretty-code"
+    },
+    {
+      "id": "F002",
+      "category": "content",
+      "description": "Sample blog post created",
+      "steps": [
+        "Create content/posts/getting-started.mdx",
+        "Add valid frontmatter with all required fields",
+        "Add meaningful content with headings and code blocks",
+        "Verify post appears in allPosts"
+      ],
+      "passes": true,
+      "notes": "Created getting-started.mdx with installation and usage guide"
+    },
+    {
+      "id": "F003",
+      "category": "component",
+      "description": "PostCard component created",
+      "steps": [
+        "Create components/web/posts/post-card.tsx",
+        "Display post title as link",
+        "Display truncated description",
+        "Display published date",
+        "Optional cover image"
+      ],
+      "passes": true,
+      "notes": "Created components/posts/post-card.tsx with reading time"
+    },
+    {
+      "id": "F004",
+      "category": "page",
+      "description": "Blog listing page works",
+      "steps": [
+        "Create app/(web)/blog/page.tsx",
+        "Display page title and description",
+        "Import allPosts and sort by date",
+        "Render PostCard for each post",
+        "Navigate to /blog and verify posts appear"
+      ],
+      "passes": true,
+      "notes": "Blog listing shows posts sorted by date descending"
+    },
+    {
+      "id": "F005",
+      "category": "page",
+      "description": "Blog post detail page works",
+      "steps": [
+        "Create app/(web)/blog/[slug]/page.tsx",
+        "Fetch post by slug from allPosts",
+        "Display title, date, author",
+        "Render MDX content",
+        "Handle 404 for invalid slugs"
+      ],
+      "passes": true,
+      "notes": "Post detail page with breadcrumbs and metadata"
+    },
+    {
+      "id": "F006",
+      "category": "component",
+      "description": "MDX content styled properly",
+      "steps": [
+        "Create components/web/mdx-components.tsx",
+        "Wrap content in prose class",
+        "Code blocks have syntax highlighting",
+        "Headings have anchor links",
+        "Links styled appropriately"
+      ],
+      "passes": true,
+      "notes": "Using @content-collections/mdx/react with prose styling"
+    },
+    {
+      "id": "F007",
+      "category": "component",
+      "description": "Share buttons added",
+      "steps": [
+        "Create share buttons component",
+        "Twitter share with pre-filled text",
+        "LinkedIn share",
+        "Copy link button",
+        "Display at bottom of post"
+      ],
+      "passes": true,
+      "notes": "Created components/posts/share-buttons.tsx with Twitter, LinkedIn, Copy link"
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "Blog navigation works end-to-end",
+      "steps": [
+        "Navigate to /blog",
+        "Click on a post card",
+        "Verify post page loads with content",
+        "Breadcrumbs link back to blog"
+      ],
+      "passes": true,
+      "notes": "All navigation works, MDX content renders correctly"
+    }
+  ],
+  "completed_at": "2025-12-28"
+}

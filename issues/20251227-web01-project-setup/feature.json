@@ -1,0 +1,108 @@
+{
+  "issue": "web01-project-setup",
+  "title": "Website Project Setup",
+  "priority": 1,
+  "status": "completed",
+  "dependencies": [],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "setup",
+      "description": "Next.js project initialized in packages/websites/",
+      "steps": [
+        "Run bunx create-next-app in packages/websites/",
+        "Verify package.json exists with Next.js dependency",
+        "Verify tsconfig.json exists",
+        "Verify app/ directory exists"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "category": "setup",
+      "description": "Tailwind CSS v4 configured",
+      "steps": [
+        "Install @tailwindcss/postcss and tailwindcss",
+        "Configure postcss.config.js",
+        "Verify globals.css imports Tailwind",
+        "Run dev server and verify styles work"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "category": "setup",
+      "description": "Common components copied from OpenAlternative",
+      "steps": [
+        "Copy components/common/ directory",
+        "Verify button.tsx exists",
+        "Verify heading.tsx exists",
+        "Verify icon.tsx exists",
+        "Verify stack.tsx exists"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "category": "setup",
+      "description": "Web UI components copied from OpenAlternative",
+      "steps": [
+        "Copy components/web/ui/ directory",
+        "Verify container.tsx exists",
+        "Verify intro.tsx exists",
+        "Verify grid.tsx exists"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "category": "setup",
+      "description": "Utility files set up",
+      "steps": [
+        "Copy utils/cva.ts",
+        "Verify cva and cx exports work",
+        "Copy tailwind-merge integration"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F006",
+      "category": "setup",
+      "description": "Site configuration created",
+      "steps": [
+        "Create config/site.ts with name, tagline, description",
+        "Create config/links.ts with social links",
+        "Create config/index.ts aggregator",
+        "Import config in a page and verify it works"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F007",
+      "category": "setup",
+      "description": "Content-collections configured for MDX",
+      "steps": [
+        "Install @content-collections/core, @content-collections/mdx, @content-collections/next",
+        "Create content-collections.ts with posts and docs collections",
+        "Configure next.config.ts with withContentCollections",
+        "Create sample content/posts/hello.mdx",
+        "Verify content is accessible via allPosts"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "Dev server runs successfully",
+      "steps": [
+        "Run bun dev",
+        "Navigate to http://localhost:3000",
+        "Verify page loads without errors",
+        "Verify no TypeScript errors"
+      ],
+      "passes": true
+    }
+  ],
+  "completed_at": "2025-12-27"
+}

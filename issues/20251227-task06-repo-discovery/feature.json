@@ -1,0 +1,94 @@
+{
+  "issue": "task06-repo-discovery",
+  "title": "Repo Discovery & Path Selection",
+  "priority": 5,
+  "status": "completed",
+  "created_at": "2025-12-27",
+  "completed_at": "2025-12-29",
+  "dependencies": ["task01-project-setup", "task02-ui-components", "task03-oauth-flow"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Scan repo and find all SKILL.md files",
+      "steps": [
+        "Call discoverSkillPaths('owner/repo')",
+        "Verify GitHub API is called with correct params",
+        "Verify list of paths with SKILL.md is returned"
+      ],
+      "passes": true,
+      "notes": "Implemented in services/discovery.ts using GitHub Trees API"
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Extract unique parent directories from SKILL.md paths",
+      "steps": [
+        "Given SKILL.md files at skills/a/SKILL.md, skills/b/SKILL.md",
+        "Verify 'skills/' is identified as parent path",
+        "Verify skill count per path is calculated"
+      ],
+      "passes": true,
+      "notes": "extractParentPaths() groups by top-level directory and counts skills"
+    },
+    {
+      "id": "F003",
+      "category": "ui",
+      "description": "Interactive multi-select UI for path selection",
+      "steps": [
+        "Start repo add without --path",
+        "Verify multi-select UI appears",
+        "Use arrow keys to navigate",
+        "Use space to toggle selection",
+        "Press Enter to confirm",
+        "Verify selected paths are returned"
+      ],
+      "passes": true,
+      "notes": "MultiSelect.tsx component with full keyboard navigation"
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Select all shortcut works",
+      "steps": [
+        "In path selection UI",
+        "Press 'a' to select all",
+        "Verify all paths are selected",
+        "Press 'a' again to deselect all",
+        "Verify all paths are deselected"
+      ],
+      "passes": true,
+      "notes": "Press 'a' toggles between select all and deselect all"
+    },
+    {
+      "id": "F005",
+      "category": "error",
+      "description": "Handle repo with no SKILL.md files",
+      "steps": [
+        "Call discoverSkillPaths on empty repo",
+        "Verify warning message is shown",
+        "Verify options: specify path manually, add anyway, cancel"
+      ],
+      "passes": true,
+      "notes": "Shows Select menu with 3 options when no skills found"
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "Skip interactive mode with --path flag",
+      "steps": [
+        "Run repo add with --path skills/",
+        "Verify no interactive UI appears",
+        "Verify repo is added with specified path"
+      ],
+      "passes": true,
+      "notes": "Existing behavior preserved - --path bypasses discovery"
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 1,
+    "blockers": []
+  }
+}

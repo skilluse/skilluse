@@ -1,0 +1,111 @@
+{
+  "issue": "web06-polish",
+  "title": "Polish & SEO",
+  "priority": 6,
+  "status": "completed",
+  "dependencies": ["web01-project-setup", "web02-core-layout", "web03-landing-page", "web04-blog-setup", "web05-docs-setup"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "seo",
+      "description": "SEO metadata on all pages",
+      "steps": [
+        "Add metadata to landing page",
+        "Add metadata to blog listing page",
+        "Add dynamic metadata to blog post pages",
+        "Add metadata to docs pages",
+        "Verify title and description in page source"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "category": "seo",
+      "description": "Open Graph images configured",
+      "steps": [
+        "Create default OG image in public/og/",
+        "Add og:image to default metadata",
+        "Optional: dynamic OG for blog posts",
+        "Test with social media debugger tools"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "category": "seo",
+      "description": "Sitemap generated",
+      "steps": [
+        "Install and configure next-sitemap",
+        "Add postbuild script to package.json",
+        "Run build and verify sitemap.xml exists",
+        "Verify robots.txt generated"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "category": "page",
+      "description": "404 page created",
+      "steps": [
+        "Create app/(web)/not-found.tsx",
+        "Display friendly 404 message",
+        "Add link back to home",
+        "Navigate to invalid URL and verify"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "category": "page",
+      "description": "Error page created",
+      "steps": [
+        "Create app/(web)/error.tsx as client component",
+        "Display error message",
+        "Add reset/retry button",
+        "Test by throwing error in a component"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F006",
+      "category": "responsive",
+      "description": "Mobile responsiveness verified",
+      "steps": [
+        "Test landing page on 375px viewport",
+        "Test blog pages on mobile",
+        "Test docs sidebar on mobile (drawer)",
+        "No horizontal overflow on any page",
+        "All buttons/links easily tappable"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F007",
+      "category": "performance",
+      "description": "Performance optimized",
+      "steps": [
+        "All images use next/image",
+        "Fonts properly loaded",
+        "Run Lighthouse audit",
+        "Score > 90 on Performance",
+        "No console errors or warnings"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "Full site walkthrough passes",
+      "steps": [
+        "Navigate home -> docs -> blog -> back",
+        "Read a blog post fully",
+        "Navigate through all docs sections",
+        "Test all external links open correctly",
+        "Verify no broken links or 404s"
+      ],
+      "passes": true
+    }
+  ],
+  "completed_at": "2025-12-29"
+}

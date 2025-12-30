@@ -1,0 +1,109 @@
+{
+  "issue": "web02-core-layout",
+  "title": "Core Layout Components",
+  "priority": 2,
+  "status": "completed",
+  "dependencies": ["web01-project-setup"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "layout",
+      "description": "Root layout configured with fonts and metadata",
+      "steps": [
+        "Create app/layout.tsx",
+        "Import and configure Inter or Geist font",
+        "Set up default metadata (title, description)",
+        "Verify font renders correctly"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "category": "layout",
+      "description": "Web layout with container structure",
+      "steps": [
+        "Create app/(web)/layout.tsx",
+        "Include Header component",
+        "Include Footer component",
+        "Wrap children in Container",
+        "Verify proper spacing on all screen sizes"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "category": "component",
+      "description": "Header component with navigation",
+      "steps": [
+        "Create components/web/header.tsx",
+        "Add Logo component linking to home",
+        "Add navigation links (Docs, Blog, GitHub)",
+        "GitHub link opens in new tab",
+        "Header is fixed at top"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "category": "component",
+      "description": "Header mobile responsive",
+      "steps": [
+        "Add hamburger menu button on mobile",
+        "Mobile nav shows/hides on toggle",
+        "Nav closes on link click",
+        "Nav closes on Escape key"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "category": "component",
+      "description": "Footer component with links",
+      "steps": [
+        "Create components/web/footer.tsx",
+        "Add quick links section",
+        "Add social links (GitHub, Twitter)",
+        "Add copyright notice",
+        "Footer sticks to bottom on short pages"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F006",
+      "category": "component",
+      "description": "Logo component created",
+      "steps": [
+        "Create components/web/ui/logo.tsx",
+        "Display SkillUse text or logo image",
+        "Link to home page",
+        "Proper sizing and alignment"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F007",
+      "category": "config",
+      "description": "Navigation configuration set up",
+      "steps": [
+        "Create config/navigation.ts",
+        "Export mainNavigation array",
+        "Each item has title, href, optional external flag",
+        "Header uses this config"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "Layout renders correctly on all pages",
+      "steps": [
+        "Navigate to home page, verify header and footer",
+        "Resize to mobile, verify responsive layout",
+        "Check there are no layout shifts or overflow issues"
+      ],
+      "passes": true
+    }
+  ],
+  "completed_at": "2025-12-27"
+}

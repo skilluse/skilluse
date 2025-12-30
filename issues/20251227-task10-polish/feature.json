@@ -1,0 +1,104 @@
+{
+  "issue": "task10-polish",
+  "title": "Polish & Quality",
+  "priority": 10,
+  "status": "pending",
+  "created_at": "2025-12-27",
+  "completed_at": null,
+  "dependencies": ["task01-project-setup", "task02-ui-components", "task03-oauth-flow", "task04-auth-commands", "task05-config-store", "task06-repo-discovery", "task07-repo-commands", "task08-skill-search", "task09-skill-install"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "error",
+      "description": "Auth errors show helpful messages",
+      "steps": [
+        "Run command without login",
+        "Verify message suggests running login",
+        "Verify exit code is non-zero"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "error",
+      "description": "Network errors are handled gracefully",
+      "steps": [
+        "Simulate network failure",
+        "Verify user-friendly error message",
+        "Verify retry suggestion shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "error",
+      "description": "Not found errors are clear",
+      "steps": [
+        "Search for nonexistent skill",
+        "Install nonexistent skill",
+        "Verify clear 'not found' messages"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "test",
+      "description": "Unit tests for config store pass",
+      "steps": [
+        "Run npm test",
+        "Verify config store tests pass",
+        "Verify coverage > 80%"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "test",
+      "description": "Integration tests for commands pass",
+      "steps": [
+        "Run npm test",
+        "Verify login command test passes",
+        "Verify repo add command test passes",
+        "Verify install command test passes"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "docs",
+      "description": "README has all required sections",
+      "steps": [
+        "Open README.md",
+        "Verify Installation section exists",
+        "Verify Quick Start section exists",
+        "Verify Command Reference exists"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F007",
+      "category": "functional",
+      "description": "Help command shows usage for all commands",
+      "steps": [
+        "Run skilluse --help",
+        "Verify all commands listed",
+        "Run skilluse repo --help",
+        "Verify subcommands listed"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 2,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

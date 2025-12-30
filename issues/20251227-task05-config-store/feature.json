@@ -1,0 +1,94 @@
+{
+  "issue": "task05-config-store",
+  "title": "Configuration Store",
+  "priority": 3,
+  "status": "completed",
+  "created_at": "2025-12-27",
+  "completed_at": "2025-12-27",
+  "dependencies": ["task01-project-setup"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Config file is created at ~/.skilluse/config.json",
+      "steps": [
+        "Import config store",
+        "Call any write operation",
+        "Verify ~/.skilluse/ directory exists",
+        "Verify config.json file exists"
+      ],
+      "passes": true,
+      "notes": "Uses conf library with custom cwd option"
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Auth token can be stored and retrieved",
+      "steps": [
+        "Call setAuth('token123', 'username')",
+        "Call getConfig()",
+        "Verify auth.token equals 'token123'",
+        "Verify auth.user equals 'username'"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Auth can be cleared",
+      "steps": [
+        "Set auth with setAuth()",
+        "Call clearAuth()",
+        "Call getConfig()",
+        "Verify auth is null"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Repos can be added and removed",
+      "steps": [
+        "Call addRepo({ repo: 'owner/repo', branch: 'main', paths: ['/'] })",
+        "Verify repo is in config.repos",
+        "Call removeRepo('owner/repo')",
+        "Verify repo is removed"
+      ],
+      "passes": true,
+      "notes": "Also clears defaultRepo if the removed repo was default"
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "Default repo can be set",
+      "steps": [
+        "Add a repo",
+        "Call setDefaultRepo('owner/repo')",
+        "Verify config.defaultRepo equals 'owner/repo'"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "Installed skills can be tracked",
+      "steps": [
+        "Call addInstalledSkill(skillInfo)",
+        "Verify skill is in config.installed",
+        "Call removeInstalledSkill('skill-name')",
+        "Verify skill is removed"
+      ],
+      "passes": true,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 1,
+    "blockers": []
+  }
+}

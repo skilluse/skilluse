@@ -1,0 +1,98 @@
+{
+  "issue": "task04-cli-commands",
+  "title": "Update CLI Commands",
+  "priority": 3,
+  "status": "completed",
+  "dependencies": ["task02-oauth-service", "task03-credential-storage"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Login command authenticates user via device flow",
+      "steps": [
+        "Run 'skilluse login'",
+        "Verify device code is displayed",
+        "Complete authentication in browser",
+        "Verify success message shows username"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Login command checks for app installation",
+      "steps": [
+        "Complete device flow authentication",
+        "Verify CLI checks for GitHub App installations",
+        "If no installation: verify install prompt is shown",
+        "If installed: verify installation summary is shown"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Login command handles --force flag",
+      "steps": [
+        "Login successfully first",
+        "Run 'skilluse login' again",
+        "Verify 'already logged in' message",
+        "Run 'skilluse login --force'",
+        "Verify re-authentication starts"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Logout command clears all credentials",
+      "steps": [
+        "Login successfully",
+        "Run 'skilluse logout'",
+        "Verify success message",
+        "Run 'skilluse whoami'",
+        "Verify 'not logged in' message"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "Whoami command shows user and installation info",
+      "steps": [
+        "Login successfully with app installed",
+        "Run 'skilluse whoami'",
+        "Verify username is displayed",
+        "Verify installations are listed"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "Repos command lists accessible repositories",
+      "steps": [
+        "Login successfully with app installed",
+        "Run 'skilluse repos'",
+        "Verify repositories are grouped by installation",
+        "Verify repo name and visibility are shown"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F007",
+      "category": "error-handling",
+      "description": "Commands handle not logged in state",
+      "steps": [
+        "Ensure logged out state",
+        "Run 'skilluse whoami'",
+        "Verify appropriate 'not logged in' message",
+        "Run 'skilluse repos'",
+        "Verify appropriate error message"
+      ],
+      "passes": true
+    }
+  ],
+  "completed_at": "2025-12-27"
+}

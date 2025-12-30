@@ -1,0 +1,127 @@
+{
+  "issue": "web11-blog-typography",
+  "title": "Blog Typography Enhancement",
+  "priority": 2,
+  "status": "completed",
+  "dependencies": ["web04-blog-setup", "web10-docs-typography"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "styling",
+      "description": "Prose component uses relaxed line height and improved spacing",
+      "steps": [
+        "Open packages/websites/components/shared/prose.tsx",
+        "Verify leading-relaxed is applied to prose",
+        "Verify list spacing classes are applied (prose-ul:first:mt-0, prose-li:mt-2)",
+        "Verify heading scroll margin (prose-headings:scroll-mt-20)"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "category": "styling",
+      "description": "Link styles have semi-transparent underline and hover animation",
+      "steps": [
+        "View a blog post with links",
+        "Verify links have subtle underline decoration",
+        "Hover over links and verify color transition to primary",
+        "Verify smooth transition animation (ease-out duration-100)"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "category": "styling",
+      "description": "Inline code has precise em-based spacing",
+      "steps": [
+        "View a blog post with inline code",
+        "Verify inline code has proper padding and margin",
+        "Verify code blocks retain existing styling"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Headings display anchor link on hover",
+      "steps": [
+        "View a blog post with headings",
+        "Hover over an h2 or h3 heading",
+        "Verify # anchor appears to the left",
+        "Click the anchor and verify URL updates with hash",
+        "Verify smooth opacity transition"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "category": "styling",
+      "description": "External links have icon with hover animation",
+      "steps": [
+        "View a blog post with external links",
+        "Verify external link icon is displayed",
+        "Hover over external link",
+        "Verify icon has subtle rotation/translate animation"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F006",
+      "category": "styling",
+      "description": "Images have border styling",
+      "steps": [
+        "View a blog post with images",
+        "Verify images have border applied",
+        "Verify images have rounded corners"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F007",
+      "category": "layout",
+      "description": "Blog listing page uses responsive grid layout",
+      "steps": [
+        "Navigate to /blog",
+        "Verify posts are displayed in grid layout",
+        "Resize browser to verify responsive columns (1 on mobile, 2-3 on desktop)"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "Blog posts support featured image in frontmatter",
+      "steps": [
+        "Check content-collections.ts for image field",
+        "Add image field to a sample blog post",
+        "Verify image is displayed on blog listing page",
+        "Verify image is displayed on blog detail page"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F009",
+      "category": "layout",
+      "description": "Blog detail page has improved spacing",
+      "steps": [
+        "Navigate to a blog post",
+        "Verify page sections have appropriate spacing (gap-8 md:gap-10 lg:gap-12)",
+        "Verify featured image area displays when image is present"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F010",
+      "category": "styling",
+      "description": "Global styles support media elements and link animations",
+      "steps": [
+        "Check globals.css for prose media element styles",
+        "Verify images/videos have max-width: 100% and height: auto",
+        "Verify global link underline-offset and decoration styles"
+      ],
+      "passes": true
+    }
+  ],
+  "completed_at": "2025-12-29"
+}

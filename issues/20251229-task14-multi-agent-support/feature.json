@@ -1,0 +1,158 @@
+{
+  "issue": "task14-multi-agent-support",
+  "title": "Multi-Agent Support",
+  "priority": 1,
+  "status": "completed",
+  "created_at": "2025-12-29",
+  "completed_at": "2025-12-29",
+  "dependencies": ["task09-skill-install", "task05-config-store"],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "infrastructure",
+      "description": "Agent service with path mappings",
+      "steps": [
+        "Create services/agents.ts",
+        "Define AgentConfig interface with id, name, localPath, globalPath",
+        "Add AGENTS record with 9 supported agents",
+        "Export getAgent(), listAgents(), getSkillsPath() functions"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "category": "infrastructure",
+      "description": "Store current agent in config",
+      "steps": [
+        "Add currentAgent field to Config interface (default: 'claude')",
+        "Add getCurrentAgent() function to store.ts",
+        "Add setCurrentAgent() function to store.ts",
+        "Verify default agent is 'claude' for new installations"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Agent list command shows supported agents",
+      "steps": [
+        "Create commands/agent/index.tsx",
+        "Run 'skilluse agent'",
+        "Verify table with all 9 agents shown",
+        "Verify current agent is highlighted or marked"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Agent use command switches default agent",
+      "steps": [
+        "Create commands/agent/use.tsx",
+        "Run 'skilluse agent use cursor'",
+        "Verify success message shown",
+        "Run 'skilluse agent' and verify cursor is now current"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "Install uses current agent's path",
+      "steps": [
+        "Set agent to cursor: 'skilluse agent use cursor'",
+        "Run 'skilluse install pdf'",
+        "Verify skill installed to .cursor/skills/pdf/",
+        "Verify config records correct agent"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "Install --agent flag overrides current agent",
+      "steps": [
+        "Set agent to claude",
+        "Run 'skilluse install pdf --agent cursor'",
+        "Verify skill installed to .cursor/skills/pdf/",
+        "Verify current agent unchanged (still claude)"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F007",
+      "category": "functional",
+      "description": "List shows skills for current agent",
+      "steps": [
+        "Install skills for multiple agents",
+        "Run 'skilluse list' (current agent)",
+        "Verify only current agent's skills shown",
+        "Run 'skilluse list --all' to see all agents' skills"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "Uninstall works with current agent",
+      "steps": [
+        "Install skill for cursor agent",
+        "Switch to cursor: 'skilluse agent use cursor'",
+        "Run 'skilluse uninstall pdf'",
+        "Verify skill removed from .cursor/skills/"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F009",
+      "category": "functional",
+      "description": "Unified install source: GitHub owner/repo",
+      "steps": [
+        "Run 'skilluse install owner/repo'",
+        "Verify skill downloaded from GitHub repo root",
+        "Verify skill installed to current agent's path"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F010",
+      "category": "functional",
+      "description": "Unified install source: GitHub owner/repo/path",
+      "steps": [
+        "Run 'skilluse install owner/repo/skills/pdf'",
+        "Verify skill downloaded from specific path in repo",
+        "Verify skill installed correctly"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F011",
+      "category": "functional",
+      "description": "Unified install source: local path",
+      "steps": [
+        "Run 'skilluse install ./my-skill'",
+        "Verify skill copied from local directory",
+        "Verify skill installed to current agent's path"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F012",
+      "category": "ui",
+      "description": "Status command shows current agent",
+      "steps": [
+        "Run 'skilluse' (root status command)",
+        "Verify current agent displayed in status",
+        "Verify agent's installed skill count shown"
+      ],
+      "passes": true
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 2,
+    "actual_sessions": 1,
+    "blockers": [],
+    "cleanup_notes": null
+  }
+}

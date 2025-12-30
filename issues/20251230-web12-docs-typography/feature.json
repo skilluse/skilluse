@@ -1,0 +1,134 @@
+{
+  "issue": "web12-docs-typography",
+  "title": "Docs Typography & UI Refactor",
+  "priority": 2,
+  "status": "in-progress",
+  "dependencies": ["web11-blog-typography"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "styling",
+      "description": "Docs headings use same size hierarchy as Blog",
+      "steps": [
+        "Navigate to a docs page with multiple heading levels",
+        "Verify h1-h6 have correct sizes and spacing",
+        "Verify h2 has bottom border separator",
+        "Compare with Blog page headings for consistency"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F002",
+      "category": "styling",
+      "description": "Docs code blocks have white background and monospace font",
+      "steps": [
+        "Navigate to a docs page with code blocks",
+        "Verify code blocks have white/light background",
+        "Verify code uses monospace font (IBM Plex Mono or fallback)",
+        "Verify syntax highlighting is working"
+      ],
+      "passes": true,
+      "notes": "Fixed 2024-12-30: Added CSS overrides in globals.css for rehype-pretty-code/shiki"
+    },
+    {
+      "id": "F003",
+      "category": "styling",
+      "description": "Docs inline code has proper styling",
+      "steps": [
+        "View a docs page with inline code",
+        "Verify inline code has background color",
+        "Verify inline code uses monospace font",
+        "Verify proper padding and rounded corners"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F004",
+      "category": "styling",
+      "description": "Docs lists have proper styling",
+      "steps": [
+        "Navigate to a docs page with ul and ol lists",
+        "Verify unordered lists have muted bullet markers",
+        "Verify ordered lists have muted number markers",
+        "Verify proper spacing between list items"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F005",
+      "category": "styling",
+      "description": "Docs tables render correctly",
+      "steps": [
+        "Navigate to a docs page with tables",
+        "Verify table has borders",
+        "Verify header row has background color",
+        "Verify proper cell padding"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "Docs heading anchor links work",
+      "steps": [
+        "Hover over a heading in docs",
+        "Verify # anchor appears",
+        "Click anchor and verify URL updates",
+        "Verify smooth scroll to heading"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F007",
+      "category": "layout",
+      "description": "Docs layout spacing is consistent",
+      "steps": [
+        "Compare docs page padding with blog page",
+        "Verify content width is appropriate",
+        "Check sidebar alignment",
+        "Check TOC alignment"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F008",
+      "category": "responsive",
+      "description": "Docs pages are mobile responsive",
+      "steps": [
+        "Resize browser to mobile width (375px)",
+        "Verify sidebar collapses or hides appropriately",
+        "Verify content is readable",
+        "Verify code blocks don't overflow"
+      ],
+      "passes": false
+    },
+    {
+      "id": "F009",
+      "category": "styling",
+      "description": "Mermaid diagrams render correctly",
+      "steps": [
+        "Navigate to a docs page with Mermaid diagrams",
+        "Verify diagram renders without overlapping text",
+        "Verify boxes and labels are properly aligned",
+        "Verify diagram is centered"
+      ],
+      "passes": true,
+      "notes": "Fixed 2024-12-30: Reset Mermaid font-family to sans-serif in globals.css"
+    },
+    {
+      "id": "F010",
+      "category": "styling",
+      "description": "Site-wide font colors are readable",
+      "steps": [
+        "Check main text color is dark enough",
+        "Check muted/secondary text is readable",
+        "Check header navigation link colors",
+        "Verify contrast meets accessibility standards"
+      ],
+      "passes": true,
+      "notes": "Fixed 2024-12-30: Darkened foreground (0.12) and muted-foreground (0.45) colors, header links changed to text-foreground/70"
+    }
+  ],
+  "completed_at": null
+}

@@ -1,0 +1,63 @@
+{
+  "issue": "cfg01-platform-paths",
+  "title": "Platform-Native Configuration Paths",
+  "priority": 1,
+  "status": "completed",
+  "dependencies": [],
+  "parallelizable": false,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "env-paths package is installed",
+      "steps": [
+        "Check package.json for env-paths dependency",
+        "Run pnpm install successfully"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "paths.ts service exports platform-appropriate directories",
+      "steps": [
+        "Import paths from services/paths.ts",
+        "Verify configPath returns platform-native config directory",
+        "Verify dataPath returns platform-native data directory",
+        "Verify cachePath returns platform-native cache directory"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "store.ts uses new paths service for config location",
+      "steps": [
+        "Verify Conf is initialized with configPath from paths service",
+        "Verify config.json is created in platform-native location"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "General config (repos, installed skills) stored separately from auth",
+      "steps": [
+        "Verify config.json contains repos and installed arrays",
+        "Verify auth data is NOT stored in config.json"
+      ],
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "category": "non-functional",
+      "description": "TypeScript compiles without errors",
+      "steps": [
+        "Run pnpm build in packages/cli",
+        "Verify no TypeScript errors"
+      ],
+      "passes": true
+    }
+  ],
+  "completed_at": "2025-12-27"
+}

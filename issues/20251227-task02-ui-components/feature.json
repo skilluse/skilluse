@@ -1,0 +1,98 @@
+{
+  "issue": "task02-ui-components",
+  "title": "UI Components",
+  "priority": 2,
+  "status": "completed",
+  "created_at": "2025-12-27",
+  "completed_at": "2025-12-27",
+  "dependencies": ["task01-project-setup"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "component",
+      "description": "Spinner component displays loading animation with text",
+      "steps": [
+        "Import Spinner from components",
+        "Render <Spinner text='Loading...' />",
+        "Verify spinner animation displays",
+        "Verify text appears next to spinner"
+      ],
+      "passes": true,
+      "notes": "Uses ink-spinner with dots animation"
+    },
+    {
+      "id": "F002",
+      "category": "component",
+      "description": "Select component allows user to choose from options",
+      "steps": [
+        "Render Select with 3 items",
+        "Verify items are displayed",
+        "Navigate with arrow keys",
+        "Press Enter to select",
+        "Verify onSelect callback fires with correct value"
+      ],
+      "passes": true,
+      "notes": "Wraps ink-select-input"
+    },
+    {
+      "id": "F003",
+      "category": "component",
+      "description": "Table component displays data in columns",
+      "steps": [
+        "Render Table with sample data",
+        "Verify column headers display",
+        "Verify rows display correctly",
+        "Verify alignment is consistent"
+      ],
+      "passes": true,
+      "notes": "Custom implementation using ink Box/Text (ink-table incompatible with ink 5)"
+    },
+    {
+      "id": "F004",
+      "category": "component",
+      "description": "ProgressBar component shows visual progress",
+      "steps": [
+        "Render ProgressBar with percent=50",
+        "Verify bar shows half filled",
+        "Update percent to 100",
+        "Verify bar shows fully filled"
+      ],
+      "passes": true,
+      "notes": "Custom implementation with block characters"
+    },
+    {
+      "id": "F005",
+      "category": "component",
+      "description": "StatusMessage component shows typed messages",
+      "steps": [
+        "Render StatusMessage type='success'",
+        "Verify green checkmark icon appears",
+        "Render StatusMessage type='error'",
+        "Verify red X icon appears",
+        "Render StatusMessage type='warning'",
+        "Verify yellow warning icon appears"
+      ],
+      "passes": true,
+      "notes": "Uses figures package for cross-platform icons"
+    },
+    {
+      "id": "F006",
+      "category": "component",
+      "description": "TextInput component accepts user text",
+      "steps": [
+        "Render TextInput with placeholder",
+        "Type text into input",
+        "Verify onChange fires with typed text",
+        "Verify value is displayed"
+      ],
+      "passes": true,
+      "notes": "Wraps ink-text-input"
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 1,
+    "blockers": []
+  }
+}
