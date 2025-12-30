@@ -1,0 +1,180 @@
+{
+  "issue": "auth01-optional-authentication",
+  "title": "Optional Authentication for Public Repositories",
+  "epic": "cli",
+  "priority": 2,
+  "status": "pending",
+  "created_at": "2025-12-30",
+  "completed_at": null,
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "repo list works without authentication",
+      "steps": [
+        "Clear credentials with 'skilluse logout'",
+        "Run 'skilluse repo list'",
+        "Verify it shows configured repos without auth error"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "repo use works without authentication",
+      "steps": [
+        "Clear credentials",
+        "Run 'skilluse repo use owner/repo'",
+        "Verify default repo is set without auth error"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "repo edit works without authentication",
+      "steps": [
+        "Clear credentials",
+        "Run 'skilluse repo edit owner/repo'",
+        "Verify editing works without auth error"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "repo remove works without authentication",
+      "steps": [
+        "Clear credentials",
+        "Run 'skilluse repo remove owner/repo'",
+        "Verify removal works without auth error"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "list (basic) works without authentication",
+      "steps": [
+        "Clear credentials",
+        "Run 'skilluse list'",
+        "Verify installed skills are shown without auth error"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "install from public repo works without authentication",
+      "steps": [
+        "Clear credentials",
+        "Add a public repo 'skilluse/skills'",
+        "Run 'skilluse install commit'",
+        "Verify skill is installed successfully"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F007",
+      "category": "functional",
+      "description": "install from private repo shows clear auth error",
+      "steps": [
+        "Clear credentials",
+        "Try to install from a private repo",
+        "Verify error message says 'This repository requires authentication'",
+        "Verify suggestion to run 'skilluse login'"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "search works without authentication for public repos",
+      "steps": [
+        "Clear credentials",
+        "Run 'skilluse search commit'",
+        "Verify search results from public repos are shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F009",
+      "category": "functional",
+      "description": "repo add discovers skills in public repo without authentication",
+      "steps": [
+        "Clear credentials",
+        "Run 'skilluse repo add skilluse/skills'",
+        "Verify skill discovery works and repo is added"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F010",
+      "category": "functional",
+      "description": "upgrade works for skills from public repos without authentication",
+      "steps": [
+        "Clear credentials",
+        "Have a skill installed from a public repo",
+        "Run 'skilluse upgrade'",
+        "Verify update check works without auth error"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F011",
+      "category": "functional",
+      "description": "Rate limit error shows helpful message",
+      "steps": [
+        "Clear credentials",
+        "Exceed unauthenticated rate limit (60 req/hr)",
+        "Verify error shows 'Rate limit exceeded'",
+        "Verify suggestion to login for higher limit"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F012",
+      "category": "ux",
+      "description": "Status command shows unauthenticated state gracefully",
+      "steps": [
+        "Clear credentials",
+        "Run 'skilluse'",
+        "Verify 'Not logged in' shown as info, not error",
+        "Verify quick actions are still shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F013",
+      "category": "technical",
+      "description": "GitHub API helper function created",
+      "steps": [
+        "Verify services/github.ts exists",
+        "Verify buildGitHubHeaders() function handles optional token",
+        "Verify isAuthRequired() detects 401/403",
+        "Verify isRateLimited() checks X-RateLimit-Remaining header"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}
