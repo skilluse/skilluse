@@ -5,9 +5,13 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
+	buildGitHubHeaders,
+	buildGitHubRawHeaders,
 	getConfig,
 	getCredentials,
+	getGitHubErrorMessage,
 	type InstalledSkill,
+	isAuthRequired,
 	type RepoConfig,
 } from "../services/index.js";
 
@@ -39,10 +43,10 @@ interface SkillInfo {
 
 type InfoState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "loading" }
 	| { phase: "not_found"; skillName: string }
 	| { phase: "success"; info: SkillInfo }
+	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
 
 /**
@@ -125,12 +129,13 @@ async function getLocalSkillInfo(
 
 /**
  * Search for skill info from remote repos
+ * Returns authRequired if private repo access is denied
  */
 async function getRemoteSkillInfo(
-	token: string,
+	token: string | undefined,
 	skillName: string,
 	repos: RepoConfig[],
-): Promise<SkillInfo | null> {
+): Promise<SkillInfo | { authRequired: true; message: string } | null> {
 	for (const repoConfig of repos) {
 		const { repo, branch, paths: searchPaths } = repoConfig;
 		const basePaths = searchPaths.length > 0 ? searchPaths : [""];
@@ -142,14 +147,18 @@ async function getRemoteSkillInfo(
 					: `https://api.github.com/repos/${repo}/contents?ref=${branch}`;
 
 				const response = await fetch(apiPath, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-						Accept: "application/vnd.github+json",
-						"X-GitHub-Api-Version": "2022-11-28",
-					},
+					headers: buildGitHubHeaders(token),
 				});
 
-				if (!response.ok) continue;
+				if (!response.ok) {
+					if (isAuthRequired(response)) {
+						return {
+							authRequired: true,
+							message: getGitHubErrorMessage(response),
+						};
+					}
+					continue;
+				}
 
 				const contents = (await response.json()) as Array<{
 					name: string;
@@ -166,11 +175,7 @@ async function getRemoteSkillInfo(
 				for (const dir of dirs) {
 					const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${dir.path}/SKILL.md?ref=${branch}`;
 					const skillResponse = await fetch(skillMdUrl, {
-						headers: {
-							Authorization: `Bearer ${token}`,
-							Accept: "application/vnd.github.raw+json",
-							"X-GitHub-Api-Version": "2022-11-28",
-						},
+						headers: buildGitHubRawHeaders(token),
 					});
 
 					if (skillResponse.ok) {
@@ -207,18 +212,11 @@ export default function Info({ args: [skillName] }: Props) {
 
 	useEffect(() => {
 		async function loadInfo() {
-			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
-
 			setState({ phase: "loading" });
 
 			const config = getConfig();
 
-			// First check if skill is installed
+			// First check if skill is installed (no auth needed)
 			const installedSkill = config.installed.find(
 				(s) => s.name.toLowerCase() === skillName.toLowerCase(),
 			);
@@ -232,15 +230,24 @@ export default function Info({ args: [skillName] }: Props) {
 				}
 			}
 
-			// Search in remote repos
-			const remoteInfo = await getRemoteSkillInfo(
-				credentials.token,
+			// Search in remote repos with optional auth
+			const credentials = await getCredentials();
+			const token = credentials?.token;
+
+			const remoteResult = await getRemoteSkillInfo(
+				token,
 				skillName,
 				config.repos,
 			);
 
-			if (remoteInfo) {
-				setState({ phase: "success", info: remoteInfo });
+			if (remoteResult && "authRequired" in remoteResult) {
+				setState({ phase: "auth_required", message: remoteResult.message });
+				exit();
+				return;
+			}
+
+			if (remoteResult) {
+				setState({ phase: "success", info: remoteResult });
 			} else {
 				setState({ phase: "not_found", skillName });
 			}
@@ -262,11 +269,10 @@ export default function Info({ args: [skillName] }: Props) {
 		case "checking":
 			return <Spinner text="Initializing..." />;
 
-		case "not_logged_in":
+		case "auth_required":
 			return (
 				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
+					<StatusMessage type="error">{state.message}</StatusMessage>
 				</Box>
 			);
 

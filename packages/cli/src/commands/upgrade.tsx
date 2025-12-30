@@ -6,9 +6,13 @@ import { z } from "zod";
 import { ProgressBar, Spinner, StatusMessage } from "../components/index.js";
 import {
 	addInstalledSkill,
+	buildGitHubHeaders,
+	buildGitHubRawHeaders,
 	getConfig,
 	getCredentials,
+	getGitHubErrorMessage,
 	type InstalledSkill,
+	isAuthRequired,
 	type RepoConfig,
 } from "../services/index.js";
 
@@ -35,7 +39,6 @@ interface UpgradeInfo {
 
 type UpgradeState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "not_found"; skillName: string }
 	| { phase: "checking_updates"; current: number; total: number }
 	| { phase: "no_updates" }
@@ -46,6 +49,7 @@ type UpgradeState =
 			progress: number;
 	  }
 	| { phase: "success"; upgraded: string[] }
+	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
 
 /**
@@ -71,26 +75,31 @@ function parseFrontmatter(content: string): Record<string, unknown> {
 
 /**
  * Check if a skill has updates available
+ * Returns authRequired if private repo access is denied
  */
 async function checkForUpdate(
-	token: string,
+	token: string | undefined,
 	skill: InstalledSkill,
 	repoConfig: RepoConfig,
-): Promise<UpgradeInfo | null> {
+): Promise<UpgradeInfo | { authRequired: true; message: string } | null> {
 	const { repo, branch } = repoConfig;
 
 	try {
 		// Get latest commit SHA
 		const refUrl = `https://api.github.com/repos/${repo}/commits/${branch}`;
 		const refResponse = await fetch(refUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubHeaders(token),
 		});
 
-		if (!refResponse.ok) return null;
+		if (!refResponse.ok) {
+			if (isAuthRequired(refResponse)) {
+				return {
+					authRequired: true,
+					message: getGitHubErrorMessage(refResponse),
+				};
+			}
+			return null;
+		}
 
 		const refData = (await refResponse.json()) as { sha: string };
 		const latestSha = refData.sha;
@@ -103,11 +112,7 @@ async function checkForUpdate(
 		// Get latest version from SKILL.md
 		const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${skill.repoPath}/SKILL.md?ref=${branch}`;
 		const skillResponse = await fetch(skillMdUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github.raw+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubRawHeaders(token),
 		});
 
 		let latestVersion = skill.version;
@@ -138,24 +143,27 @@ interface GitHubTreeItem {
 
 /**
  * Download all files from a skill directory
+ * Returns authRequired if private repo access is denied
  */
 async function downloadSkillFiles(
-	token: string,
+	token: string | undefined,
 	repo: string,
 	skillPath: string,
 	branch: string,
 	targetDir: string,
-): Promise<void> {
+): Promise<void | { authRequired: true; message: string }> {
 	const treeUrl = `https://api.github.com/repos/${repo}/git/trees/${branch}?recursive=1`;
 	const treeResponse = await fetch(treeUrl, {
-		headers: {
-			Authorization: `Bearer ${token}`,
-			Accept: "application/vnd.github+json",
-			"X-GitHub-Api-Version": "2022-11-28",
-		},
+		headers: buildGitHubHeaders(token),
 	});
 
 	if (!treeResponse.ok) {
+		if (isAuthRequired(treeResponse)) {
+			return {
+				authRequired: true,
+				message: getGitHubErrorMessage(treeResponse),
+			};
+		}
 		throw new Error(`Failed to fetch repository tree: ${treeResponse.status}`);
 	}
 
@@ -186,14 +194,16 @@ async function downloadSkillFiles(
 
 		const fileUrl = `https://api.github.com/repos/${repo}/contents/${file.path}?ref=${branch}`;
 		const fileResponse = await fetch(fileUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github.raw+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubRawHeaders(token),
 		});
 
 		if (!fileResponse.ok) {
+			if (isAuthRequired(fileResponse)) {
+				return {
+					authRequired: true,
+					message: getGitHubErrorMessage(fileResponse),
+				};
+			}
 			throw new Error(`Failed to download file: ${file.path}`);
 		}
 
@@ -208,13 +218,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 
 	useEffect(() => {
 		async function upgrade() {
-			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
-
 			const config = getConfig();
 
 			// Determine which skills to check
@@ -240,6 +243,10 @@ export default function Upgrade({ args: [skillName] }: Props) {
 				return;
 			}
 
+			// Get optional credentials
+			const credentials = await getCredentials();
+			const token = credentials?.token;
+
 			// Check for updates
 			const upgrades: UpgradeInfo[] = [];
 
@@ -254,13 +261,16 @@ export default function Upgrade({ args: [skillName] }: Props) {
 				const repoConfig = config.repos.find((r) => r.repo === skill.repo);
 				if (!repoConfig) continue;
 
-				const update = await checkForUpdate(
-					credentials.token,
-					skill,
-					repoConfig,
-				);
-				if (update) {
-					upgrades.push(update);
+				const result = await checkForUpdate(token, skill, repoConfig);
+
+				if (result && "authRequired" in result) {
+					setState({ phase: "auth_required", message: result.message });
+					exit();
+					return;
+				}
+
+				if (result) {
+					upgrades.push(result);
 				}
 			}
 
@@ -287,13 +297,22 @@ export default function Upgrade({ args: [skillName] }: Props) {
 					if (!repoConfig) continue;
 
 					// Download new files
-					await downloadSkillFiles(
-						credentials.token,
+					const downloadResult = await downloadSkillFiles(
+						token,
 						skill.repo,
 						skill.repoPath,
 						repoConfig.branch,
 						skill.installedPath,
 					);
+
+					if (downloadResult && "authRequired" in downloadResult) {
+						setState({
+							phase: "auth_required",
+							message: downloadResult.message,
+						});
+						exit();
+						return;
+					}
 
 					// Update config
 					const updatedSkill: InstalledSkill = {
@@ -331,11 +350,10 @@ export default function Upgrade({ args: [skillName] }: Props) {
 		case "checking":
 			return <Spinner text="Initializing..." />;
 
-		case "not_logged_in":
+		case "auth_required":
 			return (
 				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
+					<StatusMessage type="error">{state.message}</StatusMessage>
 				</Box>
 			);
 

@@ -1,5 +1,4 @@
 import { cp, mkdir, readFile, stat, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
 import { basename, isAbsolute, join } from "node:path";
 import { Box, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
@@ -7,12 +6,16 @@ import { z } from "zod";
 import { ProgressBar, Spinner, StatusMessage } from "../components/index.js";
 import {
 	addInstalledSkill,
+	buildGitHubHeaders,
+	buildGitHubRawHeaders,
 	getAgent,
 	getConfig,
 	getCredentials,
 	getCurrentAgent,
+	getGitHubErrorMessage,
 	getSkillsPath,
 	type InstalledSkill,
+	isAuthRequired,
 	type RepoConfig,
 } from "../services/index.js";
 
@@ -51,7 +54,6 @@ interface InstallStep {
 
 type InstallState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "no_repos" }
 	| { phase: "searching"; repo: string }
 	| { phase: "not_found"; skillName: string }
@@ -68,6 +70,7 @@ type InstallState =
 			progress: number;
 	  }
 	| { phase: "success"; skill: SkillMetadata; installedPath: string }
+	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
 
 /**
@@ -148,12 +151,16 @@ function parseInstallSource(source: string): InstallSource {
 
 /**
  * Find a skill by name in configured repos
+ * Returns authRequired if a private repo requires authentication
  */
 async function findSkill(
-	token: string,
+	token: string | undefined,
 	repos: RepoConfig[],
 	skillName: string,
-): Promise<Array<{ skill: SkillMetadata; commitSha: string }>> {
+): Promise<
+	| { results: Array<{ skill: SkillMetadata; commitSha: string }> }
+	| { authRequired: true; message: string }
+> {
 	const results: Array<{ skill: SkillMetadata; commitSha: string }> = [];
 
 	for (const repoConfig of repos) {
@@ -168,14 +175,18 @@ async function findSkill(
 					: `https://api.github.com/repos/${repo}/contents?ref=${branch}`;
 
 				const response = await fetch(apiPath, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-						Accept: "application/vnd.github+json",
-						"X-GitHub-Api-Version": "2022-11-28",
-					},
+					headers: buildGitHubHeaders(token),
 				});
 
-				if (!response.ok) continue;
+				if (!response.ok) {
+					if (isAuthRequired(response)) {
+						return {
+							authRequired: true,
+							message: getGitHubErrorMessage(response),
+						};
+					}
+					continue;
+				}
 
 				const contents = (await response.json()) as Array<{
 					name: string;
@@ -194,11 +205,7 @@ async function findSkill(
 					// Fetch SKILL.md
 					const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${dir.path}/SKILL.md?ref=${branch}`;
 					const skillResponse = await fetch(skillMdUrl, {
-						headers: {
-							Authorization: `Bearer ${token}`,
-							Accept: "application/vnd.github.raw+json",
-							"X-GitHub-Api-Version": "2022-11-28",
-						},
+						headers: buildGitHubRawHeaders(token),
 					});
 
 					if (skillResponse.ok) {
@@ -208,11 +215,7 @@ async function findSkill(
 						// Get the commit SHA for this ref
 						const refUrl = `https://api.github.com/repos/${repo}/commits/${branch}`;
 						const refResponse = await fetch(refUrl, {
-							headers: {
-								Authorization: `Bearer ${token}`,
-								Accept: "application/vnd.github+json",
-								"X-GitHub-Api-Version": "2022-11-28",
-							},
+							headers: buildGitHubHeaders(token),
 						});
 
 						let commitSha = branch;
@@ -245,7 +248,7 @@ async function findSkill(
 		}
 	}
 
-	return results;
+	return { results };
 }
 
 interface GitHubTreeItem {
@@ -256,26 +259,29 @@ interface GitHubTreeItem {
 
 /**
  * Download all files from a skill directory
+ * Returns authRequired message if private repo access is denied
  */
 async function downloadSkillFiles(
-	token: string,
+	token: string | undefined,
 	repo: string,
 	skillPath: string,
 	branch: string,
 	targetDir: string,
 	onProgress?: (downloaded: number, total: number) => void,
-): Promise<void> {
+): Promise<void | { authRequired: true; message: string }> {
 	// Get the tree for the skill directory
 	const treeUrl = `https://api.github.com/repos/${repo}/git/trees/${branch}?recursive=1`;
 	const treeResponse = await fetch(treeUrl, {
-		headers: {
-			Authorization: `Bearer ${token}`,
-			Accept: "application/vnd.github+json",
-			"X-GitHub-Api-Version": "2022-11-28",
-		},
+		headers: buildGitHubHeaders(token),
 	});
 
 	if (!treeResponse.ok) {
+		if (isAuthRequired(treeResponse)) {
+			return {
+				authRequired: true,
+				message: getGitHubErrorMessage(treeResponse),
+			};
+		}
 		throw new Error(`Failed to fetch repository tree: ${treeResponse.status}`);
 	}
 
@@ -311,14 +317,16 @@ async function downloadSkillFiles(
 		// Download file content
 		const fileUrl = `https://api.github.com/repos/${repo}/contents/${file.path}?ref=${branch}`;
 		const fileResponse = await fetch(fileUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github.raw+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubRawHeaders(token),
 		});
 
 		if (!fileResponse.ok) {
+			if (isAuthRequired(fileResponse)) {
+				return {
+					authRequired: true,
+					message: getGitHubErrorMessage(fileResponse),
+				};
+			}
 			throw new Error(`Failed to download file: ${file.path}`);
 		}
 
@@ -334,14 +342,19 @@ async function downloadSkillFiles(
 
 /**
  * Fetch skill metadata from a GitHub repo at a specific path
+ * Returns authRequired if private repo access is denied
  */
 async function fetchGitHubSkill(
-	token: string,
+	token: string | undefined,
 	owner: string,
 	repo: string,
 	path?: string,
 	branch = "main",
-): Promise<{ skill: SkillMetadata; commitSha: string } | null> {
+): Promise<
+	| { skill: SkillMetadata; commitSha: string }
+	| { authRequired: true; message: string }
+	| null
+> {
 	const fullRepo = `${owner}/${repo}`;
 	const skillPath = path || "";
 
@@ -349,14 +362,16 @@ async function fetchGitHubSkill(
 		// Get the commit SHA for this ref
 		const refUrl = `https://api.github.com/repos/${fullRepo}/commits/${branch}`;
 		const refResponse = await fetch(refUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubHeaders(token),
 		});
 
 		if (!refResponse.ok) {
+			if (isAuthRequired(refResponse)) {
+				return {
+					authRequired: true,
+					message: getGitHubErrorMessage(refResponse),
+				};
+			}
 			return null;
 		}
 
@@ -367,14 +382,16 @@ async function fetchGitHubSkill(
 		const skillMdPath = skillPath ? `${skillPath}/SKILL.md` : "SKILL.md";
 		const skillMdUrl = `https://api.github.com/repos/${fullRepo}/contents/${skillMdPath}?ref=${branch}`;
 		const skillResponse = await fetch(skillMdUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github.raw+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubRawHeaders(token),
 		});
 
 		if (!skillResponse.ok) {
+			if (isAuthRequired(skillResponse)) {
+				return {
+					authRequired: true,
+					message: getGitHubErrorMessage(skillResponse),
+				};
+			}
 			return null;
 		}
 
@@ -536,24 +553,26 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				}
 			}
 
-			// For GitHub and repo sources, we need authentication
+			// For GitHub and repo sources, get optional credentials
 			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
+			const token = credentials?.token;
 
 			// Handle GitHub direct installation (owner/repo or owner/repo/path)
 			if (source.type === "github") {
 				setState({ phase: "searching", repo: `${source.owner}/${source.repo}` });
 
 				const result = await fetchGitHubSkill(
-					credentials.token,
+					token,
 					source.owner,
 					source.repo,
 					source.path,
 				);
+
+				if (result && "authRequired" in result) {
+					setState({ phase: "auth_required", message: result.message });
+					exit();
+					return;
+				}
 
 				if (!result) {
 					setState({
@@ -589,8 +608,8 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				try {
 					// Download files from GitHub
 					const skillPath = source.path || "";
-					await downloadSkillFiles(
-						credentials.token,
+					const downloadResult = await downloadSkillFiles(
+						token,
 						`${source.owner}/${source.repo}`,
 						skillPath,
 						"main",
@@ -603,6 +622,12 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 							});
 						},
 					);
+
+					if (downloadResult && "authRequired" in downloadResult) {
+						setState({ phase: "auth_required", message: downloadResult.message });
+						exit();
+						return;
+					}
 
 					// Update steps
 					steps[1].status = "done";
@@ -656,7 +681,15 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				setState({ phase: "searching", repo: repo.repo });
 			}
 
-			const results = await findSkill(credentials.token, allRepos, source.name);
+			const findResult = await findSkill(token, allRepos, source.name);
+
+			if ("authRequired" in findResult) {
+				setState({ phase: "auth_required", message: findResult.message });
+				exit();
+				return;
+			}
+
+			const { results } = findResult;
 
 			if (results.length === 0) {
 				setState({ phase: "not_found", skillName: source.name });
@@ -709,8 +742,8 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				const branch = repoConfig?.branch || "main";
 
 				// Download files
-				await downloadSkillFiles(
-					credentials.token,
+				const downloadResult = await downloadSkillFiles(
+					token,
 					skill.repo,
 					skill.path,
 					branch,
@@ -723,6 +756,12 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						});
 					},
 				);
+
+				if (downloadResult && "authRequired" in downloadResult) {
+					setState({ phase: "auth_required", message: downloadResult.message });
+					exit();
+					return;
+				}
 
 				// Update steps - downloading done
 				steps[1].status = "done";
@@ -792,11 +831,10 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 		case "checking":
 			return <Spinner text="Initializing..." />;
 
-		case "not_logged_in":
+		case "auth_required":
 			return (
 				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
+					<StatusMessage type="error">{state.message}</StatusMessage>
 				</Box>
 			);
 

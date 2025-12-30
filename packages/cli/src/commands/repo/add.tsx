@@ -37,7 +37,6 @@ interface Props {
 
 type AddState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "invalid_repo" }
 	| { phase: "already_exists"; repo: string }
 	| { phase: "discovering"; repo: string }
@@ -50,6 +49,7 @@ type AddState =
 	| { phase: "input_path"; repo: string; currentPath: string }
 	| { phase: "saving"; repo: string }
 	| { phase: "success"; repo: string; paths: string[]; isDefault: boolean }
+	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
 
 export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
@@ -58,14 +58,6 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 
 	useEffect(() => {
 		async function checkAndAdd() {
-			// Check if logged in
-			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
-
 			// Validate repo format
 			if (!repoArg.match(/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/)) {
 				setState({ phase: "invalid_repo" });
@@ -81,7 +73,7 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				return;
 			}
 
-			// If path is provided via --path, save directly
+			// If path is provided via --path, save directly (no API call needed)
 			if (opts.path !== undefined) {
 				setState({ phase: "saving", repo: repoArg });
 
@@ -108,25 +100,34 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				return;
 			}
 
-			// Start discovery
+			// Start discovery with optional credentials
 			setState({ phase: "discovering", repo: repoArg });
 
 			try {
+				const credentials = await getCredentials();
+				const token = credentials?.token;
+
 				const [owner, repo] = repoArg.split("/");
-				const discovery = await discoverSkillPaths(
+				const result = await discoverSkillPaths(
 					owner,
 					repo,
 					opts.branch,
-					credentials.token,
+					token,
 				);
 
-				if (discovery.totalSkills === 0) {
+				if ("authRequired" in result) {
+					setState({ phase: "auth_required", message: result.message });
+					exit();
+					return;
+				}
+
+				if (result.totalSkills === 0) {
 					setState({ phase: "no_skills_found", repo: repoArg });
 				} else {
 					setState({
 						phase: "select_paths",
 						repo: repoArg,
-						discovery,
+						discovery: result,
 					});
 				}
 			} catch (error) {
@@ -257,11 +258,10 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 		case "checking":
 			return <Spinner text="Checking..." />;
 
-		case "not_logged_in":
+		case "auth_required":
 			return (
 				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
+					<StatusMessage type="error">{state.message}</StatusMessage>
 				</Box>
 			);
 

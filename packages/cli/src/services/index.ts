@@ -67,3 +67,10 @@ export {
 	extractParentPaths,
 	type SkillPath,
 } from "./discovery.js";
+export {
+	buildGitHubHeaders,
+	buildGitHubRawHeaders,
+	getGitHubErrorMessage,
+	isAuthRequired,
+	isRateLimited,
+} from "./github.js";

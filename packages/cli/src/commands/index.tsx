@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
+	buildGitHubHeaders,
 	getAgent,
 	getConfig,
 	getCredentials,
@@ -24,7 +25,14 @@ interface GitHubUser {
 
 type StatusState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
+	| {
+			phase: "not_logged_in";
+			defaultRepo: string | null;
+			installedCount: number;
+			repoCount: number;
+			currentAgent: string;
+			agentName: string;
+	  }
 	| {
 			phase: "logged_in";
 			user: GitHubUser;
@@ -43,10 +51,27 @@ export default function Index(_props: Props) {
 
 	useEffect(() => {
 		async function checkStatus() {
+			const config = getConfig();
+			const currentAgent = getCurrentAgent();
+			const agentInfo = getAgent(currentAgent);
+			const agentName = agentInfo?.name || currentAgent;
+
+			// Count skills for current agent
+			const installedCount = config.installed.filter(
+				(s) => s.agent === currentAgent || !s.agent,
+			).length;
+
 			// Check if logged in
 			const credentials = await getCredentials();
 			if (!credentials) {
-				setState({ phase: "not_logged_in" });
+				setState({
+					phase: "not_logged_in",
+					defaultRepo: config.defaultRepo,
+					installedCount,
+					repoCount: config.repos.length,
+					currentAgent,
+					agentName,
+				});
 				exit();
 				return;
 			}
@@ -54,15 +79,19 @@ export default function Index(_props: Props) {
 			// Fetch user info from GitHub
 			try {
 				const response = await fetch("https://api.github.com/user", {
-					headers: {
-						Authorization: `Bearer ${credentials.token}`,
-						Accept: "application/vnd.github+json",
-					},
+					headers: buildGitHubHeaders(credentials.token),
 				});
 
 				if (!response.ok) {
 					if (response.status === 401) {
-						setState({ phase: "not_logged_in" });
+						setState({
+							phase: "not_logged_in",
+							defaultRepo: config.defaultRepo,
+							installedCount,
+							repoCount: config.repos.length,
+							currentAgent,
+							agentName,
+						});
 					} else {
 						setState({
 							phase: "error",
@@ -74,16 +103,7 @@ export default function Index(_props: Props) {
 				}
 
 				const userData = (await response.json()) as GitHubUser;
-				const config = getConfig();
 				const installations = getInstallations();
-				const currentAgent = getCurrentAgent();
-				const agentInfo = getAgent(currentAgent);
-				const agentName = agentInfo?.name || currentAgent;
-
-				// Count skills for current agent
-				const installedCount = config.installed.filter(
-					(s) => s.agent === currentAgent || !s.agent,
-				).length;
 
 				setState({
 					phase: "logged_in",
@@ -122,10 +142,50 @@ export default function Index(_props: Props) {
 						</Text>
 						<Text> - AI Coding Agent Skills Manager</Text>
 					</Box>
-					<StatusMessage type="warning">Not logged in</StatusMessage>
+
+					<Box flexDirection="column" marginBottom={1}>
+						<Box>
+							<Text dimColor>Not logged in</Text>
+							<Text dimColor>
+								{" "}
+								(public repos accessible, private repos require login)
+							</Text>
+						</Box>
+					</Box>
+
+					<Box flexDirection="column" marginBottom={1}>
+						<Box>
+							<Text>Current agent: </Text>
+							<Text color="cyan">{state.agentName}</Text>
+							<Text dimColor> ({state.currentAgent})</Text>
+						</Box>
+						<Box>
+							<Text>Installed skills: </Text>
+							<Text>{state.installedCount}</Text>
+						</Box>
+						<Box>
+							<Text>Default repo: </Text>
+							{state.defaultRepo ? (
+								<Text color="cyan">{state.defaultRepo}</Text>
+							) : (
+								<Text dimColor>(not set)</Text>
+							)}
+						</Box>
+						<Box>
+							<Text>Configured repos: </Text>
+							<Text>{state.repoCount}</Text>
+						</Box>
+					</Box>
+
 					<Box marginTop={1} flexDirection="column">
-						<Text bold>Quick Start:</Text>
+						<Text bold>Quick Actions:</Text>
 						<Text dimColor> skilluse login Authenticate with GitHub</Text>
+						<Text dimColor>
+							{" "}
+							skilluse repo add owner/repo Add a skill repository
+						</Text>
+						<Text dimColor> skilluse list Browse available skills</Text>
+						<Text dimColor> skilluse install skill-name Install a skill</Text>
 						<Text dimColor> skilluse --help Show all commands</Text>
 					</Box>
 				</Box>

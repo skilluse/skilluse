@@ -3,8 +3,12 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
+	buildGitHubHeaders,
+	buildGitHubRawHeaders,
 	getConfig,
 	getCredentials,
+	getGitHubErrorMessage,
+	isAuthRequired,
 	type RepoConfig,
 } from "../services/index.js";
 
@@ -34,10 +38,10 @@ interface SkillMetadata {
 
 type SearchState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "no_repos" }
 	| { phase: "searching"; repo: string }
 	| { phase: "success"; skills: SkillMetadata[]; keyword: string }
+	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
 
 /**
@@ -83,11 +87,12 @@ function parseFrontmatter(content: string): Record<string, unknown> {
 
 /**
  * Fetch SKILL.md files from a GitHub repo
+ * Returns authRequired if private repo access is denied
  */
 async function fetchSkillsFromRepo(
-	token: string,
+	token: string | undefined,
 	repoConfig: RepoConfig,
-): Promise<SkillMetadata[]> {
+): Promise<SkillMetadata[] | { authRequired: true; message: string }> {
 	const { repo, branch, paths } = repoConfig;
 	const skills: SkillMetadata[] = [];
 
@@ -102,14 +107,16 @@ async function fetchSkillsFromRepo(
 				: `https://api.github.com/repos/${repo}/contents?ref=${branch}`;
 
 			const response = await fetch(apiPath, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-					Accept: "application/vnd.github+json",
-					"X-GitHub-Api-Version": "2022-11-28",
-				},
+				headers: buildGitHubHeaders(token),
 			});
 
 			if (!response.ok) {
+				if (isAuthRequired(response)) {
+					return {
+						authRequired: true,
+						message: getGitHubErrorMessage(response),
+					};
+				}
 				continue;
 			}
 
@@ -126,11 +133,7 @@ async function fetchSkillsFromRepo(
 				// Check if this directory has a SKILL.md
 				const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${dir.path}/SKILL.md?ref=${branch}`;
 				const skillResponse = await fetch(skillMdUrl, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-						Accept: "application/vnd.github.raw+json",
-						"X-GitHub-Api-Version": "2022-11-28",
-					},
+					headers: buildGitHubRawHeaders(token),
 				});
 
 				if (skillResponse.ok) {
@@ -197,14 +200,6 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 
 	useEffect(() => {
 		async function search() {
-			// Check if logged in
-			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
-
 			const config = getConfig();
 
 			// Determine which repos to search
@@ -230,14 +225,25 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 				return;
 			}
 
+			// Get optional credentials
+			const credentials = await getCredentials();
+			const token = credentials?.token;
+
 			// Fetch skills from all repos
 			const allSkills: SkillMetadata[] = [];
 
 			for (const repoConfig of reposToSearch) {
 				setState({ phase: "searching", repo: repoConfig.repo });
 
-				const skills = await fetchSkillsFromRepo(credentials.token, repoConfig);
-				allSkills.push(...skills);
+				const result = await fetchSkillsFromRepo(token, repoConfig);
+
+				if ("authRequired" in result) {
+					setState({ phase: "auth_required", message: result.message });
+					exit();
+					return;
+				}
+
+				allSkills.push(...result);
 			}
 
 			// Filter by keyword
@@ -260,11 +266,10 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 		case "checking":
 			return <Spinner text="Initializing..." />;
 
-		case "not_logged_in":
+		case "auth_required":
 			return (
 				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
+					<StatusMessage type="error">{state.message}</StatusMessage>
 				</Box>
 			);
 

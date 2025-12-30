@@ -1,12 +1,8 @@
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../../components/index.js";
-import {
-	getConfig,
-	getCredentials,
-	type RepoConfig,
-} from "../../services/index.js";
+import { getConfig, type RepoConfig } from "../../services/index.js";
 
 export const options = z.object({});
 
@@ -16,67 +12,63 @@ interface Props {
 
 type ListState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "success"; defaultRepo: string | null; repos: RepoConfig[] }
 	| { phase: "error"; message: string };
 
 export default function RepoList(_props: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<ListState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
-		async function loadRepos() {
-			// Check if logged in
-			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
+		// No auth needed - this only reads local config
+		const config = getConfig();
+		setState({
+			phase: "success",
+			defaultRepo: config.defaultRepo,
+			repos: config.repos,
+		});
+	}, []);
 
-			const config = getConfig();
-			setState({
-				phase: "success",
-				defaultRepo: config.defaultRepo,
-				repos: config.repos,
-			});
-			exit();
+	// Add output item when data is ready
+	useEffect(() => {
+		if (state.phase !== "checking" && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
+
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			// Use nextTick to ensure Static has completed rendering
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
+
+	const renderContent = () => {
+		if (state.phase === "error") {
+			return <StatusMessage type="error">{state.message}</StatusMessage>;
 		}
 
-		loadRepos();
-	}, [exit]);
-
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Loading..." />;
-
-		case "not_logged_in":
+		if (state.phase === "success" && state.repos.length === 0) {
 			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
-				</Box>
-			);
-
-		case "success":
-			if (state.repos.length === 0) {
-				return (
-					<Box flexDirection="column">
-						<Text bold>Configured Repositories</Text>
-						<Box marginTop={1}>
-							<Text dimColor>(no repositories configured)</Text>
-						</Box>
-						<Box marginTop={1}>
-							<Text dimColor>
-								Run 'skilluse repo add owner/repo' to add one.
-							</Text>
-						</Box>
+				<>
+					<Text bold>Configured Repositories</Text>
+					<Box marginTop={1}>
+						<Text dimColor>(no repositories configured)</Text>
 					</Box>
-				);
-			}
+					<Box marginTop={1}>
+						<Text dimColor>
+							Run 'skilluse repo add owner/repo' to add one.
+						</Text>
+					</Box>
+				</>
+			);
+		}
 
+		if (state.phase === "success") {
 			return (
-				<Box flexDirection="column">
+				<>
 					<Text bold>Configured Repositories</Text>
 					<Text> </Text>
 					{state.repos.map((repo) => {
@@ -101,10 +93,23 @@ export default function RepoList(_props: Props) {
 							</Box>
 						);
 					})}
-				</Box>
+				</>
 			);
+		}
 
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+		return null;
+	};
+
+	return (
+		<>
+			{state.phase === "checking" && <Spinner text="Loading..." />}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }

@@ -3,6 +3,12 @@
  * Scans GitHub repositories for SKILL.md files and extracts skill paths
  */
 
+import {
+	buildGitHubHeaders,
+	getGitHubErrorMessage,
+	isAuthRequired,
+} from "./github.js";
+
 const GITHUB_API_URL = "https://api.github.com";
 
 export interface TreeItem {
@@ -33,29 +39,36 @@ export interface DiscoveryResult {
 
 /**
  * Discover SKILL.md files in a repository
+ * Returns authRequired if private repo access is denied
  */
 export async function discoverSkillPaths(
 	owner: string,
 	repo: string,
 	branch: string,
-	token: string,
-): Promise<DiscoveryResult> {
+	token?: string,
+): Promise<DiscoveryResult | { authRequired: true; message: string }> {
 	const url = `${GITHUB_API_URL}/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
 
 	const response = await fetch(url, {
-		headers: {
-			Accept: "application/vnd.github+json",
-			Authorization: `Bearer ${token}`,
-			"X-GitHub-Api-Version": "2022-11-28",
-		},
+		headers: buildGitHubHeaders(token),
 	});
 
 	if (!response.ok) {
+		if (isAuthRequired(response)) {
+			return {
+				authRequired: true,
+				message: getGitHubErrorMessage(response),
+			};
+		}
 		if (response.status === 404) {
-			throw new Error(`Repository ${owner}/${repo} not found or branch '${branch}' doesn't exist`);
+			throw new Error(
+				`Repository ${owner}/${repo} not found or branch '${branch}' doesn't exist`,
+			);
 		}
 		const error = await response.text();
-		throw new Error(`Failed to fetch repository tree: ${response.status} - ${error}`);
+		throw new Error(
+			`Failed to fetch repository tree: ${response.status} - ${error}`,
+		);
 	}
 
 	const data = (await response.json()) as TreeResponse;

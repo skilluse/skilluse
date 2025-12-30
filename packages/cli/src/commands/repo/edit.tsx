@@ -2,12 +2,7 @@ import { Box, Text, useApp, useInput } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../../components/index.js";
-import {
-	addRepo,
-	getConfig,
-	getCredentials,
-	type RepoConfig,
-} from "../../services/index.js";
+import { addRepo, getConfig, type RepoConfig } from "../../services/index.js";
 
 export const args = z.tuple([
 	z.string().describe("Repository in owner/repo format"),
@@ -25,7 +20,6 @@ interface Props {
 
 type EditState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "not_found"; repo: string }
 	| {
 			phase: "input_path";
@@ -41,16 +35,8 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 	const [state, setState] = useState<EditState>({ phase: "checking" });
 
 	useEffect(() => {
-		async function checkAndEdit() {
-			// Check if logged in
-			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
-
-			// Check if repo exists
+		function checkAndEdit() {
+			// No auth needed - this only modifies local config
 			const config = getConfig();
 			const existingConfig = config.repos.find((r) => r.repo === repoArg);
 			if (!existingConfig) {
@@ -147,14 +133,6 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 	switch (state.phase) {
 		case "checking":
 			return <Spinner text="Checking..." />;
-
-		case "not_logged_in":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
-				</Box>
-			);
 
 		case "not_found":
 			return (

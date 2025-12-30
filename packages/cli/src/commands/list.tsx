@@ -3,11 +3,16 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
+	buildGitHubHeaders,
+	buildGitHubRawHeaders,
 	getAgent,
 	getConfig,
 	getCredentials,
 	getCurrentAgent,
+	getGitHubErrorMessage,
 	type InstalledSkill,
+	isAuthRequired,
+	isRateLimited,
 	type RepoConfig,
 } from "../services/index.js";
 
@@ -28,7 +33,6 @@ interface SkillWithUpdate extends InstalledSkill {
 
 type ListState =
 	| { phase: "checking" }
-	| { phase: "not_logged_in" }
 	| { phase: "checking_updates"; current: number; total: number }
 	| {
 			phase: "success";
@@ -37,6 +41,7 @@ type ListState =
 			currentAgent: string;
 			showingAll: boolean;
 	  }
+	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
 
 /**
@@ -62,26 +67,29 @@ function parseFrontmatter(content: string): Record<string, unknown> {
 
 /**
  * Check if a skill has updates available
+ * Returns null if auth is required for private repo access
  */
 async function checkForUpdate(
-	token: string,
+	token: string | undefined,
 	skill: InstalledSkill,
 	repoConfig: RepoConfig,
-): Promise<SkillWithUpdate> {
+): Promise<SkillWithUpdate | { authRequired: true; message: string }> {
 	const { repo, branch } = repoConfig;
 
 	try {
 		// Get latest commit SHA
 		const refUrl = `https://api.github.com/repos/${repo}/commits/${branch}`;
 		const refResponse = await fetch(refUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubHeaders(token),
 		});
 
 		if (!refResponse.ok) {
+			if (isAuthRequired(refResponse)) {
+				return {
+					authRequired: true,
+					message: getGitHubErrorMessage(refResponse),
+				};
+			}
 			return { ...skill, hasUpdate: false };
 		}
 
@@ -96,11 +104,7 @@ async function checkForUpdate(
 		// Get latest version from SKILL.md
 		const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${skill.repoPath}/SKILL.md?ref=${branch}`;
 		const skillResponse = await fetch(skillMdUrl, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/vnd.github.raw+json",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+			headers: buildGitHubRawHeaders(token),
 		});
 
 		let latestVersion = skill.version;
@@ -129,14 +133,6 @@ export default function List({ options: opts }: Props) {
 
 	useEffect(() => {
 		async function loadSkills() {
-			// Check if logged in
-			const credentials = await getCredentials();
-			if (!credentials) {
-				setState({ phase: "not_logged_in" });
-				exit();
-				return;
-			}
-
 			const config = getConfig();
 			const currentAgent = getCurrentAgent();
 
@@ -148,7 +144,7 @@ export default function List({ options: opts }: Props) {
 					);
 
 			if (!opts.outdated) {
-				// Just show installed skills
+				// Just show installed skills - no auth needed
 				setState({
 					phase: "success",
 					skills,
@@ -159,6 +155,10 @@ export default function List({ options: opts }: Props) {
 				exit();
 				return;
 			}
+
+			// For --outdated, get optional credentials
+			const credentials = await getCredentials();
+			const token = credentials?.token;
 
 			// Check for updates
 			const skillsWithUpdates: SkillWithUpdate[] = [];
@@ -174,13 +174,20 @@ export default function List({ options: opts }: Props) {
 				const repoConfig = config.repos.find((r) => r.repo === skill.repo);
 
 				if (repoConfig) {
-					const skillWithUpdate = await checkForUpdate(
-						credentials.token,
-						skill,
-						repoConfig,
-					);
-					if (skillWithUpdate.hasUpdate) {
-						skillsWithUpdates.push(skillWithUpdate);
+					const result = await checkForUpdate(token, skill, repoConfig);
+
+					// Check if auth is required for this repo
+					if ("authRequired" in result) {
+						setState({
+							phase: "auth_required",
+							message: result.message,
+						});
+						exit();
+						return;
+					}
+
+					if (result.hasUpdate) {
+						skillsWithUpdates.push(result);
 					}
 				}
 			}
@@ -202,11 +209,10 @@ export default function List({ options: opts }: Props) {
 		case "checking":
 			return <Spinner text="Loading..." />;
 
-		case "not_logged_in":
+		case "auth_required":
 			return (
 				<Box flexDirection="column">
-					<StatusMessage type="error">Not authenticated</StatusMessage>
-					<Text dimColor>Run 'skilluse login' to authenticate with GitHub</Text>
+					<StatusMessage type="error">{state.message}</StatusMessage>
 				</Box>
 			);
 

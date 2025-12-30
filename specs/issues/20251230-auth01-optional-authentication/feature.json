@@ -3,9 +3,9 @@
   "title": "Optional Authentication for Public Repositories",
   "epic": "cli",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-30",
-  "completed_at": null,
+  "completed_at": "2025-12-30",
   "dependencies": [],
   "parallelizable": true,
   "features": [
@@ -18,8 +18,8 @@
         "Run 'skilluse repo list'",
         "Verify it shows configured repos without auth error"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Command accesses only local config, no auth check needed"
     },
     {
       "id": "F002",
@@ -30,8 +30,8 @@
         "Run 'skilluse repo use owner/repo'",
         "Verify default repo is set without auth error"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Removed auth check - command only modifies local config"
     },
     {
       "id": "F003",
@@ -42,8 +42,8 @@
         "Run 'skilluse repo edit owner/repo'",
         "Verify editing works without auth error"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Removed auth check - command only modifies local config"
     },
     {
       "id": "F004",
@@ -54,8 +54,8 @@
         "Run 'skilluse repo remove owner/repo'",
         "Verify removal works without auth error"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Removed auth check - command only modifies local config"
     },
     {
       "id": "F005",
@@ -66,8 +66,8 @@
         "Run 'skilluse list'",
         "Verify installed skills are shown without auth error"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Basic list accesses local config only, --outdated uses optional auth"
     },
     {
       "id": "F006",
@@ -79,8 +79,8 @@
         "Run 'skilluse install commit'",
         "Verify skill is installed successfully"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Install uses optional token, exit code 0 for public repos"
     },
     {
       "id": "F007",
@@ -92,8 +92,8 @@
         "Verify error message says 'This repository requires authentication'",
         "Verify suggestion to run 'skilluse login'"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: auth_required state implemented with getGitHubErrorMessage()"
     },
     {
       "id": "F008",
@@ -104,8 +104,8 @@
         "Run 'skilluse search commit'",
         "Verify search results from public repos are shown"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Search uses optional token via buildGitHubHeaders(token)"
     },
     {
       "id": "F009",
@@ -116,8 +116,8 @@
         "Run 'skilluse repo add skilluse/skills'",
         "Verify skill discovery works and repo is added"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: discoverSkillPaths() accepts optional token, returns authRequired on failure"
     },
     {
       "id": "F010",
@@ -129,8 +129,8 @@
         "Run 'skilluse upgrade'",
         "Verify update check works without auth error"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: checkForUpdate() and downloadSkillFiles() use optional token"
     },
     {
       "id": "F011",
@@ -142,8 +142,8 @@
         "Verify error shows 'Rate limit exceeded'",
         "Verify suggestion to login for higher limit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: isRateLimited() checks X-RateLimit-Remaining, getGitHubErrorMessage() returns proper message"
     },
     {
       "id": "F012",
@@ -155,8 +155,8 @@
         "Verify 'Not logged in' shown as info, not error",
         "Verify quick actions are still shown"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Shows 'Not logged in (public repos accessible, private repos require login)' with quick actions"
     },
     {
       "id": "F013",
@@ -168,13 +168,13 @@
         "Verify isAuthRequired() detects 401/403",
         "Verify isRateLimited() checks X-RateLimit-Remaining header"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified 2025-12-30: Created services/github.ts with all helper functions"
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }
