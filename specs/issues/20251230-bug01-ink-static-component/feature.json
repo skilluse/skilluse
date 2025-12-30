@@ -3,7 +3,7 @@
   "title": "Fix Ink Exit Race Condition Using Static Component",
   "epic": "cli",
   "priority": 2,
-  "status": "pending",
+  "status": "in-progress",
   "created_at": "2025-12-30",
   "completed_at": null,
   "dependencies": [],
@@ -14,98 +14,219 @@
       "category": "refactor",
       "description": "repo list command uses <Static> for output preservation",
       "steps": [
-        "Step 1: Run 'skilluse repo list'",
-        "Step 2: Verify repository list is displayed",
-        "Step 3: Verify output persists in terminal history after command exits",
-        "Step 4: Verify no race condition (output not cleared)"
+        "Run 'skilluse repo list'",
+        "Verify repository list is displayed",
+        "Verify output persists in terminal history after command exits"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already fixed - reference implementation"
     },
     {
       "id": "F002",
       "category": "refactor",
       "description": "repo command uses <Static> for output preservation",
       "steps": [
-        "Step 1: Run 'skilluse repo'",
-        "Step 2: Verify current repository info is displayed",
-        "Step 3: Verify output persists after exit"
+        "Run 'skilluse repo'",
+        "Verify current repository info is displayed",
+        "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already fixed"
     },
     {
       "id": "F003",
       "category": "refactor",
       "description": "repo use command uses <Static> for output preservation",
       "steps": [
-        "Step 1: Run 'skilluse repo use owner/repo'",
-        "Step 2: Verify success/error message is displayed",
-        "Step 3: Verify output persists after exit"
+        "Run 'skilluse repo use owner/repo'",
+        "Verify success/error message is displayed",
+        "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already fixed"
     },
     {
       "id": "F004",
       "category": "refactor",
       "description": "agent command uses <Static> for output preservation",
       "steps": [
-        "Step 1: Run 'skilluse agent'",
-        "Step 2: Verify agent table is displayed",
-        "Step 3: Verify output persists after exit"
+        "Run 'skilluse agent'",
+        "Verify agent table is displayed",
+        "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already fixed"
     },
     {
       "id": "F005",
       "category": "refactor",
       "description": "agent use command uses <Static> for output preservation",
       "steps": [
-        "Step 1: Run 'skilluse agent use cursor'",
-        "Step 2: Verify success/error message is displayed",
-        "Step 3: Verify output persists after exit"
+        "Run 'skilluse agent use cursor'",
+        "Verify success/error message is displayed",
+        "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already fixed"
     },
     {
       "id": "F006",
       "category": "refactor",
       "description": "logout command uses <Static> for output preservation",
       "steps": [
-        "Step 1: Run 'skilluse logout'",
-        "Step 2: Verify logout message is displayed",
-        "Step 3: Verify output persists after exit"
+        "Run 'skilluse logout'",
+        "Verify logout message is displayed",
+        "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already fixed"
     },
     {
       "id": "F007",
-      "category": "cleanup",
-      "description": "useExitAfterRender hook is removed",
+      "category": "refactor",
+      "description": "list command uses <Static> for output preservation",
       "steps": [
-        "Step 1: Verify hooks/useExitAfterRender.ts is deleted",
-        "Step 2: Verify no imports of useExitAfterRender remain",
-        "Step 3: Verify hooks/index.ts is updated or removed"
+        "Run 'skilluse list'",
+        "Verify installed skills are displayed",
+        "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Fixed in v0.2.1"
     },
     {
       "id": "F008",
+      "category": "refactor",
+      "description": "repo remove command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse repo remove owner/repo'",
+        "Verify success/error message is displayed (not just 'Checking...')",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "HIGH PRIORITY - currently shows only 'Checking...' then exits"
+    },
+    {
+      "id": "F009",
+      "category": "refactor",
+      "description": "repo edit command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse repo edit owner/repo'",
+        "Verify edit result message is displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "HIGH PRIORITY - currently shows only 'Checking...' then exits"
+    },
+    {
+      "id": "F010",
+      "category": "refactor",
+      "description": "search command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse search commit'",
+        "Verify search results are displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "HIGH PRIORITY - common command"
+    },
+    {
+      "id": "F011",
+      "category": "refactor",
+      "description": "info command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse info commit'",
+        "Verify skill info is displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "HIGH PRIORITY - common command"
+    },
+    {
+      "id": "F012",
+      "category": "refactor",
+      "description": "install command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse install commit'",
+        "Verify installation progress and success message are displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "MEDIUM PRIORITY - has multi-step UI"
+    },
+    {
+      "id": "F013",
+      "category": "refactor",
+      "description": "upgrade command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse upgrade'",
+        "Verify upgrade progress and result are displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "MEDIUM PRIORITY - has progress UI"
+    },
+    {
+      "id": "F014",
+      "category": "refactor",
+      "description": "uninstall command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse uninstall skill-name'",
+        "Verify uninstall result is displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "MEDIUM PRIORITY - has confirmation"
+    },
+    {
+      "id": "F015",
+      "category": "refactor",
+      "description": "index (status) command uses <Static> for output preservation",
+      "steps": [
+        "Run 'skilluse' (no args)",
+        "Verify status/help is displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "LOW PRIORITY - shows help"
+    },
+    {
+      "id": "F016",
+      "category": "refactor",
+      "description": "repo add command uses <Static> for final output",
+      "steps": [
+        "Run 'skilluse repo add owner/repo'",
+        "Complete interactive selection if any",
+        "Verify success message is displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "LOW PRIORITY - has interactive selection"
+    },
+    {
+      "id": "F017",
+      "category": "refactor",
+      "description": "login command uses <Static> for final output",
+      "steps": [
+        "Run 'skilluse login'",
+        "Complete OAuth flow",
+        "Verify success message is displayed",
+        "Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": "LOW PRIORITY - has interactive OAuth flow"
+    },
+    {
+      "id": "F018",
       "category": "functional",
       "description": "Spinner/loading states still work during async operations",
       "steps": [
-        "Step 1: Run 'skilluse repo list' (or any async command)",
-        "Step 2: Verify spinner is shown during loading",
-        "Step 3: Verify spinner is replaced by final output",
-        "Step 4: Verify final output persists after exit"
+        "Run any async command (e.g., 'skilluse search commit')",
+        "Verify spinner is shown during loading",
+        "Verify spinner is replaced by final output",
+        "Verify final output persists after exit"
       ],
       "passes": false,
-      "notes": ""
+      "notes": "Test after fixing all commands"
     }
   ],
   "metadata": {

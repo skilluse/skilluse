@@ -17,11 +17,43 @@ All core CLI features completed. In maintenance mode.
 
 ## Bug Fixes Sprint
 
-### [2025-12-30] Created bug01-ink-static-component
+### [2025-12-30] Updated bug01-ink-static-component
 - **Problem**: Ink clears dynamic output when `exit()` is called, causing race condition
-- **Current workaround**: `useExitAfterRender` hook using `setImmediate`
-- **Proper solution**: Use Ink's official `<Static>` component for output preservation
-- **Affected commands**: repo list, repo, repo use, agent, agent use, logout
+- **Symptom**: Commands show "Loading..." then exit without showing output
+- **Root Cause**: `exit()` called immediately after `setState()` - React doesn't render before exit
+
+**Already Fixed (7 commands)**:
+- repo/list.tsx, repo/index.tsx, repo/use.tsx - reference implementations
+- agent/index.tsx, agent/use.tsx, logout.tsx - fixed previously
+- list.tsx - fixed in v0.2.1
+
+**Need Fix (10 commands)**:
+- HIGH: repo/remove, repo/edit, search, info
+- MEDIUM: install, upgrade, uninstall
+- LOW: index, repo/add, login
+
+**Fix Pattern**:
+```tsx
+// 1. Add outputItems state
+const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
+
+// 2. Set outputItems when state is final (don't call exit() here)
+useEffect(() => {
+  if (isFinalState && outputItems.length === 0) {
+    setOutputItems([{ id: "output" }]);
+  }
+}, [state.phase, outputItems.length]);
+
+// 3. Exit after outputItems is rendered
+useEffect(() => {
+  if (outputItems.length > 0) {
+    process.nextTick(() => exit());
+  }
+}, [outputItems.length, exit]);
+
+// 4. Wrap output in <Static>
+<Static items={outputItems}>{(item) => <Box key={item.id}>...</Box>}</Static>
+```
 
 ## Completed Sprints
 
