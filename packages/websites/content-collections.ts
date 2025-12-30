@@ -3,6 +3,7 @@ import { compileMDX } from "@content-collections/mdx";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
+import remarkGfm from "remark-gfm";
 import mdxMermaid from "mdx-mermaid";
 import { z } from "zod";
 
@@ -50,7 +51,7 @@ const posts = defineCollection({
   }),
   transform: async (document, context) => {
     const content = await compileMDX(context, document, {
-      remarkPlugins: [mdxMermaid],
+      remarkPlugins: [remarkGfm, mdxMermaid],
       rehypePlugins: [
         rehypeSlug,
         [
@@ -99,7 +100,7 @@ const docs = defineCollection({
   }),
   transform: async (document, context) => {
     const content = await compileMDX(context, document, {
-      remarkPlugins: [mdxMermaid],
+      remarkPlugins: [remarkGfm, mdxMermaid],
       rehypePlugins: [
         rehypeSlug,
         [

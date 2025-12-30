@@ -198,6 +198,10 @@ const thead = ({ className, ...props }: ComponentProps<"thead">) => (
   <thead className={cx("bg-muted", className)} {...props} />
 )
 
+const tbody = ({ className, ...props }: ComponentProps<"tbody">) => (
+  <tbody className={className} {...props} />
+)
+
 const th = ({ className, ...props }: ComponentProps<"th">) => (
   <th
     className={cx("p-3 text-left font-semibold border border-border", className)}
@@ -250,6 +254,7 @@ export const MDXComponents = {
   // Tables
   table,
   thead,
+  tbody,
   th,
   td,
   tr,
