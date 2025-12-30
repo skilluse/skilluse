@@ -14,7 +14,7 @@ export default function WebLayout({ children }: WebLayoutProps) {
         <Header />
 
         <main className="flex flex-col grow">
-          <Container className="flex flex-col grow py-8 gap-8 md:gap-10 md:py-10 lg:gap-12 lg:py-12">
+          <Container className="flex flex-col grow py-10 gap-10 md:gap-12 md:py-12 lg:gap-16 lg:py-16">
             {children}
           </Container>
         </main>

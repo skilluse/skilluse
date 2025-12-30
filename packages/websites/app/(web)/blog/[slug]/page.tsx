@@ -57,7 +57,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
 
   return (
-    <article className="flex flex-col gap-8 md:gap-10 lg:gap-12">
+    <article className="flex flex-col gap-8 md:gap-10 lg:gap-12 max-w-3xl mx-auto">
       <Breadcrumbs
         items={[
           { name: "Home", href: "/" },
@@ -93,7 +93,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </header>
 
       <section>
-        <MDX code={post.content} className="max-w-none!" />
+        <MDX code={post.content} />
       </section>
 
       <ShareButtons title={post.title} slug={post.slug} />
