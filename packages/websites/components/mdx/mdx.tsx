@@ -8,7 +8,7 @@ type MDXProps = ComponentProps<typeof Prose> & ComponentProps<typeof MDXContent>
 
 export const MDX = ({ className, code, components }: MDXProps) => {
   return (
-    <Prose className={cx("max-w-3xl!", className)}>
+    <Prose className={cx("max-w-none", className)}>
       <MDXContent code={code} components={{ ...MDXComponents, ...components }} />
     </Prose>
   )
