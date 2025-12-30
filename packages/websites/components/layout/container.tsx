@@ -3,7 +3,7 @@ import type { ComponentProps } from "react"
 import { type VariantProps, cva, cx } from "~/utils/cva"
 
 const containerVariants = cva({
-  base: "relative w-full max-w-272 mx-auto px-6 md:px-10 lg:px-16",
+  base: "relative w-full max-w-272 mx-auto px-6 md:px-8 lg:px-10",
 })
 
 type ContainerProps = ComponentProps<"div"> &

@@ -57,7 +57,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
 
   return (
-    <article className="flex flex-col gap-8 md:gap-10 lg:gap-12 max-w-3xl mx-auto">
+    <article className="flex flex-col gap-8 md:gap-10 lg:gap-12">
       <Breadcrumbs
         items={[
           { name: "Home", href: "/" },
