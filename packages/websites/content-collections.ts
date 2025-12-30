@@ -3,6 +3,7 @@ import { compileMDX } from "@content-collections/mdx";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
+import mdxMermaid from "mdx-mermaid";
 import { z } from "zod";
 
 // Extract h2/h3 headings from markdown content
@@ -49,6 +50,7 @@ const posts = defineCollection({
   }),
   transform: async (document, context) => {
     const content = await compileMDX(context, document, {
+      remarkPlugins: [mdxMermaid],
       rehypePlugins: [
         rehypeSlug,
         [
@@ -63,8 +65,8 @@ const posts = defineCollection({
         [
           rehypePrettyCode,
           {
-            theme: "github-dark",
-            keepBackground: true,
+            theme: "github-light",
+            keepBackground: false,
           },
         ],
       ],
@@ -97,6 +99,7 @@ const docs = defineCollection({
   }),
   transform: async (document, context) => {
     const content = await compileMDX(context, document, {
+      remarkPlugins: [mdxMermaid],
       rehypePlugins: [
         rehypeSlug,
         [
@@ -111,8 +114,8 @@ const docs = defineCollection({
         [
           rehypePrettyCode,
           {
-            theme: "github-dark",
-            keepBackground: true,
+            theme: "github-light",
+            keepBackground: false,
           },
         ],
       ],
