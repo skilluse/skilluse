@@ -1,0 +1,116 @@
+{
+  "issue": "bug01-ink-static-component",
+  "title": "Fix Ink Exit Race Condition Using Static Component",
+  "epic": "cli",
+  "priority": 2,
+  "status": "pending",
+  "created_at": "2025-12-30",
+  "completed_at": null,
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "refactor",
+      "description": "repo list command uses <Static> for output preservation",
+      "steps": [
+        "Step 1: Run 'skilluse repo list'",
+        "Step 2: Verify repository list is displayed",
+        "Step 3: Verify output persists in terminal history after command exits",
+        "Step 4: Verify no race condition (output not cleared)"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "refactor",
+      "description": "repo command uses <Static> for output preservation",
+      "steps": [
+        "Step 1: Run 'skilluse repo'",
+        "Step 2: Verify current repository info is displayed",
+        "Step 3: Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "refactor",
+      "description": "repo use command uses <Static> for output preservation",
+      "steps": [
+        "Step 1: Run 'skilluse repo use owner/repo'",
+        "Step 2: Verify success/error message is displayed",
+        "Step 3: Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "refactor",
+      "description": "agent command uses <Static> for output preservation",
+      "steps": [
+        "Step 1: Run 'skilluse agent'",
+        "Step 2: Verify agent table is displayed",
+        "Step 3: Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "refactor",
+      "description": "agent use command uses <Static> for output preservation",
+      "steps": [
+        "Step 1: Run 'skilluse agent use cursor'",
+        "Step 2: Verify success/error message is displayed",
+        "Step 3: Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "refactor",
+      "description": "logout command uses <Static> for output preservation",
+      "steps": [
+        "Step 1: Run 'skilluse logout'",
+        "Step 2: Verify logout message is displayed",
+        "Step 3: Verify output persists after exit"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F007",
+      "category": "cleanup",
+      "description": "useExitAfterRender hook is removed",
+      "steps": [
+        "Step 1: Verify hooks/useExitAfterRender.ts is deleted",
+        "Step 2: Verify no imports of useExitAfterRender remain",
+        "Step 3: Verify hooks/index.ts is updated or removed"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "Spinner/loading states still work during async operations",
+      "steps": [
+        "Step 1: Run 'skilluse repo list' (or any async command)",
+        "Step 2: Verify spinner is shown during loading",
+        "Step 3: Verify spinner is replaced by final output",
+        "Step 4: Verify final output persists after exit"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}
