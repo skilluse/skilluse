@@ -17,31 +17,31 @@
 
   /* Base colors - Light mode */
   --color-background: hsl(0 20% 99%);
-  --color-foreground: hsl(0 5% 12%);
+  --color-foreground: hsl(0 5% 10%);
 
   /* Card surfaces */
   --color-card: hsl(0 8% 97%);
-  --color-card-foreground: hsl(0 5% 12%);
+  --color-card-foreground: hsl(0 5% 10%);
 
   /* Popover surfaces */
   --color-popover: hsl(0 20% 99%);
-  --color-popover-foreground: hsl(0 5% 12%);
+  --color-popover-foreground: hsl(0 5% 10%);
 
   /* Primary - Dark text/buttons */
-  --color-primary: hsl(0 5% 12%);
+  --color-primary: hsl(0 5% 10%);
   --color-primary-foreground: hsl(0 20% 99%);
 
   /* Secondary - Light gray for secondary elements */
   --color-secondary: hsl(0 8% 94%);
-  --color-secondary-foreground: hsl(0 5% 12%);
+  --color-secondary-foreground: hsl(0 5% 10%);
 
   /* Muted - For muted backgrounds and text */
   --color-muted: hsl(0 8% 97%);
-  --color-muted-foreground: hsl(0 1% 39%);
+  --color-muted-foreground: hsl(0 1% 32%);
 
   /* Accent - Lime green for interactive elements */
   --color-accent: hsl(62 84% 88%);
-  --color-accent-foreground: hsl(0 5% 12%);
+  --color-accent-foreground: hsl(0 5% 10%);
 
   /* Destructive - For errors/danger */
   --color-destructive: hsl(0 84% 60%);
@@ -188,17 +188,17 @@ body {
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.12 0 0);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.12 0 0);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.12 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.45 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
@@ -211,7 +211,7 @@ body {
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-foreground: oklch(0.12 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
@@ -296,11 +296,33 @@ pre code span,
   font-family: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
 }
 
-/* Code block styling */
+/* Code block styling - override shiki/rehype-pretty-code inline styles */
+[data-rehype-pretty-code-figure],
 pre,
+pre.shiki,
 [data-rehype-pretty-code-figure] pre {
   background-color: var(--color-background) !important;
+  background: var(--color-background) !important;
   border: 1px solid var(--color-border) !important;
+  border-radius: 0.5rem;
+}
+
+[data-rehype-pretty-code-figure] {
+  margin: 1rem 0;
+}
+
+[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+  border: none !important;
+}
+
+[data-rehype-pretty-code-figure] pre code,
+[data-rehype-pretty-code-figure] code,
+pre > code,
+pre.shiki code,
+code.shiki {
+  background-color: transparent !important;
+  background: transparent !important;
 }
 
 /* Ensure prose content doesn't overflow on mobile */
@@ -347,4 +369,16 @@ pre,
 a {
   text-underline-offset: 3px;
   text-decoration-thickness: 0.075em;
+}
+
+/* Mermaid diagrams - reset to sans-serif font for proper rendering */
+.mermaid,
+.mermaid * {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+}
+
+.mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
 }

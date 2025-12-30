@@ -57,7 +57,7 @@ const Header = ({ className, ...props }: HeaderProps) => {
                   "text-sm uppercase tracking-wide transition-colors",
                   pathname.startsWith(item.href.split("?")[0])
                     ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-foreground/70 hover:text-foreground"
                 )}
               >
                 {item.title}
@@ -73,7 +73,7 @@ const Header = ({ className, ...props }: HeaderProps) => {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-foreground/70 hover:text-foreground transition-colors"
                 aria-label={item.title}
               >
                 {item.title === "GitHub" && <Icon name="Github" className="size-4" />}
@@ -125,7 +125,7 @@ const Header = ({ className, ...props }: HeaderProps) => {
                     "text-sm uppercase tracking-wide py-2 border-b border-border transition-colors",
                     pathname.startsWith(item.href.split("?")[0])
                       ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-foreground/70 hover:text-foreground"
                   )}
                 >
                   {item.title}
@@ -138,7 +138,7 @@ const Header = ({ className, ...props }: HeaderProps) => {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-foreground/70 hover:text-foreground transition-colors"
                     aria-label={item.title}
                   >
                     {item.title === "GitHub" && <Icon name="Github" className="size-5" />}
