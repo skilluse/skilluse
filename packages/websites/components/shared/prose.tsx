@@ -34,7 +34,7 @@ export const Prose = ({ className, ...props }: ComponentProps<"div">) => {
         // Inline code - em-based spacing
         "prose-code:before:hidden prose-code:after:hidden prose-code:bg-foreground/10 prose-code:rounded prose-code:mx-[0.088em] prose-code:px-[0.33em] prose-code:py-[0.166em] prose-code:font-normal prose-code:text-[0.875em]",
         // Code blocks with padding
-        "prose-pre:rounded-lg prose-pre:border prose-pre:border-border prose-pre:bg-muted prose-pre:font-mono prose-pre:text-base prose-pre:p-4 prose-pre:overflow-x-auto",
+        "prose-pre:rounded-lg prose-pre:border prose-pre:border-border prose-pre:bg-background prose-pre:font-mono prose-pre:text-base prose-pre:p-4 prose-pre:overflow-x-auto",
         // Images with border
         "prose-img:rounded-lg prose-img:border",
         // Lead text

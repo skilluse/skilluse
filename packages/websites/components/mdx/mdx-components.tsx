@@ -142,7 +142,7 @@ const li = ({ className, ...props }: ComponentProps<"li">) => (
 const pre = ({ className, ...props }: ComponentProps<"pre">) => (
   <pre
     className={cx(
-      "my-4 p-4 rounded-lg border border-border bg-muted font-mono text-base overflow-x-auto",
+      "my-4 p-4 rounded-lg border border-border bg-background font-mono text-base overflow-x-auto",
       className
     )}
     {...props}
