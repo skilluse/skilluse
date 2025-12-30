@@ -1,6 +1,6 @@
 {
 	"name": "skilluse",
-	"version": "0.1.9",
+	"version": "0.1.10",
 	"description": "CLI tool for managing and installing AI Coding Agent Skills",
 	"main": "dist/cli.js",
 	"bin": {
@@ -32,7 +32,7 @@
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"check": "biome check .",
-		"start": "bun dist/index.js",
+		"start": "node dist/cli.js",
 		"prepublishOnly": "bun run build"
 	},
 	"keywords": [

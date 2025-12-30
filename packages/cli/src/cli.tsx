@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
  * Static CLI entry point for compiled binaries.
  * This file imports all commands statically to work with Bun's single-file compilation.
