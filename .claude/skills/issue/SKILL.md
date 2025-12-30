@@ -46,15 +46,45 @@ Naming convention: `YYYYMMDD-issueID-short-description/`
 
 ---
 
+## IMPORTANT: Epic Context
+
+**Before creating or updating any Issue, you MUST:**
+
+1. **Read Epic Context First**
+   ```bash
+   # Read the related Epic's files
+   cat epics/EPIC_NAME/epic.md        # Understand goals and existing issues
+   cat epics/EPIC_NAME/progress.md    # Check current sprint status
+   ls epics/EPIC_NAME/references/     # Review design docs and specs
+   ```
+
+2. **After Creating/Updating Issue**
+   - Update `epic.md` - Add new issue to "Related Issues" table
+   - Update `progress.md` - Log the action taken
+   - Ensure issue aligns with Epic goals and references
+
+This ensures Issues are consistent with Epic's design and requirements.
+
+---
+
 ## Creating an Issue
 
-### Step 1: Create Issue Directory
+### Step 1: Read Epic Context
+
+```bash
+# Identify the related Epic and read its context
+cat epics/EPIC_NAME/epic.md           # Goals, existing issues
+cat epics/EPIC_NAME/progress.md       # Current sprint status
+cat epics/EPIC_NAME/references/*.md   # Design specs, requirements
+```
+
+### Step 2: Create Issue Directory
 
 ```bash
 mkdir -p issues/YYYYMMDD-issueID-short-description
 ```
 
-### Step 2: Create issue.md
+### Step 3: Create issue.md
 
 ```markdown
 # [Issue Title]
@@ -96,7 +126,7 @@ See `feature.json` for testable criteria.
 - What this issue does NOT include
 ```
 
-### Step 3: Create feature.json
+### Step 4: Create feature.json
 
 ```json
 {
@@ -132,20 +162,26 @@ See `feature.json` for testable criteria.
 }
 ```
 
-### Step 4: Update Epic
+### Step 5: Update Epic Context
 
-Add the new issue to the related Epic's `epic.md` table:
+**This step is mandatory.** Update the Epic to reflect the new issue:
 
-```markdown
-| Issue | Title | Status |
-|-------|-------|--------|
-| task01-auth-setup | Authentication Setup | pending |
-```
+1. Update `epic.md` - Add to "Related Issues" table:
+   ```markdown
+   | Issue | Title | Status |
+   |-------|-------|--------|
+   | task01-auth-setup | Authentication Setup | pending |
+   ```
 
-### Step 5: Git Commit
+2. Update `progress.md` - Log the creation:
+   ```markdown
+   [YYYY-MM-DD HH:MM] Created issue task01-auth-setup: Authentication Setup
+   ```
+
+### Step 6: Git Commit
 
 ```bash
-git add issues/YYYYMMDD-issueID-*/
+git add issues/YYYYMMDD-issueID-*/ epics/EPIC_NAME/
 git commit -m "feat: create issue task01-auth-setup"
 ```
 
@@ -153,7 +189,15 @@ git commit -m "feat: create issue task01-auth-setup"
 
 ## Updating an Issue
 
-### Update issue.md
+### Step 1: Read Epic Context First
+
+```bash
+# Always read Epic context before making changes
+cat epics/EPIC_NAME/epic.md
+cat epics/EPIC_NAME/progress.md
+```
+
+### Step 2: Update issue.md
 
 Add an "Updates" section to document changes:
 
@@ -166,7 +210,7 @@ Add an "Updates" section to document changes:
 - **Files**: Which files were modified
 ```
 
-### Update feature.json
+### Step 3: Update feature.json
 
 Mark completed features:
 ```json
@@ -186,12 +230,19 @@ Update issue status:
 }
 ```
 
-### Update Epic Progress
+### Step 4: Update Epic Context
 
-Add entry to the Epic's `progress.md`:
-```
-[YYYY-MM-DD HH:MM] Updated issue-name: brief description
-```
+**This step is mandatory.** Update both Epic files:
+
+1. Update `epic.md` - Change issue status if needed:
+   ```markdown
+   | task01-auth-setup | Authentication Setup | completed |
+   ```
+
+2. Update `progress.md` - Log the changes:
+   ```markdown
+   [YYYY-MM-DD HH:MM] Updated issue-name: brief description
+   ```
 
 ---
 
