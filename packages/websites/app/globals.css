@@ -286,6 +286,16 @@ body {
   white-space: pre;
 }
 
+/* Ensure code blocks use monospace font */
+pre,
+code,
+pre code,
+pre code span,
+[data-rehype-pretty-code-figure] pre,
+[data-rehype-pretty-code-figure] code {
+  font-family: var(--font-mono) !important;
+}
+
 /* Ensure prose content doesn't overflow on mobile */
 .prose {
   overflow-wrap: break-word;
