@@ -216,8 +216,8 @@ Based on real-world usage, effective skills share these characteristics:
 
 ## Security
 
-- **Credentials**: Stored in system keychain (macOS Keychain, Windows Credential Manager, Linux libsecret)
-- **Fallback**: Encrypted file storage when keychain unavailable
+- **Credentials**: Stored in JSON file with restricted permissions (0600)
+- **Location**: `~/Library/Application Support/skilluse/auth.json` (macOS), `~/.config/skilluse/` (Linux), `%APPDATA%/skilluse/` (Windows)
 - **OAuth**: GitHub App device flow authentication
 
 ## Learn More

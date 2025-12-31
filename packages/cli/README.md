@@ -103,8 +103,8 @@ skilluse logout
 
 ## Security
 
-- **User tokens** stored in system keychain (macOS/Windows/Linux)
-- **Fallback** to encrypted file if keychain unavailable
+- **User tokens** stored in JSON file with restricted permissions (0600)
+- **Location** follows OS conventions via env-paths
 
 ## Environment Variables
 
