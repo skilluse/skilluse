@@ -50,8 +50,8 @@ export function DocsToc({ headings }: DocsTocProps) {
         On this page
       </h4>
       <ul className="flex flex-col gap-1">
-        {headings.map((heading) => (
-          <li key={heading.id}>
+        {headings.map((heading, index) => (
+          <li key={`${heading.id}-${index}`}>
             <a
               href={`#${heading.id}`}
               className={cx(

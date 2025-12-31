@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { allDocs } from "content-collections"
-import { MDXContent } from "@content-collections/mdx/react"
+import { MDX } from "~/components/mdx/mdx"
 import { DocsToc } from "~/components/docs/docs-toc"
 import { DocsPagination } from "~/components/docs/docs-pagination"
 
@@ -38,9 +38,7 @@ export default function DocsIndexPage() {
           )}
         </header>
 
-        <div className="prose prose-neutral dark:prose-invert max-w-none">
-          <MDXContent code={doc.content} />
-        </div>
+        <MDX code={doc.content} className="max-w-none!" />
 
         <DocsPagination currentPath="/docs" />
       </article>

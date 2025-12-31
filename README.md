@@ -1,6 +1,6 @@
 # SkillUse
 
-**A decentralized Skills Registry for AI Agents.**
+**A Skills Registry for AI Agents.**
 
 SkillUse is a package manager for AI agent skills. Discover, install, and publish skills across multiple AI agents—Claude Code, Cursor, Windsurf, and more.
 
@@ -17,9 +17,9 @@ SkillUse is a package manager for AI agent skills. Discover, install, and publis
 - Keep private skills internal while consuming public community skills
 
 **Key Features**
-- **Decentralized**: GitHub repositories as skill registries—public, private, or both
 - **Multi-Agent**: One CLI for all AI agents, automatic path detection
 - **Read + Write**: Not just install—create and publish your own skills
+- **GitHub-Based**: Use any GitHub repo as a skill registry—public or private
 - **Version Tracking**: Git-based versioning with upgrade detection
 
 ## Quick Start

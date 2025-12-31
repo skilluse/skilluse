@@ -5,8 +5,13 @@ export const Prose = ({ className, ...props }: ComponentProps<"div">) => {
   return (
     <div
       className={cx(
-        // Base prose with relaxed line height
+        // Base prose - disable default table/list/code styles (handled by MDX components)
         "prose prose-lg prose-neutral dark:prose-invert leading-relaxed text-pretty",
+        // Disable prose defaults for elements handled by MDX components
+        "prose-table:my-0 prose-thead:border-0 prose-tr:border-0 prose-th:p-0 prose-td:p-0",
+        "prose-ul:my-0 prose-ul:pl-0 prose-ul:list-none prose-ol:my-0 prose-ol:pl-0 prose-ol:list-none prose-li:my-0 prose-li:pl-0",
+        "prose-pre:my-0 prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-0",
+        "prose-code:before:hidden prose-code:after:hidden prose-code:bg-transparent prose-code:p-0 prose-code:font-normal",
         // Paragraphs spacing
         "prose-p:first:mt-0 prose-p:last:mb-0",
         // Links with subtle underline and hover animation
@@ -23,18 +28,6 @@ export const Prose = ({ className, ...props }: ComponentProps<"div">) => {
         "prose-h4:text-lg md:prose-h4:text-xl",
         "prose-h5:text-base prose-h5:font-medium",
         "prose-h6:text-sm prose-h6:font-medium prose-h6:text-muted-foreground",
-        // Unordered lists - custom bullet styling
-        "prose-ul:first:mt-0 prose-ul:last:mb-0 prose-ul:pl-6",
-        "prose-ul:list-disc prose-ul:[&>li]:marker:text-muted-foreground",
-        // Ordered lists - custom number styling
-        "prose-ol:first:mt-0 prose-ol:last:mb-0 prose-ol:pl-6",
-        "prose-ol:list-decimal prose-ol:[&>li]:marker:text-muted-foreground prose-ol:[&>li]:marker:font-medium",
-        // List items spacing
-        "prose-li:mt-2 prose-li:first:mt-0",
-        // Inline code - em-based spacing
-        "prose-code:before:hidden prose-code:after:hidden prose-code:bg-foreground/10 prose-code:rounded prose-code:mx-[0.088em] prose-code:px-[0.33em] prose-code:py-[0.166em] prose-code:font-normal prose-code:text-[0.875em]",
-        // Code blocks with padding
-        "prose-pre:rounded-lg prose-pre:border prose-pre:border-border prose-pre:bg-background prose-pre:font-mono prose-pre:text-base prose-pre:p-4 prose-pre:overflow-x-auto",
         // Images with border
         "prose-img:rounded-lg prose-img:border",
         // Lead text
@@ -43,8 +36,6 @@ export const Prose = ({ className, ...props }: ComponentProps<"div">) => {
         "prose-blockquote:border-l-4 prose-blockquote:border-muted-foreground/30 prose-blockquote:not-italic prose-blockquote:text-muted-foreground",
         // Horizontal rule
         "prose-hr:border-border",
-        // Tables
-        "prose-table:border prose-table:border-border prose-th:bg-muted prose-th:p-3 prose-td:p-3 prose-td:border-t prose-td:border-border",
         // Mermaid diagrams
         "[&_.mermaid]:my-6 [&_.mermaid]:flex [&_.mermaid]:justify-center",
         className,
