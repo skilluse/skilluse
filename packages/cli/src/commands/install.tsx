@@ -1,6 +1,6 @@
 import { cp, mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { basename, isAbsolute, join } from "node:path";
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { ProgressBar, Spinner, StatusMessage } from "../components/index.js";
@@ -72,6 +72,16 @@ type InstallState =
 	| { phase: "success"; skill: SkillMetadata; installedPath: string }
 	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
+
+// Final phases that should be preserved with Static
+const FINAL_PHASES = [
+	"success",
+	"error",
+	"auth_required",
+	"no_repos",
+	"not_found",
+	"conflict",
+];
 
 /**
  * Parse YAML frontmatter from SKILL.md content
@@ -460,6 +470,7 @@ async function installFromLocalPath(
 export default function Install({ args: [skillName], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<InstallState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
 		async function install() {
@@ -471,7 +482,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 					phase: "error",
 					message: `Unknown agent: ${agentId}`,
 				});
-				exit();
 				return;
 			}
 
@@ -541,14 +551,12 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						skill,
 						installedPath: installPath,
 					});
-					exit();
 					return;
 				} catch (err) {
 					setState({
 						phase: "error",
 						message: err instanceof Error ? err.message : "Installation failed",
 					});
-					exit();
 					return;
 				}
 			}
@@ -570,7 +578,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 
 				if (result && "authRequired" in result) {
 					setState({ phase: "auth_required", message: result.message });
-					exit();
 					return;
 				}
 
@@ -579,7 +586,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						phase: "not_found",
 						skillName: `${source.owner}/${source.repo}${source.path ? `/${source.path}` : ""}`,
 					});
-					exit();
 					return;
 				}
 
@@ -625,7 +631,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 
 					if (downloadResult && "authRequired" in downloadResult) {
 						setState({ phase: "auth_required", message: downloadResult.message });
-						exit();
 						return;
 					}
 
@@ -664,14 +669,12 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						message: err instanceof Error ? err.message : "Installation failed",
 					});
 				}
-				exit();
 				return;
 			}
 
 			// Handle repo skill name (search in configured repos)
 			if (config.repos.length === 0) {
 				setState({ phase: "no_repos" });
-				exit();
 				return;
 			}
 
@@ -685,7 +688,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 
 			if ("authRequired" in findResult) {
 				setState({ phase: "auth_required", message: findResult.message });
-				exit();
 				return;
 			}
 
@@ -693,7 +695,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 
 			if (results.length === 0) {
 				setState({ phase: "not_found", skillName: source.name });
-				exit();
 				return;
 			}
 
@@ -706,7 +707,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						path: r.skill.path,
 					})),
 				});
-				exit();
 				return;
 			}
 
@@ -759,7 +759,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 
 				if (downloadResult && "authRequired" in downloadResult) {
 					setState({ phase: "auth_required", message: downloadResult.message });
-					exit();
 					return;
 				}
 
@@ -814,8 +813,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 					message: err instanceof Error ? err.message : "Installation failed",
 				});
 			}
-
-			exit();
 		}
 
 		install().catch((err) => {
@@ -823,111 +820,141 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				phase: "error",
 				message: err instanceof Error ? err.message : "Installation failed",
 			});
-			exit();
 		});
-	}, [skillName, opts.global, exit]);
+	}, [skillName, opts.global, opts.agent]);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Initializing..." />;
+	// Add output item when entering a final phase
+	useEffect(() => {
+		if (FINAL_PHASES.includes(state.phase) && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "auth_required":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">{state.message}</StatusMessage>
-				</Box>
-			);
+	// Exit after output item is added
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
 
-		case "no_repos":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="warning">
-						No repositories configured
-					</StatusMessage>
-					<Text dimColor>
-						Run 'skilluse repo add owner/repo' to add a skill repository.
-					</Text>
-				</Box>
-			);
-
-		case "searching":
-			return <Spinner text={`Searching ${state.repo}...`} />;
-
-		case "not_found":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">
-						Skill "{state.skillName}" not found
-					</StatusMessage>
-					<Box marginTop={1}>
-						<Text dimColor>
-							Try 'skilluse search {state.skillName}' to find available skills.
-						</Text>
-					</Box>
-				</Box>
-			);
-
-		case "conflict":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="warning">
-						Skill "{state.skillName}" found in multiple repos:
-					</StatusMessage>
-					<Box flexDirection="column" marginTop={1} marginLeft={2}>
-						{state.sources.map((source) => (
-							<Text key={`${source.repo}/${source.path}`}>
-								{source.repo}/{source.path}
-							</Text>
-						))}
-					</Box>
-					<Box marginTop={1}>
-						<Text dimColor>
-							Use: skilluse install repo/skill-name to specify
-						</Text>
-					</Box>
-				</Box>
-			);
-
-		case "installing":
-			return (
-				<Box flexDirection="column" borderStyle="round" paddingX={1}>
-					<Box marginBottom={1}>
-						<Text bold>Installing: </Text>
-						<Text color="cyan">{state.skill.name}</Text>
-						<Text dimColor> ({state.scope})</Text>
-					</Box>
-
-					{state.steps.map((step) => (
-						<Box key={step.label}>
-							<Text>
-								{step.status === "done" && <Text color="green">✔</Text>}
-								{step.status === "in_progress" && <Text color="yellow">◐</Text>}
-								{step.status === "pending" && <Text dimColor>○</Text>}
-								{step.status === "error" && <Text color="red">✖</Text>}
-							</Text>
-							<Text> {step.label}</Text>
-						</Box>
-					))}
-
-					<Box marginTop={1}>
-						<ProgressBar percent={state.progress} width={30} />
-					</Box>
-				</Box>
-			);
-
-		case "success":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="success">
-						Installed "{state.skill.name}" v{state.skill.version}
-					</StatusMessage>
-					<Box marginTop={1} marginLeft={2}>
-						<Text dimColor>Location: {state.installedPath}</Text>
-					</Box>
-				</Box>
-			);
-
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
+	// Render dynamic content (spinners, progress) - will be cleared on exit
+	if (state.phase === "checking") {
+		return <Spinner text="Initializing..." />;
 	}
+
+	if (state.phase === "searching") {
+		return <Spinner text={`Searching ${state.repo}...`} />;
+	}
+
+	if (state.phase === "installing") {
+		return (
+			<Box flexDirection="column" borderStyle="round" paddingX={1}>
+				<Box marginBottom={1}>
+					<Text bold>Installing: </Text>
+					<Text color="cyan">{state.skill.name}</Text>
+					<Text dimColor> ({state.scope})</Text>
+				</Box>
+
+				{state.steps.map((step) => (
+					<Box key={step.label}>
+						<Text>
+							{step.status === "done" && <Text color="green">✔</Text>}
+							{step.status === "in_progress" && <Text color="yellow">◐</Text>}
+							{step.status === "pending" && <Text dimColor>○</Text>}
+							{step.status === "error" && <Text color="red">✖</Text>}
+						</Text>
+						<Text> {step.label}</Text>
+					</Box>
+				))}
+
+				<Box marginTop={1}>
+					<ProgressBar percent={state.progress} width={30} />
+				</Box>
+			</Box>
+		);
+	}
+
+	// Render final content with Static to preserve after exit
+	const renderFinalContent = () => {
+		switch (state.phase) {
+			case "auth_required":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			case "no_repos":
+				return (
+					<>
+						<StatusMessage type="warning">
+							No repositories configured
+						</StatusMessage>
+						<Text dimColor>
+							Run 'skilluse repo add owner/repo' to add a skill repository.
+						</Text>
+					</>
+				);
+
+			case "not_found":
+				return (
+					<>
+						<StatusMessage type="error">
+							Skill "{state.skillName}" not found
+						</StatusMessage>
+						<Box marginTop={1}>
+							<Text dimColor>
+								Try 'skilluse search {state.skillName}' to find available
+								skills.
+							</Text>
+						</Box>
+					</>
+				);
+
+			case "conflict":
+				return (
+					<>
+						<StatusMessage type="warning">
+							Skill "{state.skillName}" found in multiple repos:
+						</StatusMessage>
+						<Box flexDirection="column" marginTop={1} marginLeft={2}>
+							{state.sources.map((source) => (
+								<Text key={`${source.repo}/${source.path}`}>
+									{source.repo}/{source.path}
+								</Text>
+							))}
+						</Box>
+						<Box marginTop={1}>
+							<Text dimColor>
+								Use: skilluse install repo/skill-name to specify
+							</Text>
+						</Box>
+					</>
+				);
+
+			case "success":
+				return (
+					<>
+						<StatusMessage type="success">
+							Installed "{state.skill.name}" v{state.skill.version}
+						</StatusMessage>
+						<Box marginTop={1} marginLeft={2}>
+							<Text dimColor>Location: {state.installedPath}</Text>
+						</Box>
+					</>
+				);
+
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<Static items={outputItems}>
+			{(item) => (
+				<Box key={item.id} flexDirection="column">
+					{renderFinalContent()}
+				</Box>
+			)}
+		</Static>
+	);
 }
