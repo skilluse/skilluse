@@ -1,36 +1,82 @@
 import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { Spinner, Table } from "../../components/index.js";
+import {
+	Select,
+	Spinner,
+	StatusMessage,
+} from "../../components/index.js";
 import {
 	type AgentConfig,
+	getAgent,
 	getCurrentAgent,
 	listAgents,
+	setCurrentAgent,
 } from "../../services/index.js";
+
+export const args = z.tuple([
+	z.string().optional().describe("Agent ID to switch to"),
+]);
 
 export const options = z.object({});
 
 interface Props {
+	args: z.infer<typeof args>;
 	options: z.infer<typeof options>;
 }
 
 type AgentState =
 	| { phase: "loading" }
-	| { phase: "success"; currentAgent: string; agents: AgentConfig[] };
+	| { phase: "selecting"; currentAgent: string; agents: AgentConfig[] }
+	| { phase: "not_found"; agentId: string }
+	| { phase: "already_current"; agentId: string; agentName: string }
+	| { phase: "switched"; agentId: string; agentName: string };
 
-export default function Agent(_props: Props) {
+export default function Agent({ args: [agentIdArg] }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<AgentState>({ phase: "loading" });
 	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
-		const currentAgent = getCurrentAgent();
-		const agents = listAgents();
-		setState({ phase: "success", currentAgent, agents });
-	}, []);
+		if (agentIdArg) {
+			// Switch to specified agent
+			const agent = getAgent(agentIdArg);
+			if (!agent) {
+				setState({ phase: "not_found", agentId: agentIdArg });
+				return;
+			}
 
+			const currentAgent = getCurrentAgent();
+			if (currentAgent === agentIdArg) {
+				setState({
+					phase: "already_current",
+					agentId: agentIdArg,
+					agentName: agent.name,
+				});
+				return;
+			}
+
+			setCurrentAgent(agentIdArg);
+			setState({
+				phase: "switched",
+				agentId: agentIdArg,
+				agentName: agent.name,
+			});
+		} else {
+			// Show interactive selection
+			const currentAgent = getCurrentAgent();
+			const agents = listAgents();
+			setState({ phase: "selecting", currentAgent, agents });
+		}
+	}, [agentIdArg]);
+
+	// Handle exit for non-selecting states
 	useEffect(() => {
-		if (state.phase === "success" && outputItems.length === 0) {
+		if (
+			state.phase !== "loading" &&
+			state.phase !== "selecting" &&
+			outputItems.length === 0
+		) {
 			setOutputItems([{ id: "output" }]);
 		}
 	}, [state.phase, outputItems.length]);
@@ -41,49 +87,100 @@ export default function Agent(_props: Props) {
 		}
 	}, [outputItems.length, exit]);
 
-	const renderContent = () => {
-		if (state.phase !== "success") return null;
+	const handleSelect = (item: { label: string; value: string }) => {
+		const agent = getAgent(item.value);
+		if (!agent) return;
 
-		const tableData = state.agents.map((agent) => ({
-			id: agent.id,
-			name: agent.name,
-			description: agent.description,
-			current: agent.id === state.currentAgent ? "*" : "",
-		}));
+		const currentAgent = getCurrentAgent();
+		if (currentAgent === item.value) {
+			setState({
+				phase: "already_current",
+				agentId: item.value,
+				agentName: agent.name,
+			});
+			return;
+		}
 
-		return (
-			<>
-				<Box marginBottom={1}>
-					<Text bold>Supported Agents</Text>
-				</Box>
-				<Table
-					data={tableData}
-					columns={["current", "id", "name", "description"]}
-				/>
-				<Box marginTop={1}>
-					<Text dimColor>
-						Current: <Text color="cyan">{state.currentAgent}</Text>
-					</Text>
-				</Box>
-				<Box>
-					<Text dimColor>
-						Run 'skilluse agent use &lt;id&gt;' to switch agents.
-					</Text>
-				</Box>
-			</>
-		);
+		setCurrentAgent(item.value);
+		setState({
+			phase: "switched",
+			agentId: item.value,
+			agentName: agent.name,
+		});
 	};
 
-	return (
-		<>
-			{state.phase === "loading" && <Spinner text="Loading agents..." />}
-			<Static items={outputItems}>
-				{(item) => (
-					<Box key={item.id} flexDirection="column">
-						{renderContent()}
+	const renderContent = () => {
+		switch (state.phase) {
+			case "selecting": {
+				const items = state.agents.map((agent) => ({
+					label:
+						agent.id === state.currentAgent
+							? `${agent.name} (current)`
+							: agent.name,
+					value: agent.id,
+				}));
+
+				return (
+					<Box flexDirection="column">
+						<Box marginBottom={1}>
+							<Text bold>Select an agent:</Text>
+						</Box>
+						<Select items={items} onSelect={handleSelect} />
 					</Box>
-				)}
-			</Static>
-		</>
+				);
+			}
+
+			case "not_found":
+				return (
+					<>
+						<StatusMessage type="error">
+							Unknown agent: {state.agentId}
+						</StatusMessage>
+						<Text dimColor>Run 'skilluse agent' to see available agents.</Text>
+					</>
+				);
+
+			case "already_current":
+				return (
+					<StatusMessage type="success">
+						{state.agentName} is already the current agent
+					</StatusMessage>
+				);
+
+			case "switched":
+				return (
+					<>
+						<StatusMessage type="success">
+							Switched to {state.agentName}
+						</StatusMessage>
+						<Box marginTop={1}>
+							<Text dimColor>
+								Skills will now be installed to {state.agentId}'s paths.
+							</Text>
+						</Box>
+					</>
+				);
+
+			default:
+				return null;
+		}
+	};
+
+	if (state.phase === "loading") {
+		return <Spinner text="Loading..." />;
+	}
+
+	if (state.phase === "selecting") {
+		return renderContent();
+	}
+
+	return (
+		<Static items={outputItems}>
+			{(item) => (
+				<Box key={item.id} flexDirection="column">
+					{renderContent()}
+				</Box>
+			)}
+		</Static>
 	);
 }

@@ -1,0 +1,90 @@
+{
+  "issue": "refactor01-agent-command",
+  "title": "Simplify agent use to agent",
+  "epic": "cli",
+  "priority": 2,
+  "status": "completed",
+  "created_at": "2025-12-30",
+  "completed_at": "2025-12-31",
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "skilluse agent claude switches to Claude agent",
+      "steps": [
+        "Run: skilluse agent claude",
+        "Verify output shows 'Switched to Claude'",
+        "Run: skilluse agent",
+        "Verify Claude is marked as current"
+      ],
+      "passes": true,
+      "notes": "Tested: switches agent and shows confirmation message"
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "skilluse agent (no args) shows interactive selection",
+      "steps": [
+        "Run: skilluse agent",
+        "Verify interactive selection UI is displayed",
+        "Verify current agent is marked with (current)",
+        "Use arrow keys to select agent"
+      ],
+      "passes": true,
+      "notes": "Enhanced: now uses interactive selection instead of static table"
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Invalid agent shows error message",
+      "steps": [
+        "Run: skilluse agent invalid-agent",
+        "Verify error: 'Unknown agent: invalid-agent'",
+        "Verify hint: 'Run skilluse agent to see available agents'"
+      ],
+      "passes": true,
+      "notes": "Tested: shows error and hint"
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Already current agent shows appropriate message",
+      "steps": [
+        "Run: skilluse agent claude (when claude is current)",
+        "Verify message: 'Claude is already the current agent'"
+      ],
+      "passes": true,
+      "notes": "Tested: shows appropriate message"
+    },
+    {
+      "id": "F005",
+      "category": "cleanup",
+      "description": "agent/use.tsx file is removed",
+      "steps": [
+        "Verify src/commands/agent/use.tsx no longer exists",
+        "Verify no imports reference agent/use"
+      ],
+      "passes": true,
+      "notes": "File deleted, imports removed from cli.tsx"
+    },
+    {
+      "id": "F006",
+      "category": "documentation",
+      "description": "Help text reflects new usage",
+      "steps": [
+        "Run: skilluse agent --help",
+        "Verify usage shows: skilluse agent [agent-id]",
+        "Verify description mentions switching"
+      ],
+      "passes": true,
+      "notes": "Help shows: Usage: skilluse agent [options] [agent-id]"
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 1,
+    "blockers": []
+  }
+}

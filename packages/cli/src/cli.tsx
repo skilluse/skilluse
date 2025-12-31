@@ -33,8 +33,7 @@ import RepoRemove, {
 } from "./commands/repo/remove.js";
 import RepoUse, { args as repoUseArgs } from "./commands/repo/use.js";
 // Import agent subcommands
-import AgentIndex from "./commands/agent/index.js";
-import AgentUse, { args as agentUseArgs } from "./commands/agent/use.js";
+import AgentIndex, { args as agentArgs } from "./commands/agent/index.js";
 import Search, {
 	args as searchArgs,
 	options as searchOptions,
@@ -202,22 +201,13 @@ repoCmd.action(() => {
 	render(<RepoIndex options={{}} />);
 });
 
-// agent command group
-const agentCmd = program
-	.command("agent")
-	.description("Manage AI coding agents");
-
-agentCmd
-	.command("use <agent-id>")
-	.description("Switch to a different agent")
+// agent command - switch agent or show interactive selection
+program
+	.command("agent [agent-id]")
+	.description("Switch agent or select interactively")
 	.action((agentId) => {
-		const args = agentUseArgs.parse([agentId]);
-		render(<AgentUse args={args} options={{}} />);
+		const args = agentArgs.parse([agentId]);
+		render(<AgentIndex args={args} options={{}} />);
 	});
-
-// Default action shows supported agents when just 'agent' is called
-agentCmd.action(() => {
-	render(<AgentIndex options={{}} />);
-});
 
 program.parse();
