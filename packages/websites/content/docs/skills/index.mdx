@@ -1,59 +1,60 @@
 ---
 title: Skills Overview
-description: Understanding AI agent skills
+description: Understanding AI agent skills - domain knowledge + workflow automation
 order: 20
 ---
 
 # Skills
 
-Skills are reusable prompt templates that extend AI agent capabilities. They provide structured instructions for common tasks.
+A skill is an **executable SOP** that combines domain knowledge with workflow automation. It encodes both *how experts think* and *how work gets done*.
 
-## What is a Skill?
+## The Dual Nature of Skills
 
-A skill is a markdown file (SKILL.md) containing:
-- Frontmatter with metadata
-- Instructions for the AI agent
-- Examples and guidelines
+| Dimension | What It Provides | Examples |
+|-----------|-----------------|----------|
+| **Domain Knowledge** | Expert reasoning, best practices, decision frameworks | Brand voice guidelines, analysis methodologies |
+| **Workflow Automation** | Executable SOPs that orchestrate agent tools | Research → analyze → write → review pipelines |
+
+## Tool Orchestration
+
+Skills orchestrate the agent's native tools:
+
+| Tool | What Skills Orchestrate |
+|------|------------------------|
+| **Bash** | git, docker, npm, aws, kubectl, and the entire CLI ecosystem |
+| **Read** | Configuration, documents, data sources |
+| **Write** | Reports, code, documents, structured outputs |
+| **WebSearch** | Research, fact-checking, current information |
+| **WebFetch** | Documentation, APIs, external resources |
+
+**Bash is the universal connector**—bridging the agent to any tool with a command-line interface. This makes skills a natural replacement for workflow automation tools like n8n or Zapier.
+
+## For Every Knowledge Worker
+
+Skills aren't just for programmers:
+
+- **Copywriters**: Brand voice, content frameworks, editorial standards
+- **Data Analysts**: Analysis methodologies, visualization patterns, reporting SOPs
+- **Marketers**: Campaign workflows, audience research, content strategies
+- **Product Managers**: PRD templates, prioritization frameworks
+- **Engineers**: Code review standards, deployment SOPs, architecture patterns
 
 ## Where Skills Live
-
-Skills are stored in `.claude/skills/` directories:
 
 | Location | Purpose |
 |----------|---------|
 | `./.claude/skills/` | Project-specific skills |
 | `~/.claude/skills/` | Global skills for all projects |
 
-## Skill Discovery
-
-AI agents automatically detect and load skills from these directories. When you ask an agent to perform a task, it can invoke matching skills.
-
-## Built-in vs Custom Skills
-
-### Built-in Skills
-
-Some AI agents come with built-in skills for common tasks:
-- Code generation
-- Git operations
-- File manipulation
-
-### Custom Skills
-
-You can create custom skills for:
-- Team-specific workflows
-- Domain knowledge
-- Code style enforcement
-- Review checklists
-
 ## Skill Examples
 
-Common skill patterns include:
+Real-world skills in SkillUse:
 
-- **Code Review** - Enforce coding standards
-- **Commit Messages** - Generate conventional commits
-- **Documentation** - Write consistent docs
-- **Testing** - Generate test cases
-- **Refactoring** - Apply specific patterns
+- **commit** — Git workflow with Conventional Commits standards
+- **publish** — Release workflow with validation checks
+- **work** — Parallel development with git worktree orchestration
+- **issue** — Issue management with structured templates
+- **epic** — Project planning with progress tracking
 
 ## Next Steps
 

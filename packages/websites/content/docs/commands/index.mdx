@@ -6,39 +6,49 @@ order: 10
 
 # Commands
 
-SkillUse provides commands for authentication, repository management, and skill installation.
+SkillUse provides commands for authentication, repository management, skill installation, and multi-agent support.
 
 ## Command Categories
 
 ### Authentication
 
-- `skilluse login` - Authenticate with GitHub
-- `skilluse logout` - Remove stored credentials
-- `skilluse whoami` - Show current user info
+| Command | Description |
+|---------|-------------|
+| `skilluse` | Show status (user, repos, installed skills) |
+| `skilluse login` | Authenticate with GitHub |
+| `skilluse logout` | Remove stored credentials |
 
 ### Repository Management
 
-- `skilluse repo add <owner/repo>` - Add a skill repository
-- `skilluse repo list` - List configured repositories
-- `skilluse repo remove <owner/repo>` - Remove a repository
+| Command | Description |
+|---------|-------------|
+| `skilluse repo list` | List configured repositories |
+| `skilluse repo add <repo>` | Add a skill repository |
+| `skilluse repo remove <repo>` | Remove a repository |
+| `skilluse repo use <repo>` | Set default repository |
+| `skilluse repo edit <repo>` | Edit repository settings |
 
 ### Skill Management
 
-- `skilluse install <skill>` - Install a skill
-- `skilluse uninstall <skill>` - Remove an installed skill
-- `skilluse upgrade <skill>` - Upgrade to latest version
-- `skilluse list` - List installed skills
-- `skilluse info <skill>` - Show skill details
+| Command | Description |
+|---------|-------------|
+| `skilluse search <keyword>` | Search for skills |
+| `skilluse install <skill>` | Install a skill locally |
+| `skilluse install <skill> -g` | Install globally |
+| `skilluse uninstall <skill>` | Remove an installed skill |
+| `skilluse upgrade [skill]` | Upgrade skill(s) to latest |
+| `skilluse list` | List installed skills |
+| `skilluse list --outdated` | Show skills with updates |
+| `skilluse info <skill>` | Show skill details |
 
-## Global Options
+### Agent Management
 
-All commands support these options:
+| Command | Description |
+|---------|-------------|
+| `skilluse agent` | List/select agent interactively |
+| `skilluse agent <name>` | Switch to specified agent |
 
-| Option | Description |
-|--------|-------------|
-| `--help` | Show help for any command |
-| `--version` | Show CLI version |
-| `--global` | Apply to global skills directory |
+Supported agents: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `aider`, `continue`
 
 ## Getting Help
 
@@ -46,4 +56,11 @@ Run any command with `--help` for detailed usage:
 
 ```bash
 skilluse install --help
+skilluse repo --help
 ```
+
+## Detailed Documentation
+
+- [Authentication Commands](/docs/commands/auth)
+- [Repository Commands](/docs/commands/repo)
+- [Skill Commands](/docs/commands/skill)

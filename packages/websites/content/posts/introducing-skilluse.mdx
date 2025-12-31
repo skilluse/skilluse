@@ -1,0 +1,137 @@
+---
+title: "Introducing SkillUse: A Decentralized Skills Registry for AI Agents"
+description: "Skills encode domain knowledge and workflow automation for AI agents. SkillUse makes them portable, shareable, and executable—for every knowledge worker."
+publishedAt: "2025-12-31"
+author:
+  name: "SkillUse Team"
+---
+
+Every organization faces the same challenge: expertise lives in someone's head, scattered across documentation, or buried in Slack threads. When that expert is unavailable, work stalls. When they leave, institutional knowledge disappears.
+
+AI agents like Claude Code introduced **Skills**—markdown files that give agents domain expertise. But skills created locally stay local. There's no standard way to share, discover, or distribute them.
+
+**SkillUse changes that.**
+
+## What Are Skills, Really?
+
+A skill is more than documentation. It's an **executable SOP (Standard Operating Procedure)** that empowers AI agents with two complementary capabilities:
+
+| Dimension | What It Provides |
+|-----------|-----------------|
+| **Domain Knowledge** | Expert reasoning, best practices, decision frameworks |
+| **Workflow Automation** | Executable SOPs that orchestrate agent tools |
+
+This dual nature is what makes skills powerful. They encode *how experts think* and *how work gets done*.
+
+## For Every Knowledge Worker
+
+Skills aren't just for programmers. Any domain expert can encode their expertise:
+
+- **Copywriters**: Brand voice guidelines, content frameworks, editorial standards
+- **Data Analysts**: Analysis methodologies, visualization patterns, reporting SOPs
+- **Marketers**: Campaign workflows, audience research, content strategies
+- **Product Managers**: PRD templates, prioritization frameworks, research protocols
+- **Researchers**: Literature review workflows, synthesis frameworks
+- **Engineers**: Code review standards, deployment SOPs, architecture patterns
+
+When you install a skill, you're not just sharing documentation—you're sharing *how an expert would approach the problem*.
+
+## Tool Orchestration: The Agent's Hands
+
+Skills orchestrate the agent's native tools to execute workflows:
+
+| Tool | Capability |
+|------|------------|
+| **Bash** | Execute CLI commands (git, docker, npm, aws, kubectl...) |
+| **Read** | Access files, configuration, data sources |
+| **Write** | Create reports, code, documents, structured outputs |
+| **WebSearch** | Research, fact-checking, current information |
+| **WebFetch** | Documentation, APIs, external resources |
+
+**Bash is the universal connector.** It bridges the agent to any tool with a command-line interface—version control, cloud infrastructure, databases, CI/CD systems.
+
+This makes skills a natural replacement for workflow automation tools like n8n or Zapier, but with natural language orchestration instead of drag-and-drop UIs.
+
+## A Practical Example
+
+Consider a `publish` skill for releasing software. It doesn't just document the release process—it orchestrates:
+
+1. **Read** changelog and version files
+2. **Bash** run `git tag`, `npm version`, `gh release create`
+3. **Write** update version numbers across files
+4. **Validate** CI status before proceeding
+
+The skill encodes both the *knowledge* (semantic versioning rules, changelog format) and the *workflow* (the exact commands and sequence).
+
+## The Decentralized Registry
+
+SkillUse treats skills as **first-class packages**—like npm for AI agent capabilities. But instead of a single centralized registry, it uses GitHub repositories as skill sources:
+
+```bash
+skilluse repo add company/internal-skills    # Private company skills
+skilluse repo add anthropics/skill-library   # Public community skills
+```
+
+This enables:
+
+- **Private skills** for proprietary workflows within organizations
+- **Public skills** for open-source community patterns
+- **Multi-source configuration** mixing internal and external repos
+
+## Read + Write: A Complete Ecosystem
+
+Most package managers are consumer-only. SkillUse is designed for **both consumption and creation**:
+
+```bash
+# Consume
+skilluse search code-review
+skilluse install code-review
+
+# Create
+skilluse repo init myname/my-skills
+skilluse publish ./my-skill
+```
+
+This bidirectional flow creates a virtuous cycle: domain experts encode their knowledge into skills, teams consume and refine them, keeping expertise fresh and grounded in real practice.
+
+## Multi-Agent Support
+
+Skills aren't tied to a single AI agent. SkillUse installs skills to the correct location based on your current agent:
+
+```bash
+skilluse agent claude     # Install to ~/.claude/skills/
+skilluse agent cursor     # Install to ~/.cursor/skills/
+skilluse install review   # Goes to current agent's path
+```
+
+## Getting Started
+
+```bash
+# Install
+npm install -g skilluse
+
+# Authenticate with GitHub
+skilluse login
+
+# Add a skill repository
+skilluse repo add anthropics/skill-library
+
+# Search and install
+skilluse search code-review
+skilluse install code-review
+```
+
+## What's Next
+
+We're building toward a future where:
+
+- Every team has a skills repository encoding their best practices
+- Domain experts—not just engineers—create and share skills
+- AI agents apply organizational expertise automatically
+- Workflow automation happens through natural language, not complex UIs
+
+Skills are more than documentation. They're how we scale expertise.
+
+---
+
+Try [SkillUse](https://github.com/skilluse/skilluse) today and start building your skills registry.

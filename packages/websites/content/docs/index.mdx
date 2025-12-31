@@ -1,31 +1,68 @@
 ---
 title: Introduction
-description: Welcome to SkillUse - a tool for sharing and installing AI agent skills
+description: SkillUse - A decentralized Skills Registry for AI Agents
 order: 1
 ---
 
 # Introduction
 
-SkillUse is a command-line tool for sharing and installing skills for AI agents like Claude Code, Cursor, and Windsurf.
+SkillUse is a decentralized **Skills Registry** for AI agents. It enables teams to discover, install, create, and publish skills across multiple AI agents (Claude Code, Cursor, Windsurf, etc.).
 
 ## What are Skills?
 
-Skills are reusable prompt templates that extend what AI agents can do. They're stored as markdown files in a `.claude/skills/` directory.
+A skill is more than a prompt template. It's an **executable SOP** that empowers AI agents with two complementary capabilities:
+
+| Dimension | What It Provides |
+|-----------|-----------------|
+| **Domain Knowledge** | Expert reasoning, best practices, decision frameworks |
+| **Workflow Automation** | Executable SOPs that orchestrate agent tools |
+
+Skills encode *how experts think* and *how work gets done*.
+
+## For Every Knowledge Worker
+
+Skills aren't just for programmers:
+
+- **Copywriters**: Brand voice, content frameworks, editorial standards
+- **Data Analysts**: Analysis methodologies, visualization patterns
+- **Marketers**: Campaign workflows, audience research
+- **Product Managers**: PRD templates, prioritization frameworks
+- **Engineers**: Code review standards, deployment SOPs
+
+## Tool Orchestration
+
+Skills orchestrate the agent's native tools:
+
+| Tool | Capability |
+|------|------------|
+| **Bash** | Execute CLI commands (git, docker, npm, aws...) |
+| **Read** | Access files and data sources |
+| **Write** | Create documents and code |
+| **WebSearch** | Research and fact-checking |
+| **WebFetch** | Access external resources |
+
+**Bash is the universal connector**—bridging the agent to the entire CLI ecosystem.
 
 ## Getting Started
-
-Install SkillUse and start using skills in your projects:
 
 ```bash
 # Install via npm
 npm install -g skilluse
 
-# Or use npx
-npx skilluse --help
+# Authenticate with GitHub
+skilluse login
+
+# Add a skill repository
+skilluse repo add anthropics/skill-library
+
+# Search and install
+skilluse search code-review
+skilluse install code-review
 ```
 
 ## Next Steps
 
-- [Installation](/docs/installation) - Set up SkillUse on your system
-- [Quick Start](/docs/quick-start) - Get up and running in minutes
-- [Commands](/docs/commands) - Learn about available CLI commands
+- [Installation](/docs/installation) - Set up SkillUse
+- [Quick Start](/docs/quick-start) - Get running in minutes
+- [Commands](/docs/commands) - CLI reference
+- [Skills](/docs/skills) - Creating and sharing skills
