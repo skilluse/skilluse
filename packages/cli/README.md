@@ -1,6 +1,10 @@
 # Skilluse CLI
 
-CLI tool for managing and installing AI Coding Agent Skills.
+A decentralized Skills Registry CLI for AI Coding Agents.
+
+SkillUse enables teams to **discover, install, create, and publish** skills across multiple AI agents (Claude Code, Cursor, Windsurf, etc.). It treats skills as first-class packages distributed through GitHub repositories—supporting both public community skills and private organizational knowledge.
+
+See the [main README](../../README.md) for design philosophy and the [design document](../../design.md) for technical details.
 
 ## Installation
 
@@ -59,6 +63,15 @@ skilluse list
 | `skilluse list` | List installed skills |
 | `skilluse list --outdated` | Show skills with updates |
 | `skilluse info <skill>` | Show skill details |
+
+### Agent Management
+
+| Command | Description |
+|---------|-------------|
+| `skilluse agent` | List/select agent interactively |
+| `skilluse agent <name>` | Switch to specified agent |
+
+Supported agents: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `aider`, `continue`
 
 ## Authentication
 

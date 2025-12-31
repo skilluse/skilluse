@@ -1,5 +1,176 @@
 # SkillUse CLI Design
 
+## Vision: A Decentralized Skills Registry
+
+SkillUse is the foundation for a **decentralized Skills Registry** that transforms how teams create, share, and execute AI agent expertise—for every knowledge worker.
+
+### Skills = Domain Knowledge + Workflow Automation
+
+A skill empowers AI agents with two complementary capabilities:
+
+| Dimension | What It Provides |
+|-----------|-----------------|
+| **Domain Knowledge** | Expert reasoning, best practices, decision frameworks, quality standards |
+| **Workflow Automation** | Executable SOPs that orchestrate agent tools into multi-step pipelines |
+
+This dual nature is what makes skills powerful. They encode *how experts think* and *how work gets done*.
+
+### For Every Knowledge Worker
+
+Skills aren't just for programmers. Any domain expert can encode their expertise:
+
+- **Copywriters**: Brand voice, content frameworks, editorial standards
+- **Data Analysts**: Analysis methodologies, visualization patterns, reporting SOPs
+- **Marketers**: Campaign workflows, audience research, content strategies
+- **Product Managers**: PRD templates, prioritization frameworks, research protocols
+- **Researchers**: Literature review workflows, synthesis frameworks
+- **Engineers**: Code review standards, deployment SOPs, architecture patterns
+
+### Tool Orchestration
+
+Skills orchestrate the agent's native tools to execute workflows:
+
+| Tool | Capability | What Skills Orchestrate |
+|------|------------|------------------------|
+| **Bash** | Execute CLI commands | git, docker, npm, aws, kubectl, and the entire CLI ecosystem |
+| **Read** | Access file contents | Configuration, documents, data sources |
+| **Write** | Create/modify files | Reports, code, documents, structured outputs |
+| **WebSearch** | Query the web | Research, fact-checking, current information |
+| **WebFetch** | Retrieve URLs | Documentation, APIs, external resources |
+
+**Bash is the universal connector.** It bridges the agent to any tool with a command-line interface. This makes skills a natural replacement for workflow automation tools like n8n or Zapier, but with natural language orchestration.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                 Skill = Knowledge + Automation                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Domain Knowledge              Workflow Orchestration           │
+│   ────────────────              ────────────────────             │
+│   • Expert reasoning            • Read: gather context           │
+│   • Best practices              • WebSearch: research            │
+│   • Decision frameworks         • Write: produce outputs         │
+│   • Quality standards           • Bash: execute actions          │
+│                                                                  │
+│                         ↓                                        │
+│              Agent applies expertise automatically               │
+│              when context matches skill description              │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Example skills in this repo:**
+- `commit` — Git workflow with Conventional Commits standards
+- `publish` — Release workflow with validation checks
+- `work` — Parallel development with git worktree orchestration
+- `issue` — Issue management with structured templates
+- `epic` — Project planning with progress tracking
+
+### Why This Matters
+
+When Anthropic introduced Skills for Claude Code, they enabled agents to carry domain expertise. But skills created locally stay local. There's no standard way to:
+
+- Discover skills others have built
+- Share skills across teams or organizations
+- Version and upgrade skills over time
+- Install skills to different AI agents
+
+SkillUse addresses all of these by treating skills as **first-class packages** distributed through GitHub repositories.
+
+### Core Design Principles
+
+#### 1. Decentralized by Default
+
+Unlike npm or PyPI with single central registries, SkillUse uses GitHub repositories as skill sources. This enables:
+
+- **Private skills**: Proprietary company workflows stay internal
+- **Public skills**: Community-contributed patterns for everyone
+- **Multi-source**: Mix internal and external repos freely
+
+```
+skilluse repo add company/internal-skills    # Private company skills
+skilluse repo add anthropics/skill-library   # Public community skills
+```
+
+#### 2. Read + Write Ecosystem
+
+Most package managers are consumer-only. SkillUse is designed for both consumption and creation:
+
+| Role | Commands | Purpose |
+|------|----------|---------|
+| Consumer | `search`, `install`, `upgrade` | Use skills others created |
+| Creator | `repo init`, `publish` | Share your expertise |
+| Admin | `repo add`, `repo use` | Configure sources |
+
+This creates a virtuous cycle: engineers who implement features also encode their patterns into skills, keeping knowledge fresh and battle-tested.
+
+#### 3. Agent-Agnostic
+
+Skills aren't locked to one AI agent. The same skill can work across Claude Code, Cursor, Windsurf, and others. SkillUse handles the differences:
+
+```bash
+skilluse agent claude     # Install to ~/.claude/skills/
+skilluse agent cursor     # Install to ~/.cursor/skills/
+skilluse install review   # Goes to current agent's path
+```
+
+#### 4. Git-Native Versioning
+
+Skills track versions using Git commit SHAs, not arbitrary version numbers:
+
+- **Install**: Records exact commit SHA
+- **Outdated check**: Compares local SHA vs remote HEAD
+- **Upgrade**: Fetches latest commit, preserves local modifications warning
+
+This mirrors how developers already think about code versions.
+
+### The Distribution Model
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│    Creator                                                      │
+│    ───────                                                      │
+│    1. Develop skill locally (.claude/skills/my-skill/)          │
+│    2. skilluse repo init username/my-skills                     │
+│    3. skilluse publish ./my-skill                               │
+│                                                                 │
+│                           ▼                                     │
+│                                                                 │
+│    Registry (GitHub Repos)                                      │
+│    ───────────────────────                                      │
+│    - anthropics/skill-library (public, community)               │
+│    - company/internal-skills (private, organization)            │
+│    - username/my-skills (public or private, personal)           │
+│                                                                 │
+│                           ▼                                     │
+│                                                                 │
+│    Consumer                                                     │
+│    ────────                                                     │
+│    1. skilluse repo add anthropics/skill-library                │
+│    2. skilluse search code-review                               │
+│    3. skilluse install code-review                              │
+│    4. Skill auto-invoked by Claude when context matches         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### What Makes a Good Skill
+
+After studying effective Claude Skills patterns, we've identified five characteristics:
+
+1. **Precise Triggers**: The description tells Claude exactly when to activate. Vague descriptions like "Use for React" create noise; specific ones like "Use when building data tables with filtering, sorting, and pagination" activate at the right moment.
+
+2. **Progressive Disclosure**: Keep SKILL.md scannable (core patterns, key decisions). Put comprehensive details in `references/` that Claude accesses on-demand.
+
+3. **Strong Directives**: Soft language ("consider", "might want to") gets ignored. Imperative language ("MUST", "ALWAYS", "NEVER") gets applied.
+
+4. **Self-Contained**: Bundle templates, scripts, and examples in the skill folder. External links go stale; embedded resources persist.
+
+5. **Maintained**: Skills need updates as patterns evolve. The same engineers using skills should be updating them—SkillUse's publish flow makes this natural.
+
+---
+
 ## Overview
 
 A CLI tool for managing and installing AI Coding Agent Skills (Claude Code Skills, Codex Skills, VSCode, Cursor, etc.).
