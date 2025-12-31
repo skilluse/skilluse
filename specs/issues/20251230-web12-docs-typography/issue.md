@@ -39,32 +39,39 @@ The following issues have been addressed in this session:
 - **Solution**: Removed border, changed to single-line flex layout
 - **Files**: `components/posts/share-buttons.tsx`
 
+## Completed (2024-12-31)
+
+### 6. Removed Duplicate H1 Titles
+- **Problem**: Docs MDX files had `# Title` which duplicated the page header
+- **Solution**: Removed h1 from all docs MDX files (title rendered in page header)
+- **Files**: All files in `content/docs/**/*.mdx`
+
 ## Remaining Requirements
 
 ### 1. Typography Consistency
 
-Verify the same MDX component styles from Blog work in Docs:
+Docs now uses the same `<MDX />` component as Blog. All styles are shared:
 - [x] Code blocks with white background and monospace font
-- [ ] Heading hierarchy (h1-h6) with proper sizing and spacing
-- [ ] Link styles with hover animations
-- [ ] List styling (ul/ol) with muted markers
-- [ ] Inline code styling
-- [ ] Blockquote styling
-- [ ] Table styling with borders
+- [x] Heading hierarchy (h1-h6) with proper sizing and spacing (via `mdx-components.tsx`)
+- [x] Link styles with hover animations (via `mdx-components.tsx` and `prose.tsx`)
+- [x] List styling (ul/ol) with muted markers (via `mdx-components.tsx`)
+- [x] Inline code styling (via `mdx-components.tsx`)
+- [x] Blockquote styling (via `mdx-components.tsx`)
+- [x] Table styling with borders (via `mdx-components.tsx`)
 
 ### 2. Layout Improvements
 
-- [ ] Review docs layout spacing and padding
-- [ ] Ensure consistent container width with Blog
-- [ ] Check sidebar and TOC alignment
-- [ ] Verify mobile responsiveness
+- [x] Review docs layout spacing and padding
+- [x] Ensure consistent container width with Blog (uses `max-w-none`)
+- [x] Check sidebar and TOC alignment
+- [x] Verify mobile responsiveness (sidebar hidden < md, TOC hidden < xl)
 
 ### 3. Markdown Rendering
 
 - [x] Mermaid diagrams render correctly
-- [ ] Verify code syntax highlighting works
-- [ ] Test tables, lists, and other GFM features
-- [ ] Check heading anchor links
+- [x] Verify code syntax highlighting works (rehype-pretty-code)
+- [x] Test tables, lists, and other GFM features
+- [x] Check heading anchor links (via `globals.css`)
 
 ## Technical Details
 
