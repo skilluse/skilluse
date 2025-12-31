@@ -6,7 +6,18 @@ SkillUse is a package manager for AI agent skills. Discover, install, and publis
 
 ## Why SkillUse?
 
-- **Decentralized**: Use GitHub repositories as skill registries—public, private, or both
+**For Individuals**
+- Reuse your best prompts and workflows across projects
+- Share expertise with the community
+- Switch between AI agents without rebuilding your skill library
+
+**For Teams**
+- Standardize workflows and best practices across the organization
+- Onboard new members faster with institutional knowledge encoded in skills
+- Keep private skills internal while consuming public community skills
+
+**Key Features**
+- **Decentralized**: GitHub repositories as skill registries—public, private, or both
 - **Multi-Agent**: One CLI for all AI agents, automatic path detection
 - **Read + Write**: Not just install—create and publish your own skills
 - **Version Tracking**: Git-based versioning with upgrade detection
