@@ -11,17 +11,18 @@ Create and manage Issues with testable acceptance criteria.
 
 ```
 project/
-├── epics/
-│   └── epic-name/
-│       ├── epic.md
-│       └── progress.md
-└── issues/
-    ├── 20250115-task01-auth-setup/
-    │   ├── issue.md                  # Issue requirements
-    │   └── feature.json              # Testable acceptance criteria
-    └── 20250116-web01-landing-page/
-        ├── issue.md
-        └── feature.json
+└── specs/
+    ├── epics/
+    │   └── epic-name/
+    │       ├── epic.md
+    │       └── progress.md
+    └── issues/
+        ├── 20250115-task01-auth-setup/
+        │   ├── issue.md                  # Issue requirements
+        │   └── feature.json              # Testable acceptance criteria
+        └── 20250116-web01-landing-page/
+            ├── issue.md
+            └── feature.json
 ```
 
 ## What is an Issue?
@@ -53,9 +54,9 @@ Naming convention: `YYYYMMDD-issueID-short-description/`
 1. **Read Epic Context First**
    ```bash
    # Read the related Epic's files
-   cat epics/EPIC_NAME/epic.md        # Understand goals and existing issues
-   cat epics/EPIC_NAME/progress.md    # Check current sprint status
-   ls epics/EPIC_NAME/references/     # Review design docs and specs
+   cat specs/epics/EPIC_NAME/epic.md        # Understand goals and existing issues
+   cat specs/epics/EPIC_NAME/progress.md    # Check current sprint status
+   ls specs/epics/EPIC_NAME/references/     # Review design docs and specs
    ```
 
 2. **After Creating/Updating Issue**
@@ -73,15 +74,15 @@ This ensures Issues are consistent with Epic's design and requirements.
 
 ```bash
 # Identify the related Epic and read its context
-cat epics/EPIC_NAME/epic.md           # Goals, existing issues
-cat epics/EPIC_NAME/progress.md       # Current sprint status
-cat epics/EPIC_NAME/references/*.md   # Design specs, requirements
+cat specs/epics/EPIC_NAME/epic.md           # Goals, existing issues
+cat specs/epics/EPIC_NAME/progress.md       # Current sprint status
+cat specs/epics/EPIC_NAME/references/*.md   # Design specs, requirements
 ```
 
 ### Step 2: Create Issue Directory
 
 ```bash
-mkdir -p issues/YYYYMMDD-issueID-short-description
+mkdir -p specs/issues/YYYYMMDD-issueID-short-description
 ```
 
 ### Step 3: Create issue.md
@@ -181,7 +182,7 @@ See `feature.json` for testable criteria.
 ### Step 6: Git Commit
 
 ```bash
-git add issues/YYYYMMDD-issueID-*/ epics/EPIC_NAME/
+git add specs/issues/YYYYMMDD-issueID-*/ specs/epics/EPIC_NAME/
 git commit -m "feat: create issue task01-auth-setup"
 ```
 
@@ -193,8 +194,8 @@ git commit -m "feat: create issue task01-auth-setup"
 
 ```bash
 # Always read Epic context before making changes
-cat epics/EPIC_NAME/epic.md
-cat epics/EPIC_NAME/progress.md
+cat specs/epics/EPIC_NAME/epic.md
+cat specs/epics/EPIC_NAME/progress.md
 ```
 
 ### Step 2: Update issue.md

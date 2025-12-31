@@ -11,18 +11,19 @@ Create and manage Epics for organizing related issues.
 
 ```
 project/
-├── epics/
-│   ├── cli/
-│   │   ├── epic.md                   # Epic overview and issue references
-│   │   ├── progress.md               # Sprint progress tracking
-│   │   └── references/               # Reference documents
-│   │       └── Design.md
-│   └── website/
-│       ├── epic.md
-│       ├── progress.md
-│       └── references/
-└── issues/
-    └── ...
+└── specs/
+    ├── epics/
+    │   ├── cli/
+    │   │   ├── epic.md                   # Epic overview and issue references
+    │   │   ├── progress.md               # Sprint progress tracking
+    │   │   └── references/               # Reference documents
+    │   │       └── Design.md
+    │   └── website/
+    │       ├── epic.md
+    │       ├── progress.md
+    │       └── references/
+    └── issues/
+        └── ...
 ```
 
 ## What is an Epic?
@@ -48,7 +49,7 @@ Components:
 ### Step 1: Create Epic Structure
 
 ```bash
-mkdir -p epics/epic-name/references
+mkdir -p specs/epics/epic-name/references
 ```
 
 ### Step 2: Create epic.md
@@ -110,7 +111,7 @@ Brief status description.
 
 ### Step 4: Add Reference Documents
 
-Copy or create reference documents in `epics/epic-name/references/`:
+Copy or create reference documents in `specs/epics/epic-name/references/`:
 - Design specifications
 - Architecture diagrams
 - API documentation
@@ -119,7 +120,7 @@ Copy or create reference documents in `epics/epic-name/references/`:
 ### Step 5: Git Commit
 
 ```bash
-git add epics/epic-name/
+git add specs/epics/epic-name/
 git commit -m "feat: create epic-name epic"
 ```
 
