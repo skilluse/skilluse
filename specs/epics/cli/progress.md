@@ -1,7 +1,35 @@
 # CLI Epic Progress
 
 ## Current Status
-All core CLI features completed. In maintenance mode.
+All core CLI features completed. Adding write support with repo init and publish commands.
+
+---
+
+## New Features Sprint
+
+### [2025-12-31] Created feat01-repo-write-commands
+- **Goal**: Add write capabilities to complete the skill ecosystem
+- **Commands**:
+  - `skilluse repo init <username/repo>` - Create skills repository on GitHub
+  - `skilluse publish <skill-path>` - Publish local skill to repository
+- **Key Options**:
+  - repo init: `--public` (default), `--private`, `--path <path>` (default: skills)
+  - publish: `-r, --repo`, `--pr`
+- **Features**: 13 acceptance criteria defined
+
+---
+
+## Refactoring Sprint
+
+### [2025-12-31] Completed refactor01-agent-command
+- **Problem**: `skilluse agent use claude` is verbose (3 words)
+- **Solution**: Simplify to `skilluse agent claude` (2 words)
+- **Enhancement**: `skilluse agent` (no args) now shows interactive selection with arrow keys
+- **Changes**:
+  - Merged `agent/use.tsx` into `agent/index.tsx`
+  - Removed `agent use` subcommand from `cli.tsx`
+  - Added interactive `Select` component for agent selection
+  - Deleted `agent/use.tsx`
 
 ---
 

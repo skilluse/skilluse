@@ -1,0 +1,172 @@
+{
+  "issue": "feat01-repo-write-commands",
+  "title": "Add Repo Init and Publish Commands for Write Support",
+  "epic": "cli",
+  "priority": 2,
+  "status": "pending",
+  "created_at": "2025-12-31",
+  "completed_at": null,
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "repo init creates public repository by default",
+      "steps": [
+        "Run: skilluse repo init testuser/test-skills",
+        "Verify repository created on GitHub",
+        "Verify repository is public"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "repo init --private creates private repository",
+      "steps": [
+        "Run: skilluse repo init testuser/test-skills --private",
+        "Verify repository created on GitHub",
+        "Verify repository is private"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "repo init creates default skills/ directory structure",
+      "steps": [
+        "Run: skilluse repo init testuser/test-skills",
+        "Verify README.md exists in repo root",
+        "Verify skills/ directory exists with .gitkeep"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "repo init --path creates custom skills directory",
+      "steps": [
+        "Run: skilluse repo init testuser/test-skills --path packages/skills",
+        "Verify packages/skills/ directory exists with .gitkeep"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "repo init adds new repo to configuration",
+      "steps": [
+        "Run: skilluse repo init testuser/test-skills",
+        "Run: skilluse repo list",
+        "Verify testuser/test-skills appears in repo list"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "publish validates skill has SKILL.md",
+      "steps": [
+        "Create directory without SKILL.md",
+        "Run: skilluse publish ./invalid-skill",
+        "Verify error message about missing SKILL.md"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F007",
+      "category": "functional",
+      "description": "publish validates SKILL.md frontmatter",
+      "steps": [
+        "Create skill with invalid SKILL.md (missing name/version)",
+        "Run: skilluse publish ./invalid-skill",
+        "Verify error message about invalid frontmatter"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F008",
+      "category": "functional",
+      "description": "publish uploads skill to default repository",
+      "steps": [
+        "Create valid skill directory with SKILL.md",
+        "Run: skilluse publish ./my-skill",
+        "Verify skill appears in default repo on GitHub"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F009",
+      "category": "functional",
+      "description": "publish -r uploads to specified repository",
+      "steps": [
+        "Create valid skill directory",
+        "Run: skilluse publish ./my-skill -r owner/other-repo",
+        "Verify skill appears in specified repo"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F010",
+      "category": "functional",
+      "description": "publish --pr creates pull request instead of direct commit",
+      "steps": [
+        "Run: skilluse publish ./my-skill --pr",
+        "Verify PR created on GitHub",
+        "Verify skill files in PR diff"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F011",
+      "category": "error-handling",
+      "description": "repo init handles existing repository error",
+      "steps": [
+        "Run: skilluse repo init owner/existing-repo",
+        "Verify appropriate error message displayed"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F012",
+      "category": "error-handling",
+      "description": "publish handles existing skill version conflict",
+      "steps": [
+        "Publish skill version 1.0.0",
+        "Try to publish same version again",
+        "Verify conflict error with suggestion to update version"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F013",
+      "category": "auth",
+      "description": "Commands request re-auth if repo scope missing",
+      "steps": [
+        "Login with read-only scope",
+        "Run: skilluse repo init owner/repo",
+        "Verify prompt to re-authenticate with repo scope"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 2,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

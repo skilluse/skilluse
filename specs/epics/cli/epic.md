@@ -61,11 +61,23 @@ The CLI provides a unified interface for discovering, installing, and managing s
 |-------|-------|--------|
 | auth01-optional-authentication | Optional Auth for Public Repos | pending |
 
+### Refactoring
+
+| Issue | Title | Status |
+|-------|-------|--------|
+| refactor01-agent-command | Simplify "agent use" to "agent" | completed |
+
 ### Bug Fixes
 
 | Issue | Title | Status |
 |-------|-------|--------|
 | bug01-ink-static-component | Fix Ink Exit Race Condition | pending |
+
+### New Features
+
+| Issue | Title | Status |
+|-------|-------|--------|
+| feat01-repo-write-commands | Add Repo Init and Publish Commands | pending |
 
 ## References
 
