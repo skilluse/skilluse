@@ -5,7 +5,56 @@ All core CLI features completed. Adding write support with repo init and publish
 
 ---
 
+## Bug Fixes Sprint
+
+### [2026-01-01] Completed bug02-list-filesystem-sync
+- Commits: 4d315bd
+- Completed: F001-F005
+- Notes:
+  - Added `existsSync` import from `node:fs`
+  - Filter local skills by `process.cwd()` - only show if `installedPath` starts with cwd
+  - Added filesystem existence check to filter out deleted skills
+  - Both filters apply before `--outdated` check, so same filtered list is used
+
+### [2026-01-01] Created bug02-list-filesystem-sync
+- **Problem 1**: Local skills appear in all projects (config is global, paths are project-specific)
+- **Problem 2**: Manually deleted skills still appear in list output
+- **Solution**:
+  - Filter local skills by `process.cwd()` - only show if `installedPath` starts with cwd
+  - Add `existsSync` check to filter out deleted skills
+- **Scope**: list.tsx, optionally store.ts
+
+---
+
+## Refactoring Sprint
+
+### [2026-01-01] Created refactor03-remove-version-field
+- **Problem**: `InstalledSkill` has `version` field but version management is in backlog
+- **Solution**: Remove `version` field and related UI code
+- **Scope**: store.ts, list.tsx, install.tsx, upgrade.tsx
+- **Keep**: `scope` (local/global) and `commitSha` fields
+
+### [2026-01-01] Created feat02-status-command
+- **Goal**: Make `skilluse` (no args) show status overview instead of help
+- **Design**: Structured output with Authentication, Agent, Repos, Skills sections
+- **Key decisions**:
+  - No separate `skilluse status` command (keep CLI minimal)
+  - Show full repo/skill lists, not just counts
+  - Remove "Quick Actions" section for conciseness
+- **Depends on**: refactor03-remove-version-field (no version in skill list)
+
+---
+
 ## New Features Sprint
+
+### [2026-01-01] Completed feat03-public-repo-warning
+- **Goal**: Add security warning when installing skills from public repositories
+- **Implementation**:
+  - Added `isPublicRepo()` function in github.ts to check repo visibility
+  - Added `SecurityWarningPrompt` component in install.tsx
+  - Added `--force` flag to skip warning
+  - Shows skill name, repo link, and Y/N confirmation prompt
+- **Files**: install.tsx, github.ts, services/index.ts
 
 ### [2025-12-31] Created feat01-repo-write-commands
 - **Goal**: Add write capabilities to complete the skill ecosystem

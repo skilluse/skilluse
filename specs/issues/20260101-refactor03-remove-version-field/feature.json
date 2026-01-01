@@ -1,0 +1,92 @@
+{
+  "issue": "refactor03-remove-version-field",
+  "title": "Remove Version Field from InstalledSkill",
+  "epic": "cli",
+  "priority": 2,
+  "status": "pending",
+  "created_at": "2026-01-01",
+  "completed_at": null,
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "refactor",
+      "description": "Remove version field from InstalledSkill interface",
+      "steps": [
+        "Open src/services/store.ts",
+        "Remove 'version: string' from InstalledSkill interface",
+        "Verify TypeScript compilation passes"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "refactor",
+      "description": "Remove version display from list command",
+      "steps": [
+        "Open src/commands/list.tsx",
+        "Remove 'v{skill.version}' from skill display",
+        "Run 'skilluse list' and verify no version shown"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "refactor",
+      "description": "Remove version extraction from install command",
+      "steps": [
+        "Open src/commands/install.tsx",
+        "Remove code that parses version from SKILL.md frontmatter",
+        "Remove version from InstalledSkill object creation",
+        "Test install command still works"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "refactor",
+      "description": "Remove version diff display from upgrade command",
+      "steps": [
+        "Open src/commands/upgrade.tsx",
+        "Remove version comparison display (v1.0.0 -> v1.2.0)",
+        "Keep commitSha-based update detection",
+        "Test upgrade command still works"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "verification",
+      "description": "Verify scope field is preserved",
+      "steps": [
+        "Confirm InstalledSkill still has 'scope: local | global'",
+        "Run 'skilluse list' and verify scope is displayed",
+        "Install a skill with --global and verify scope is 'global'"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "verification",
+      "description": "Verify commitSha tracking still works",
+      "steps": [
+        "Install a skill and check config.json has commitSha",
+        "Run 'skilluse list --outdated' to verify SHA comparison works",
+        "Upgrade a skill and verify commitSha is updated"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

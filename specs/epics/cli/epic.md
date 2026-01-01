@@ -67,18 +67,22 @@ The CLI provides a unified interface for discovering, installing, and managing s
 |-------|-------|--------|
 | refactor01-agent-command | Simplify "agent use" to "agent" | completed |
 | refactor02-login-force-flag | Remove --force flag from login | completed |
+| refactor03-remove-version-field | Remove version field from InstalledSkill | pending |
 
 ### Bug Fixes
 
 | Issue | Title | Status |
 |-------|-------|--------|
 | bug01-ink-static-component | Fix Ink Exit Race Condition | pending |
+| bug02-list-filesystem-sync | Verify Filesystem and CWD in List | pending |
 
 ### New Features
 
 | Issue | Title | Status |
 |-------|-------|--------|
 | feat01-repo-write-commands | Add Repo Init and Publish Commands | pending |
+| feat02-status-command | Add Status Command as Default Action | pending |
+| feat03-public-repo-warning | Security Warning for Public Repos | completed |
 
 ## References
 
