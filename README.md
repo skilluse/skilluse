@@ -22,16 +22,20 @@ SkillUse is a package manager for AI agent skills. Discover, install, and publis
 - **GitHub-Based**: Use any GitHub repo as a skill registry—public or private
 - **Version Tracking**: Git-based versioning with upgrade detection
 
+## Installation
+
+```bash
+# npm (recommended)
+npm install -g skilluse
+
+# or shell script (macOS/Linux)
+curl -fsSL https://skilluse.dev/install.sh | bash
+```
+
 ## Quick Start
 
 ```bash
-# Install
-npm install -g skilluse
-
-# Authenticate with GitHub
-skilluse login
-
-# Add a skill repository
+# Add a public skill repository (no login required)
 skilluse repo add anthropics/skill-library
 
 # Search and install
@@ -40,7 +44,18 @@ skilluse install code-review
 
 # List installed skills
 skilluse list
+
+# For private repositories, login first
+skilluse login
+skilluse repo add mycompany/private-skills
 ```
+
+## Authentication
+
+| Repository Type | Login Required |
+|-----------------|----------------|
+| Public repo | No |
+| Private repo | Yes |
 
 ## Commands
 

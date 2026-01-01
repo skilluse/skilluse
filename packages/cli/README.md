@@ -9,16 +9,17 @@ See the [main README](../../README.md) for design philosophy and the [design doc
 ## Installation
 
 ```bash
+# npm (recommended)
 npm install -g skilluse
+
+# or shell script (macOS/Linux)
+curl -fsSL https://skilluse.dev/install.sh | bash
 ```
 
 ## Quick Start
 
 ```bash
-# Login to GitHub
-skilluse login
-
-# Add a skill repository
+# Add a public skill repository (no login required)
 skilluse repo add owner/skill-repo
 
 # Search for skills
@@ -29,6 +30,10 @@ skilluse install code-review
 
 # List installed skills
 skilluse list
+
+# For private repositories, login first
+skilluse login
+skilluse repo add mycompany/private-skills
 ```
 
 ## Commands
@@ -74,6 +79,11 @@ skilluse list
 Supported agents: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `aider`, `continue`
 
 ## Authentication
+
+| Repository Type | Login Required |
+|-----------------|----------------|
+| Public repo | No |
+| Private repo | Yes |
 
 Skilluse uses GitHub App OAuth for authentication.
 
