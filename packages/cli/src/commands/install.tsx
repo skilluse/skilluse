@@ -127,7 +127,7 @@ function parseFrontmatter(content: string): Record<string, unknown> {
  */
 type InstallSource =
 	| { type: "repo"; name: string } // "pdf" -> from configured repos
-	| { type: "github"; owner: string; repo: string; branch: string; path?: string }; // GitHub URL or owner/repo/path
+	| { type: "github"; owner: string; repo: string; branch: string; path?: string }; // GitHub URL
 
 /**
  * Parse an install source string into a structured type
@@ -135,8 +135,6 @@ type InstallSource =
  * - "skill-name" -> search in configured repos
  * - "https://github.com/owner/repo" -> repo root
  * - "https://github.com/owner/repo/tree/branch/path" -> specific path
- * - "owner/repo" -> repo root (main branch)
- * - "owner/repo/path" -> specific path (main branch)
  */
 function parseInstallSource(source: string): InstallSource {
 	// GitHub URL: https://github.com/owner/repo/tree/branch/path
@@ -167,22 +165,7 @@ function parseInstallSource(source: string): InstallSource {
 		return { type: "github", owner, repo, branch: "main" };
 	}
 
-	// Short format: owner/repo or owner/repo/path
-	if (source.includes("/")) {
-		const parts = source.split("/");
-		if (parts.length === 2) {
-			return { type: "github", owner: parts[0], repo: parts[1], branch: "main" };
-		}
-		return {
-			type: "github",
-			owner: parts[0],
-			repo: parts[1],
-			branch: "main",
-			path: parts.slice(2).join("/"),
-		};
-	}
-
-	// Default: repo skill name
+	// Default: skill name from configured repos
 	return { type: "repo", name: source };
 }
 
