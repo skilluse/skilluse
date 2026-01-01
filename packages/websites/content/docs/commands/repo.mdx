@@ -40,8 +40,57 @@ skilluse repo list
 
 Shows:
 - Repository name
-- Number of available skills
+- Branch and path configuration
 - Default status
+
+## repo use
+
+Set a repository as the default for skill operations.
+
+```bash
+skilluse repo use <owner/repo>
+```
+
+### Example
+
+```bash
+skilluse repo use acme/skills
+```
+
+## repo skills
+
+List all available skills in the current (default) repository.
+
+```bash
+skilluse repo skills
+```
+
+Shows:
+- All skills in the repository
+- Installation status (● installed, ○ not installed)
+- Skill description and version
+
+### Example
+
+```bash
+$ skilluse repo skills
+Skills in acme/skills (2/5 installed)
+
+● commit v1.0.0 (installed)
+  Generate conventional commit messages
+
+● pdf v2.1.0 (installed)
+  PDF manipulation toolkit
+
+○ xlsx v1.5.0
+  Spreadsheet creation and analysis
+
+○ pptx v1.2.0
+  Presentation editing
+
+○ docx v1.0.0
+  Document manipulation
+```
 
 ## repo remove
 
