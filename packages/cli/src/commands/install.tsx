@@ -1,5 +1,5 @@
-import { cp, mkdir, readFile, stat, writeFile } from "node:fs/promises";
-import { basename, isAbsolute, join } from "node:path";
+import { mkdir, writeFile } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -127,18 +127,12 @@ function parseFrontmatter(content: string): Record<string, unknown> {
  */
 type InstallSource =
 	| { type: "repo"; name: string } // "pdf" -> from configured repos
-	| { type: "github"; owner: string; repo: string; path?: string } // "owner/repo" or "owner/repo/path"
-	| { type: "local"; path: string }; // "./path" or "/absolute/path"
+	| { type: "github"; owner: string; repo: string; path?: string }; // "owner/repo" or "owner/repo/path"
 
 /**
  * Parse an install source string into a structured type
  */
 function parseInstallSource(source: string): InstallSource {
-	// Local path: starts with "./" or "/" or is an absolute path
-	if (source.startsWith("./") || source.startsWith("/") || isAbsolute(source)) {
-		return { type: "local", path: source };
-	}
-
 	// GitHub path: contains "/"
 	if (source.includes("/")) {
 		const parts = source.split("/");
@@ -428,45 +422,6 @@ async function fetchGitHubSkill(
 	}
 }
 
-/**
- * Install from a local directory path
- */
-async function installFromLocalPath(
-	sourcePath: string,
-	targetDir: string,
-): Promise<SkillMetadata> {
-	// Check if source exists
-	const sourceStats = await stat(sourcePath);
-	if (!sourceStats.isDirectory()) {
-		throw new Error(`Source is not a directory: ${sourcePath}`);
-	}
-
-	// Check for SKILL.md
-	const skillMdPath = join(sourcePath, "SKILL.md");
-	let frontmatter: Record<string, unknown> = {};
-	try {
-		const content = await readFile(skillMdPath, "utf-8");
-		frontmatter = parseFrontmatter(content);
-	} catch {
-		// SKILL.md is optional for local installs
-	}
-
-	// Copy the directory
-	await mkdir(targetDir, { recursive: true });
-	await cp(sourcePath, targetDir, { recursive: true });
-
-	const skillName = basename(sourcePath);
-	return {
-		name: String(frontmatter.name || skillName),
-		description: String(frontmatter.description || ""),
-		type: frontmatter.type ? String(frontmatter.type) : undefined,
-		version: frontmatter.version ? String(frontmatter.version) : "1.0.0",
-		author: frontmatter.author ? String(frontmatter.author) : undefined,
-		repo: "local",
-		path: sourcePath,
-	};
-}
-
 export default function Install({ args: [skillName], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<InstallState>({ phase: "checking" });
@@ -491,77 +446,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 			// Parse install source
 			const source = parseInstallSource(skillName);
 
-			// Handle local path installation (no auth needed)
-			if (source.type === "local") {
-				const sourcePath = isAbsolute(source.path)
-					? source.path
-					: join(process.cwd(), source.path);
-
-				try {
-					const derivedName = basename(sourcePath);
-					const baseDir = getSkillsPath(agentId, scope);
-					const installPath = join(baseDir, derivedName);
-
-					const steps: InstallStep[] = [
-						{ label: "Checking source directory", status: "done" },
-						{ label: "Copying files", status: "in_progress" },
-						{
-							label: `Installing to ${agent.localPath}/${derivedName}`,
-							status: "pending",
-						},
-						{ label: "Verifying installation", status: "pending" },
-					];
-
-					setState({
-						phase: "installing",
-						skill: {
-							name: derivedName,
-							description: "",
-							repo: "local",
-							path: sourcePath,
-						},
-						scope,
-						steps,
-						progress: 25,
-					});
-
-					const skill = await installFromLocalPath(sourcePath, installPath);
-
-					// Update steps
-					steps[1].status = "done";
-					steps[2].status = "done";
-					steps[3].status = "done";
-
-					// Record in config
-					const installedSkill: InstalledSkill = {
-						name: skill.name,
-						repo: "local",
-						repoPath: sourcePath,
-						commitSha: "local",
-						version: skill.version || "1.0.0",
-						type: skill.type || "skill",
-						installedPath: installPath,
-						scope,
-						agent: agentId,
-					};
-					addInstalledSkill(installedSkill);
-
-					setState({
-						phase: "success",
-						skill,
-						installedPath: installPath,
-					});
-					return;
-				} catch (err) {
-					setState({
-						phase: "error",
-						message: err instanceof Error ? err.message : "Installation failed",
-					});
-					return;
-				}
-			}
-
-			// For GitHub and repo sources, get optional credentials
+			// Get optional credentials for GitHub access
 			const credentials = await getCredentials();
 			const token = credentials?.token;
 
