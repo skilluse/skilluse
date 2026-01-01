@@ -50,14 +50,18 @@ skilluse install code-review
 
 | Command | Description |
 |---------|-------------|
-| `skilluse search <keyword>` | Search for skills |
-| `skilluse install <skill>` | Install skill locally |
+| `skilluse install <skill>` | Install from configured repo |
+| `skilluse install <github-url>` | Install from GitHub URL |
 | `skilluse install <skill> --global` | Install globally |
 | `skilluse uninstall <skill>` | Remove installed skill |
 | `skilluse upgrade [skill]` | Upgrade skill(s) to latest |
 | `skilluse list` | List installed skills |
 | `skilluse list --outdated` | Show skills with updates |
-| `skilluse info <skill>` | Show skill details |
+
+Example with GitHub URL:
+```bash
+skilluse install https://github.com/owner/repo/tree/main/skills/code-review
+```
 
 ### Agent Management
 

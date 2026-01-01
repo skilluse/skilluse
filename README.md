@@ -66,14 +66,18 @@ skilluse logout       # Clear credentials
 
 ### Skill Management
 ```bash
-skilluse search <keyword>      # Search for skills
-skilluse install <skill>       # Install locally
-skilluse install <skill> -g    # Install globally
-skilluse uninstall <skill>     # Remove skill
-skilluse upgrade [skill]       # Upgrade to latest
-skilluse list                  # List installed
-skilluse list --outdated       # Check for updates
-skilluse info <skill>          # Show details
+skilluse install <skill>                    # Install from configured repo
+skilluse install <github-url>               # Install from GitHub URL
+skilluse install <skill> -g                 # Install globally
+skilluse uninstall <skill>                  # Remove skill
+skilluse upgrade [skill]                    # Upgrade to latest
+skilluse list                               # List installed
+skilluse list --outdated                    # Check for updates
+```
+
+Example with GitHub URL:
+```bash
+skilluse install https://github.com/owner/repo/tree/main/skills/code-review
 ```
 
 ### Repository Management

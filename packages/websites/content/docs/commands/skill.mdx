@@ -8,17 +8,19 @@ Install, update, and manage AI agent skills.
 
 ## install
 
-Install a skill from a GitHub repository.
+Install a skill from a configured repository or GitHub URL.
 
 ```bash
 skilluse install <skill>
+skilluse install <github-url>
 ```
 
 ### Arguments
 
 | Argument | Description |
 |----------|-------------|
-| `skill` | Skill path: `owner/repo/path/to/skill` or just `skill-name` from configured repos |
+| `skill` | Skill name from configured repos |
+| `github-url` | Full GitHub URL to skill directory |
 
 ### Options
 
@@ -29,11 +31,11 @@ skilluse install <skill>
 ### Example
 
 ```bash
-# Install from full path
-skilluse install acme/skills/commit
-
 # Install from configured repo
 skilluse install commit
+
+# Install from GitHub URL
+skilluse install https://github.com/owner/repo/tree/main/skills/commit
 
 # Install globally
 skilluse install commit --global
