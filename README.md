@@ -35,19 +35,11 @@ curl -fsSL https://skilluse.dev/install.sh | bash
 ## Quick Start
 
 ```bash
-# Add a public skill repository (no login required)
-skilluse repo add anthropics/skill-library
+# 1. Add a skill repository
+skilluse repo add owner/skill-repo
 
-# Search and install
-skilluse search code-review
+# 2. Install a skill
 skilluse install code-review
-
-# List installed skills
-skilluse list
-
-# For private repositories, login first
-skilluse login
-skilluse repo add mycompany/private-skills
 ```
 
 ## Authentication
@@ -56,6 +48,12 @@ skilluse repo add mycompany/private-skills
 |-----------------|----------------|
 | Public repo | No |
 | Private repo | Yes |
+
+For private repositories:
+```bash
+skilluse login
+skilluse repo add mycompany/private-skills
+```
 
 ## Commands
 

@@ -44,17 +44,13 @@ Skills orchestrate the agent's native tools:
 ## Getting Started
 
 ```bash
-# Install via npm
+# Install
 npm install -g skilluse
 
-# Authenticate with GitHub
-skilluse login
+# 1. Add a skill repository
+skilluse repo add owner/skill-repo
 
-# Add a skill repository
-skilluse repo add anthropics/skill-library
-
-# Search and install
-skilluse search code-review
+# 2. Install a skill
 skilluse install code-review
 ```
 

@@ -19,21 +19,11 @@ curl -fsSL https://skilluse.dev/install.sh | bash
 ## Quick Start
 
 ```bash
-# Add a public skill repository (no login required)
+# 1. Add a skill repository
 skilluse repo add owner/skill-repo
 
-# Search for skills
-skilluse search code-review
-
-# Install a skill
+# 2. Install a skill
 skilluse install code-review
-
-# List installed skills
-skilluse list
-
-# For private repositories, login first
-skilluse login
-skilluse repo add mycompany/private-skills
 ```
 
 ## Commands
