@@ -31,10 +31,6 @@ export const options = z.object({
 		.string()
 		.optional()
 		.describe("Override current agent (e.g., cursor, claude)"),
-	force: z
-		.boolean()
-		.default(false)
-		.describe("Skip security warning for public repos"),
 });
 
 interface Props {
@@ -577,24 +573,22 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				const { skill, commitSha } = result;
 
 				// Check if this is a public repo and show security warning
-				if (!opts.force) {
-					const isPublic = await isPublicRepo(
-						source.owner,
-						source.repo,
-						token,
-					);
-					if (isPublic) {
-						setState({
-							phase: "warning",
-							skill,
-							commitSha,
-							scope,
-							agentId,
-							branch: source.branch,
-							source,
-						});
-						return;
-					}
+				const isPublic = await isPublicRepo(
+					source.owner,
+					source.repo,
+					token,
+				);
+				if (isPublic) {
+					setState({
+						phase: "warning",
+						skill,
+						commitSha,
+						scope,
+						agentId,
+						branch: source.branch,
+						source,
+					});
+					return;
 				}
 
 				const baseDir = getSkillsPath(agentId, scope);
@@ -725,21 +719,19 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 			const branch = repoConfig?.branch || "main";
 
 			// Check if this is a public repo and show security warning
-			if (!opts.force) {
-				const [owner, repo] = skill.repo.split("/");
-				const isPublic = await isPublicRepo(owner, repo, token);
-				if (isPublic) {
-					setState({
-						phase: "warning",
-						skill,
-						commitSha,
-						scope,
-						agentId,
-						branch,
-						source,
-					});
-					return;
-				}
+			const [owner, repo] = skill.repo.split("/");
+			const isPublic = await isPublicRepo(owner, repo, token);
+			if (isPublic) {
+				setState({
+					phase: "warning",
+					skill,
+					commitSha,
+					scope,
+					agentId,
+					branch,
+					source,
+				});
+				return;
 			}
 
 			// Determine install path using agent's path
@@ -847,7 +839,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				message: err instanceof Error ? err.message : "Installation failed",
 			});
 		});
-	}, [skillName, opts.global, opts.agent, opts.force]);
+	}, [skillName, opts.global, opts.agent]);
 
 	// Perform installation after user confirms security warning
 	const performInstall = useCallback(async () => {
