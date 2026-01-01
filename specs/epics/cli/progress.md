@@ -7,32 +7,6 @@ All core CLI features completed. Adding write support with repo init and publish
 
 ## New Features Sprint
 
-### [2026-01-01] Updated feat01-repo-write-commands - Added Version Management
-- **Goal**: Add write capabilities with proper version management
-- **Key Design Decisions**:
-  - Use **Git Tags** for version tracking: `{skill-name}/v{version}` (e.g., `pdf/v2.0.0`)
-  - Use **GitHub Releases** for reliable distribution with downloadable assets
-  - Each skill maintains independent versions within a shared repository
-- **Commands**:
-  - `skilluse repo init <username/repo>` - Create skills repository on GitHub
-  - `skilluse publish [skill-path]` - Publish skill with versioned release
-  - `skilluse install skill@version` - Install specific version (enhancement)
-- **Key Options**:
-  - repo init: `--public` (default), `--private`, `--path <path>`
-  - publish: `-r, --repo`, `--version`, `--draft`, `--notes`
-- **Publish Workflow**:
-  1. Validate SKILL.md (name, version, description)
-  2. Check version conflict (tag already exists?)
-  3. Create Git Tag: `{name}/v{version}`
-  4. Create tarball: `{name}-{version}.tar.gz`
-  5. Create GitHub Release with tag
-  6. Upload tarball as release asset
-- **Features**: 25 acceptance criteria defined (was 13)
-- **New Files**:
-  - `commands/repo/init.tsx` - repo init command
-  - `commands/publish.tsx` - publish command
-  - `services/release.ts` - GitHub Release API helpers
-
 ### [2025-12-31] Created feat01-repo-write-commands
 - **Goal**: Add write capabilities to complete the skill ecosystem
 - **Commands**:

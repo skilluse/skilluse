@@ -1,8 +1,8 @@
 {
   "issue": "feat01-repo-write-commands",
-  "title": "Add Repo Init and Publish Commands with Version Management",
+  "title": "Add Repo Init and Publish Commands",
   "epic": "cli",
-  "priority": 1,
+  "priority": 2,
   "status": "pending",
   "created_at": "2025-12-31",
   "completed_at": null,
@@ -70,7 +70,7 @@
     },
     {
       "id": "F006",
-      "category": "publish-validation",
+      "category": "publish",
       "description": "publish validates skill has SKILL.md",
       "steps": [
         "Create directory without SKILL.md",
@@ -82,171 +82,54 @@
     },
     {
       "id": "F007",
-      "category": "publish-validation",
+      "category": "publish",
       "description": "publish validates SKILL.md has required frontmatter",
       "steps": [
-        "Create skill with invalid SKILL.md (missing name/version)",
+        "Create skill with invalid SKILL.md (missing name)",
         "Run: skilluse publish ./invalid-skill",
-        "Verify error message about invalid frontmatter"
+        "Verify error message about missing name field"
       ],
       "passes": false,
       "notes": ""
     },
     {
       "id": "F008",
-      "category": "publish-validation",
-      "description": "publish validates version follows semver format",
+      "category": "publish",
+      "description": "publish uploads skill to default repository",
       "steps": [
-        "Create skill with version: 'abc' in SKILL.md",
-        "Run: skilluse publish",
-        "Verify error about invalid version format"
+        "Create valid skill directory with SKILL.md",
+        "Run: skilluse publish ./my-skill",
+        "Verify skill files appear in default repo on GitHub"
       ],
       "passes": false,
       "notes": ""
     },
     {
       "id": "F009",
-      "category": "publish-validation",
-      "description": "publish warns if git working directory has uncommitted changes",
+      "category": "publish",
+      "description": "publish -r uploads to specified repository",
       "steps": [
-        "Create valid skill with uncommitted changes",
-        "Run: skilluse publish",
-        "Verify warning about uncommitted changes"
+        "Create valid skill directory",
+        "Run: skilluse publish ./my-skill -r owner/other-repo",
+        "Verify skill files appear in specified repo"
       ],
       "passes": false,
       "notes": ""
     },
     {
       "id": "F010",
-      "category": "publish-tag",
-      "description": "publish creates git tag with skill-name/version format",
+      "category": "publish",
+      "description": "publish --pr creates pull request instead of direct push",
       "steps": [
-        "Create valid skill 'my-skill' version 1.0.0",
-        "Run: skilluse publish ./my-skill",
-        "Verify git tag 'my-skill/v1.0.0' exists locally",
-        "Verify git tag pushed to remote"
+        "Run: skilluse publish ./my-skill --pr",
+        "Verify PR created on GitHub",
+        "Verify skill files in PR diff"
       ],
       "passes": false,
       "notes": ""
     },
     {
       "id": "F011",
-      "category": "publish-release",
-      "description": "publish creates GitHub Release with correct tag",
-      "steps": [
-        "Run: skilluse publish ./my-skill",
-        "Verify GitHub Release exists with tag 'my-skill/v1.0.0'",
-        "Verify release name is 'my-skill v1.0.0'"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F012",
-      "category": "publish-release",
-      "description": "publish uploads tarball as release asset",
-      "steps": [
-        "Run: skilluse publish ./my-skill",
-        "Verify release has asset 'my-skill-1.0.0.tar.gz'",
-        "Download and verify tarball contains skill files"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F013",
-      "category": "publish-release",
-      "description": "publish --draft creates draft release",
-      "steps": [
-        "Run: skilluse publish ./my-skill --draft",
-        "Verify GitHub Release is marked as draft"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F014",
-      "category": "publish-release",
-      "description": "publish --notes adds custom release notes",
-      "steps": [
-        "Run: skilluse publish ./my-skill --notes 'Custom release notes'",
-        "Verify release body contains 'Custom release notes'"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F015",
-      "category": "publish-repo",
-      "description": "publish uses default repo when -r not specified",
-      "steps": [
-        "Set default repo to owner/my-skills",
-        "Run: skilluse publish ./my-skill",
-        "Verify release created in owner/my-skills"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F016",
-      "category": "publish-repo",
-      "description": "publish -r uploads to specified repository",
-      "steps": [
-        "Run: skilluse publish ./my-skill -r owner/other-repo",
-        "Verify release created in owner/other-repo"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F017",
-      "category": "publish-version",
-      "description": "publish --version overrides SKILL.md version",
-      "steps": [
-        "Create skill with version: 1.0.0 in SKILL.md",
-        "Run: skilluse publish --version 2.0.0",
-        "Verify tag and release use version 2.0.0"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F018",
-      "category": "install-version",
-      "description": "install skill@version installs specific version",
-      "steps": [
-        "Publish skill v1.0.0 and v2.0.0",
-        "Run: skilluse install my-skill@1.0.0",
-        "Verify installed version is 1.0.0"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F019",
-      "category": "install-version",
-      "description": "install skill (no version) installs latest from branch",
-      "steps": [
-        "Run: skilluse install my-skill",
-        "Verify installed from main branch HEAD"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F020",
-      "category": "install-version",
-      "description": "install downloads tarball from release assets",
-      "steps": [
-        "Run: skilluse install my-skill@1.0.0",
-        "Verify files downloaded from release asset (not API)",
-        "Verify installedFrom field is 'release'"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F021",
       "category": "error-handling",
       "description": "repo init handles existing repository error",
       "steps": [
@@ -257,57 +140,32 @@
       "notes": ""
     },
     {
-      "id": "F022",
+      "id": "F012",
       "category": "error-handling",
-      "description": "publish rejects if version tag already exists",
+      "description": "publish handles existing skill conflict",
       "steps": [
-        "Publish skill v1.0.0",
-        "Try to publish same version again",
-        "Verify error: 'Version 1.0.0 already exists'"
+        "Publish skill 'my-skill'",
+        "Try to publish same skill again",
+        "Verify prompt to overwrite or cancel"
       ],
       "passes": false,
       "notes": ""
     },
     {
-      "id": "F023",
-      "category": "error-handling",
-      "description": "install handles non-existent version",
-      "steps": [
-        "Run: skilluse install my-skill@99.0.0",
-        "Verify error: 'Version 99.0.0 not found'"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F024",
+      "id": "F013",
       "category": "auth",
       "description": "Commands request re-auth if repo scope missing",
       "steps": [
         "Login with read-only scope",
-        "Run: skilluse publish ./my-skill",
+        "Run: skilluse repo init owner/repo",
         "Verify prompt to re-authenticate with repo scope"
-      ],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "F025",
-      "category": "ui",
-      "description": "publish shows progress during each step",
-      "steps": [
-        "Run: skilluse publish ./my-skill",
-        "Verify spinner shows: Creating tag...",
-        "Verify spinner shows: Creating release...",
-        "Verify spinner shows: Uploading asset...",
-        "Verify success message with release URL"
       ],
       "passes": false,
       "notes": ""
     }
   ],
   "metadata": {
-    "estimated_sessions": 3,
+    "estimated_sessions": 2,
     "actual_sessions": 0,
     "blockers": []
   }

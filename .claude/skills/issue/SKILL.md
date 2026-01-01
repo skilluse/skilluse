@@ -1,6 +1,6 @@
 ---
 name: issue
-description: Create and manage Issues - individual work items with testable acceptance criteria. Use when planning features, creating tasks, or updating issue status.
+description: Create and manage local Issue specs (specs/issues/) - individual work items with testable acceptance criteria. Use for "create issue", "new task", "list issues", "check issues", "pick issue". NOTE - For GitHub issues, use `gh issue` command directly.
 ---
 
 # Issue - Issue Manager

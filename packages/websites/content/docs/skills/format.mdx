@@ -23,7 +23,7 @@ Required and optional fields in the YAML frontmatter:
 ---
 name: my-skill           # Required: unique identifier
 description: Brief desc  # Required: one-line summary
-version: 1.0.0           # Required: semver version (for publishing)
+version: 1.0.0           # Optional: semver version
 author: Your Name        # Optional: skill author
 tags:                    # Optional: categorization
   - code-review
@@ -37,31 +37,14 @@ tags:                    # Optional: categorization
 |-------|-------------|
 | `name` | Unique skill identifier (lowercase, hyphens) |
 | `description` | Brief one-line description |
-| `version` | Semantic version (e.g., 1.0.0). Required for publishing. |
 
 ### Optional Fields
 
 | Field | Description |
 |-------|-------------|
+| `version` | Semantic version (e.g., 1.0.0) |
 | `author` | Skill creator name or handle |
 | `tags` | Array of category tags |
-
-### Version Field
-
-The `version` field follows [Semantic Versioning](https://semver.org/):
-
-```yaml
-version: 1.0.0  # MAJOR.MINOR.PATCH
-```
-
-- **MAJOR**: Breaking changes to skill behavior
-- **MINOR**: New features, backward compatible
-- **PATCH**: Bug fixes, minor improvements
-
-When you publish a skill with `skilluse publish`, the version is used to:
-- Create a Git tag: `{skill-name}/v{version}`
-- Create a GitHub Release with downloadable assets
-- Allow users to install specific versions: `skilluse install skill@1.0.0`
 
 ## Content Sections
 
