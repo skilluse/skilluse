@@ -415,6 +415,21 @@ skilluse list --outdated
 | SKILL.md version changed | Informational | Show version diff |
 | Files modified but same SHA | N/A | Already up-to-date |
 
+### List Filtering Behavior
+
+The `list` command applies intelligent filtering to show only relevant skills:
+
+| Filter | Behavior |
+|--------|----------|
+| **Agent filter** | Only shows skills for current agent |
+| **CWD filter** | Local skills only appear when running from the project where installed |
+| **Filesystem check** | Skills whose `installedPath` no longer exists are automatically hidden |
+
+This means:
+- Local skills installed in Project A won't appear when running `skilluse list` in Project B
+- Global skills (`~/.claude/skills/`) appear in all directories
+- Manually deleted skill folders are automatically cleaned from list output
+
 ### Upgrade Behavior
 
 ```

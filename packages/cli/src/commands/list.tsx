@@ -18,7 +18,6 @@ import {
 
 export const options = z.object({
 	outdated: z.boolean().default(false).describe("Show only outdated skills"),
-	all: z.boolean().default(false).describe("Show skills for all agents"),
 });
 
 interface Props {
@@ -39,7 +38,6 @@ type ListState =
 			skills: SkillWithUpdate[];
 			showingOutdated: boolean;
 			currentAgent: string;
-			showingAll: boolean;
 	  }
 	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
@@ -140,8 +138,8 @@ export default function List({ options: opts }: Props) {
 
 			// Filter skills by agent, CWD (for local skills), and filesystem existence
 			const skills = config.installed.filter((skill) => {
-				// 1. Filter by agent unless --all is passed
-				if (!opts.all && skill.agent !== currentAgent && skill.agent) {
+				// 1. Filter by current agent
+				if (skill.agent !== currentAgent && skill.agent) {
 					return false;
 				}
 
@@ -165,7 +163,6 @@ export default function List({ options: opts }: Props) {
 					skills,
 					showingOutdated: false,
 					currentAgent,
-					showingAll: opts.all,
 				});
 				return;
 			}
@@ -210,12 +207,11 @@ export default function List({ options: opts }: Props) {
 				skills: skillsWithUpdates,
 				showingOutdated: true,
 				currentAgent,
-				showingAll: opts.all,
 			});
 		}
 
 		loadSkills();
-	}, [opts.outdated, opts.all]);
+	}, [opts.outdated]);
 
 	// Add output item when data is ready (final states)
 	useEffect(() => {
@@ -262,7 +258,7 @@ export default function List({ options: opts }: Props) {
 					<>
 						<Box>
 							<Text bold>Installed Skills</Text>
-							{!state.showingAll && <Text dimColor> ({agentName})</Text>}
+							<Text dimColor> ({agentName})</Text>
 						</Box>
 						<Box marginTop={1}>
 							<Text dimColor>(no skills installed)</Text>
@@ -272,13 +268,6 @@ export default function List({ options: opts }: Props) {
 								Run 'skilluse install skill-name' to install one.
 							</Text>
 						</Box>
-						{!state.showingAll && (
-							<Box>
-								<Text dimColor>
-									Run 'skilluse list --all' to see skills for all agents.
-								</Text>
-							</Box>
-						)}
 					</>
 				);
 			}
@@ -288,7 +277,7 @@ export default function List({ options: opts }: Props) {
 					<>
 						<Box>
 							<Text bold>Outdated Skills</Text>
-							{!state.showingAll && <Text dimColor> ({agentName})</Text>}
+							<Text dimColor> ({agentName})</Text>
 						</Box>
 						<Text> </Text>
 						{state.skills.map((skill) => (
@@ -299,9 +288,6 @@ export default function List({ options: opts }: Props) {
 									</Text>
 									<Text dimColor> v{skill.version}</Text>
 									<Text color="green"> → v{skill.latestVersion}</Text>
-									{state.showingAll && skill.agent && (
-										<Text dimColor> [{skill.agent}]</Text>
-									)}
 								</Box>
 								<Box marginLeft={2}>
 									<Text dimColor>
@@ -324,7 +310,7 @@ export default function List({ options: opts }: Props) {
 				<>
 					<Box>
 						<Text bold>Installed Skills</Text>
-						{!state.showingAll && <Text dimColor> ({agentName})</Text>}
+						<Text dimColor> ({agentName})</Text>
 					</Box>
 					<Text> </Text>
 					{state.skills.map((skill) => (
@@ -335,9 +321,6 @@ export default function List({ options: opts }: Props) {
 								</Text>
 								<Text dimColor> v{skill.version}</Text>
 								<Text dimColor> ({skill.scope})</Text>
-								{state.showingAll && skill.agent && (
-									<Text dimColor> [{skill.agent}]</Text>
-								)}
 							</Box>
 							<Box marginLeft={2}>
 								<Text dimColor>
@@ -346,13 +329,6 @@ export default function List({ options: opts }: Props) {
 							</Box>
 						</Box>
 					))}
-					{!state.showingAll && (
-						<Box marginTop={1}>
-							<Text dimColor>
-								Run 'skilluse list --all' to see skills for all agents.
-							</Text>
-						</Box>
-					)}
 				</>
 			);
 		}
