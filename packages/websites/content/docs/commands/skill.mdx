@@ -69,8 +69,14 @@ skilluse list
 
 | Option | Description |
 |--------|-------------|
-| `--global` | List global skills |
 | `--outdated` | Show only skills with available updates |
+
+### Filtering Behavior
+
+The list command applies intelligent filtering:
+- Only shows skills for current agent
+- Local skills only appear in the project where they were installed
+- Deleted skill folders are automatically hidden
 
 ## info
 

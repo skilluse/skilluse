@@ -88,7 +88,7 @@
         "Install skills for multiple agents",
         "Run 'skilluse list' (current agent)",
         "Verify only current agent's skills shown",
-        "Run 'skilluse list --all' to see all agents' skills"
+        "Switch agent with 'skilluse agent <name>' to see other agent's skills"
       ],
       "passes": true
     },

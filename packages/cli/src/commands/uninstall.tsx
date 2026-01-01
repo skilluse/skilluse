@@ -162,11 +162,6 @@ export default function Uninstall({ args: [skillName], options: opts }: Props) {
 						<Box marginTop={1}>
 							<Text dimColor>Run 'skilluse list' to see installed skills.</Text>
 						</Box>
-						<Box>
-							<Text dimColor>
-								Run 'skilluse list --all' to see skills for all agents.
-							</Text>
-						</Box>
 					</Box>
 				);
 
