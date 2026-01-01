@@ -3,9 +3,9 @@
   "title": "Remove --force flag from login command",
   "epic": "cli",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2026-01-01",
-  "completed_at": null,
+  "completed_at": "2026-01-01",
   "dependencies": [],
   "parallelizable": true,
   "features": [
@@ -17,8 +17,8 @@
         "Run skilluse login --help",
         "Verify no --force option is listed"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Removed force option from zod schema"
     },
     {
       "id": "F002",
@@ -29,13 +29,13 @@
         "Run skilluse login again",
         "Verify new device code flow starts (not 'Already logged in')"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Removed already_logged_in state and check"
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }

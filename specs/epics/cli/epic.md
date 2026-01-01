@@ -66,7 +66,7 @@ The CLI provides a unified interface for discovering, installing, and managing s
 | Issue | Title | Status |
 |-------|-------|--------|
 | refactor01-agent-command | Simplify "agent use" to "agent" | completed |
-| refactor02-login-force-flag | Remove --force flag from login | pending |
+| refactor02-login-force-flag | Remove --force flag from login | completed |
 
 ### Bug Fixes
 

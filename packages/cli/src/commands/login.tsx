@@ -4,7 +4,6 @@ import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
 	type DeviceCodeResponse,
-	getCredentials,
 	getUserInstallations,
 	type Installation,
 	openBrowser,
@@ -29,8 +28,6 @@ interface Props {
 }
 
 type LoginState =
-	| { phase: "checking" }
-	| { phase: "already_logged_in"; username: string }
 	| { phase: "requesting_code" }
 	| { phase: "waiting_for_auth"; userCode: string; verificationUri: string }
 	| { phase: "fetching_installations" }
@@ -38,24 +35,13 @@ type LoginState =
 	| { phase: "success"; username: string; installations: StoredInstallation[] }
 	| { phase: "error"; message: string };
 
-export default function Login({ options: opts }: Props) {
+export default function Login(_props: Props) {
 	const { exit } = useApp();
-	const [state, setState] = useState<LoginState>({ phase: "checking" });
+	const [state, setState] = useState<LoginState>({ phase: "requesting_code" });
 
 	useEffect(() => {
 		async function runLogin() {
-			// Check if already logged in
-			if (!opts.force) {
-				const existing = await getCredentials();
-				if (existing) {
-					setState({ phase: "already_logged_in", username: existing.user });
-					exit();
-					return;
-				}
-			}
-
 			// Request device code
-			setState({ phase: "requesting_code" });
 
 			let deviceCode: DeviceCodeResponse;
 			try {
@@ -186,22 +172,9 @@ export default function Login({ options: opts }: Props) {
 		}
 
 		runLogin();
-	}, [opts.force, exit]);
+	}, [exit]);
 
 	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Checking authentication status..." />;
-
-		case "already_logged_in":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="success">
-						Already logged in as {state.username}
-					</StatusMessage>
-					<Text dimColor>Use --force to re-authenticate</Text>
-				</Box>
-			);
-
 		case "requesting_code":
 			return <Spinner text="Starting authentication..." />;
 
