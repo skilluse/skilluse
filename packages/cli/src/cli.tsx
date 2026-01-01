@@ -14,7 +14,7 @@ import Install, {
 } from "./commands/install.js";
 import List, { options as listOptions } from "./commands/list.js";
 // Import all commands statically
-import Login, { options as loginOptions } from "./commands/login.js";
+import Login from "./commands/login.js";
 import Logout from "./commands/logout.js";
 import RepoAdd, {
 	args as repoAddArgs,
@@ -66,10 +66,8 @@ program
 program
 	.command("login")
 	.description("Authenticate with GitHub")
-	.option("-f, --force", "Force re-authentication")
-	.action((opts) => {
-		const options = loginOptions.parse(opts);
-		render(<Login options={options} />);
+	.action(() => {
+		render(<Login options={{}} />);
 	});
 
 // logout command

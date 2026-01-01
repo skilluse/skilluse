@@ -272,7 +272,7 @@ skilluse                    # Status overview: user, repo, skills count
 skilluse status [--json]    # Explicit status command
 
 # Authentication
-skilluse login [--force]    # GitHub OAuth authentication
+skilluse login              # GitHub OAuth authentication
 skilluse logout             # Clear authentication
 skilluse whoami [--json]    # Show current user + installations
 
