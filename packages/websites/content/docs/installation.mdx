@@ -4,15 +4,25 @@ description: How to install SkillUse on your system
 order: 2
 ---
 
-SkillUse can be installed globally via npm, or run directly with npx.
+SkillUse can be installed via npm, shell script, or run directly with npx.
 
-## Global Installation
+## npm (Recommended)
 
 Install SkillUse globally to use the `skilluse` command anywhere:
 
 ```bash
 npm install -g skilluse
 ```
+
+## Shell Script
+
+For macOS and Linux, you can install directly:
+
+```bash
+curl -fsSL https://skilluse.dev/install.sh | bash
+```
+
+This downloads the latest binary to `~/.local/bin/skilluse`.
 
 After installation, verify it works:
 
