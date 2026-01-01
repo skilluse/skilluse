@@ -45,13 +45,18 @@ npx skilluse --help
 
 ## Authentication
 
-SkillUse requires GitHub authentication to install skills from private repositories. Run the login command:
+| Repository Type | Login Required |
+|-----------------|----------------|
+| Public repo | No |
+| Private repo | Yes |
+
+For private repositories, run:
 
 ```bash
 skilluse login
 ```
 
-This opens your browser for GitHub OAuth authentication. Once authenticated, you can access skills from your GitHub repositories.
+This opens your browser for GitHub OAuth authentication.
 
 ## Next Steps
 
