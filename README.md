@@ -84,8 +84,9 @@ skilluse install https://github.com/owner/repo/tree/main/skills/code-review
 ```bash
 skilluse repo list             # List repositories
 skilluse repo add <repo>       # Add repository
-skilluse repo remove <repo>    # Remove repository
 skilluse repo use <repo>       # Set default
+skilluse repo skills           # List all skills in current repo
+skilluse repo remove <repo>    # Remove repository
 ```
 
 ### Multi-Agent Support

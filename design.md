@@ -279,9 +279,10 @@ skilluse whoami [--json]    # Show current user + installations
 # Repo Management
 skilluse repo               # Show current/default repo
 skilluse repo list [--json] # List all configured repos
-skilluse repo use <owner/repo>      # Set default repo
 skilluse repo add <owner/repo>      # Add repo (interactive path selection)
 skilluse repo add <owner/repo> --path <path>  # Add repo (specify path)
+skilluse repo use <owner/repo>      # Set default repo
+skilluse repo skills        # List all skills in current repo (with install status)
 skilluse repo edit <owner/repo>     # Edit repo path configuration
 skilluse repo remove <owner/repo>   # Remove repo
 skilluse repo update [owner/repo]   # Update skill index
