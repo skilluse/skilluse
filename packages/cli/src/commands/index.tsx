@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -48,11 +49,24 @@ export default function Index(_props: Props) {
 			const currentAgent = getCurrentAgent();
 			const agentInfo = getAgent(currentAgent);
 			const agentName = agentInfo?.name || currentAgent;
+			const cwd = process.cwd();
 
-			// Get skills for current agent
-			const skills = config.installed.filter(
-				(s) => s.agent === currentAgent || !s.agent,
-			);
+			// Get skills for current agent with CWD and filesystem filtering
+			const skills = config.installed.filter((skill) => {
+				// Filter by current agent
+				if (skill.agent !== currentAgent && skill.agent) {
+					return false;
+				}
+				// Local skills: only show if in current directory
+				if (skill.scope === "local" && !skill.installedPath.startsWith(cwd)) {
+					return false;
+				}
+				// Verify file exists on filesystem
+				if (!existsSync(skill.installedPath)) {
+					return false;
+				}
+				return true;
+			});
 
 			// Check if logged in
 			const credentials = await getCredentials();

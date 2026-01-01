@@ -84,7 +84,6 @@ program
 	.command("list")
 	.description("List installed skills")
 	.option("-o, --outdated", "Show only outdated skills")
-	.option("-a, --all", "Show skills for all agents")
 	.action((opts) => {
 		const options = listOptions.parse(opts);
 		render(<List options={options} />);
