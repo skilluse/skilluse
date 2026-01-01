@@ -97,6 +97,23 @@ cat issues/ISSUE_ID/feature.json
 - Leave half-implemented code
 - Commit without using the commit skill
 
+## Launch Agent in New Terminal
+
+When user says "work on [issue]" with a specific issue, open a new Ghostty terminal and run the agent there:
+
+```bash
+# Get current directory first
+PROJ_DIR=$(pwd)
+
+# Open Ghostty and run claude agent in that directory
+open -a Ghostty --args -e zsh -lc "cd $PROJ_DIR && claude --dangerously-skip-permissions"
+```
+
+This allows:
+- Running an autonomous agent in a separate terminal
+- Continuing work in the current terminal
+- Agent runs with full permissions for unattended operation
+
 ## Parallel Development (Worktrees)
 
 Use Git worktrees to run agents on separate issues in parallel:
