@@ -91,14 +91,14 @@ npx skilluse
 ### Direct Binary Download
 ```bash
 # macOS/Linux
-curl -fsSL https://github.com/jiweiyuan/skilluse/releases/latest/download/skilluse-darwin-arm64 -o skilluse
+curl -fsSL https://github.com/skilluse/skilluse/releases/latest/download/skilluse-darwin-arm64 -o skilluse
 chmod +x skilluse
 ./skilluse --version
 ```
 
 ### Install Script (from repo)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jiweiyuan/skilluse/main/scripts/install.sh | bash
+curl -fsSL https://skilluse.dev/install.sh | bash
 ```
 
 ## Troubleshooting

@@ -1,9 +1,9 @@
 #!/bin/bash
 # Skilluse CLI Installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/user/skilluse/main/scripts/install.sh | bash
+# Usage: curl -fsSL https://skilluse.dev/install.sh | bash
 set -e
 
-REPO="jiweiyuan/skilluse"
+REPO="skilluse/skilluse"
 INSTALL_DIR="${HOME}/.local/bin"
 
 # Colors for output
