@@ -28,6 +28,7 @@ import RepoEdit, {
 // Import repo subcommands
 import RepoIndex from "./commands/repo/index.js";
 import RepoList from "./commands/repo/list.js";
+import RepoSkills from "./commands/repo/skills.js";
 import RepoRemove, {
 	args as repoRemoveArgs,
 	options as repoRemoveOptions,
@@ -151,6 +152,13 @@ repoCmd
 	.description("List configured repositories")
 	.action(() => {
 		render(<RepoList options={{}} />);
+	});
+
+repoCmd
+	.command("skills")
+	.description("List all skills in current repository")
+	.action(() => {
+		render(<RepoSkills options={{}} />);
 	});
 
 repoCmd
