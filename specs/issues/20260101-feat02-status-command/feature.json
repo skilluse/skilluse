@@ -1,0 +1,104 @@
+{
+  "issue": "feat02-status-command",
+  "title": "Add Status Command as Default Action",
+  "epic": "cli",
+  "priority": 2,
+  "status": "completed",
+  "created_at": "2026-01-01",
+  "completed_at": "2026-01-01",
+  "dependencies": ["refactor03-remove-version-field"],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "skilluse with no args shows status instead of help",
+      "steps": [
+        "Run 'skilluse' with no arguments",
+        "Verify status overview is displayed",
+        "Verify help is NOT shown"
+      ],
+      "passes": true,
+      "notes": "Default action renders Index component with status overview"
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Status shows authentication section",
+      "steps": [
+        "When logged in: shows '✓ Logged in as @username'",
+        "When not logged in: shows '○ Not logged in'"
+      ],
+      "passes": true,
+      "notes": "Shows authentication status with appropriate symbols"
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Status shows current agent",
+      "steps": [
+        "Run 'skilluse'",
+        "Verify Agent section shows current agent name and ID",
+        "Example: '● Claude (claude)'"
+      ],
+      "passes": true,
+      "notes": "Shows agent name and ID in parentheses"
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "Status shows full repo list",
+      "steps": [
+        "Configure 2+ repos with 'skilluse repo add'",
+        "Run 'skilluse'",
+        "Verify all repos are listed with branch and paths",
+        "Verify default repo is marked with ● and (default)"
+      ],
+      "passes": true,
+      "notes": "Full repo list with branch, path, and default marker"
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "Status shows full skill list",
+      "steps": [
+        "Install 2+ skills",
+        "Run 'skilluse'",
+        "Verify all skills are listed with source repo",
+        "Verify NO version is shown (per refactor03)"
+      ],
+      "passes": true,
+      "notes": "Skills listed with source repo, no version shown"
+    },
+    {
+      "id": "F006",
+      "category": "functional",
+      "description": "Status handles empty state gracefully",
+      "steps": [
+        "Fresh install with no repos/skills",
+        "Run 'skilluse'",
+        "Verify '(no repositories configured)' shown",
+        "Verify '(no skills installed)' shown"
+      ],
+      "passes": true,
+      "notes": "Empty states display appropriate messages"
+    },
+    {
+      "id": "F007",
+      "category": "ui",
+      "description": "No Quick Actions section in output",
+      "steps": [
+        "Run 'skilluse'",
+        "Verify no 'Quick Actions' or command hints shown",
+        "Output should be concise status only"
+      ],
+      "passes": true,
+      "notes": "Quick Actions section removed"
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

@@ -7,6 +7,7 @@
  */
 import { Command } from "commander";
 import { render } from "ink";
+import Index from "./commands/index.js";
 import Info, { args as infoArgs } from "./commands/info.js";
 import Install, {
 	args as installArgs,
@@ -207,5 +208,10 @@ program
 		const args = agentArgs.parse([agentId]);
 		render(<AgentIndex args={args} options={{}} />);
 	});
+
+// Default action when no command is provided - show status
+program.action(() => {
+	render(<Index options={{}} />);
+});
 
 program.parse();
