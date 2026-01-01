@@ -79,17 +79,18 @@ export default function Command() {
 
 ## Commands Status
 
-### Already Fixed (use `<Static>` pattern)
+### Already Fixed
 
-| File | Command | Status |
-|------|---------|--------|
-| `repo/list.tsx` | `repo list` | ✅ Fixed |
-| `repo/index.tsx` | `repo` | ✅ Fixed |
-| `repo/use.tsx` | `repo use` | ✅ Fixed |
-| `agent/index.tsx` | `agent` | ✅ Fixed |
-| `agent/use.tsx` | `agent use` | ✅ Fixed |
-| `logout.tsx` | `logout` | ✅ Fixed |
-| `list.tsx` | `list` | ✅ Fixed (v0.2.1) |
+| File | Command | Status | Method |
+|------|---------|--------|--------|
+| `repo/list.tsx` | `repo list` | ✅ Fixed | `<Static>` pattern |
+| `repo/index.tsx` | `repo` | ✅ Fixed | `<Static>` pattern |
+| `repo/use.tsx` | `repo use` | ✅ Fixed | `<Static>` pattern |
+| `agent/index.tsx` | `agent` | ✅ Fixed | `<Static>` pattern |
+| `agent/use.tsx` | `agent use` | ✅ Fixed | `<Static>` pattern |
+| `logout.tsx` | `logout` | ✅ Fixed | `<Static>` pattern |
+| `list.tsx` | `list` | ✅ Fixed (v0.2.1) | `<Static>` pattern |
+| `repo/add.tsx` | `repo add` | ✅ Fixed (v0.3.1) | Separate exit useEffect |
 
 ### Need to Fix (call `exit()` directly)
 
@@ -103,7 +104,6 @@ export default function Command() {
 | `upgrade.tsx` | `upgrade` | Medium - has progress UI |
 | `uninstall.tsx` | `uninstall` | Medium - has confirmation |
 | `index.tsx` | status (no args) | Low - shows help instead |
-| `repo/add.tsx` | `repo add` | Low - has interactive selection |
 | `login.tsx` | `login` | Low - has interactive OAuth flow |
 
 ## Requirements
@@ -143,6 +143,43 @@ For commands with interactive elements (user input, selection):
 - Only apply the pattern to final output states
 - Keep interactive states as regular dynamic content
 - Apply `<Static>` when transitioning to success/error states
+
+### Alternative Fix: Separate Exit useEffect (repo/add.tsx)
+
+For commands with complex interactive flows, a simpler alternative is to move `exit()` to a separate useEffect:
+
+```tsx
+// ✅ GOOD: exit() in separate useEffect (repo/add.tsx pattern)
+// 1. Handle exit after terminal states are rendered
+useEffect(() => {
+  if (
+    state.phase === "invalid_repo" ||
+    state.phase === "already_exists" ||
+    state.phase === "auth_required" ||
+    state.phase === "error" ||
+    state.phase === "success"
+  ) {
+    exit();
+  }
+}, [state.phase, exit]);
+
+// 2. Main logic useEffect - just setState, no exit()
+useEffect(() => {
+  async function doWork() {
+    try {
+      const result = await someApiCall();
+      setState({ phase: "success", data: result });
+      // NOTE: Don't call exit() here!
+    } catch (error) {
+      setState({ phase: "error", message: error.message });
+      // NOTE: Don't call exit() here!
+    }
+  }
+  doWork();
+}, []);
+```
+
+This works because React batches the state update and the exit useEffect runs after the component re-renders with the new state.
 
 ## Acceptance Criteria
 
