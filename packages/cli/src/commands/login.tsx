@@ -22,12 +22,7 @@ import {
 const GITHUB_CLIENT_ID =
 	process.env.SKILLUSE_GITHUB_CLIENT_ID || "Iv23liOOBSjdH2IRT6W2";
 
-export const options = z.object({
-	force: z
-		.boolean()
-		.default(false)
-		.describe("Force re-authentication even if already logged in"),
-});
+export const options = z.object({});
 
 interface Props {
 	options: z.infer<typeof options>;
