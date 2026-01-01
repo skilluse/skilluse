@@ -52,7 +52,6 @@ All core CLI features completed. Adding write support with repo init and publish
 - **Implementation**:
   - Added `isPublicRepo()` function in github.ts to check repo visibility
   - Added `SecurityWarningPrompt` component in install.tsx
-  - Added `--force` flag to skip warning
   - Shows skill name, repo link, and Y/N confirmation prompt
 - **Files**: install.tsx, github.ts, services/index.ts
 

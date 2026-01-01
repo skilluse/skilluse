@@ -58,18 +58,6 @@
       ],
       "passes": true,
       "notes": "useInput handles N and Escape keys"
-    },
-    {
-      "id": "F005",
-      "category": "functional",
-      "description": "--force flag skips security warning",
-      "steps": [
-        "Step 1: Run skilluse install skill-name --force",
-        "Step 2: Verify no warning is shown",
-        "Step 3: Verify installation proceeds directly"
-      ],
-      "passes": true,
-      "notes": "opts.force check added"
     }
   ],
   "metadata": {

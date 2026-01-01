@@ -9,7 +9,6 @@ Add a security warning prompt when installing skills from public repositories. T
 - Detect if a repository is public before installation
 - Show a security warning for public repo skills
 - Allow users to confirm or cancel installation
-- Provide `--force` flag to skip the warning
 
 ## Technical Details
 
@@ -23,8 +22,7 @@ Add a security warning prompt when installing skills from public repositories. T
 
 1. Add `isPublicRepo()` function in github.ts
 2. Add `SecurityWarningPrompt` component in install.tsx
-3. Add `--force` option to skip warning
-4. Add `warning` phase to install state machine
+3. Add `warning` phase to install state machine
 
 ### User Flow
 
