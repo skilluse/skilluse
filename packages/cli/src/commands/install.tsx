@@ -127,24 +127,57 @@ function parseFrontmatter(content: string): Record<string, unknown> {
  */
 type InstallSource =
 	| { type: "repo"; name: string } // "pdf" -> from configured repos
-	| { type: "github"; owner: string; repo: string; path?: string }; // "owner/repo" or "owner/repo/path"
+	| { type: "github"; owner: string; repo: string; branch: string; path?: string }; // GitHub URL or owner/repo/path
 
 /**
  * Parse an install source string into a structured type
+ * Supports:
+ * - "skill-name" -> search in configured repos
+ * - "https://github.com/owner/repo" -> repo root
+ * - "https://github.com/owner/repo/tree/branch/path" -> specific path
+ * - "owner/repo" -> repo root (main branch)
+ * - "owner/repo/path" -> specific path (main branch)
  */
 function parseInstallSource(source: string): InstallSource {
-	// GitHub path: contains "/"
+	// GitHub URL: https://github.com/owner/repo/tree/branch/path
+	if (source.startsWith("https://github.com/")) {
+		const urlPath = source.replace("https://github.com/", "");
+		const parts = urlPath.split("/");
+
+		if (parts.length < 2) {
+			return { type: "repo", name: source };
+		}
+
+		const owner = parts[0];
+		const repo = parts[1];
+
+		// https://github.com/owner/repo
+		if (parts.length === 2) {
+			return { type: "github", owner, repo, branch: "main" };
+		}
+
+		// https://github.com/owner/repo/tree/branch/path
+		if (parts[2] === "tree" && parts.length >= 4) {
+			const branch = parts[3];
+			const path = parts.slice(4).join("/") || undefined;
+			return { type: "github", owner, repo, branch, path };
+		}
+
+		// https://github.com/owner/repo/blob/... (not supported, treat as repo)
+		return { type: "github", owner, repo, branch: "main" };
+	}
+
+	// Short format: owner/repo or owner/repo/path
 	if (source.includes("/")) {
 		const parts = source.split("/");
 		if (parts.length === 2) {
-			// owner/repo format
-			return { type: "github", owner: parts[0], repo: parts[1] };
+			return { type: "github", owner: parts[0], repo: parts[1], branch: "main" };
 		}
-		// owner/repo/path format
 		return {
 			type: "github",
 			owner: parts[0],
 			repo: parts[1],
+			branch: "main",
 			path: parts.slice(2).join("/"),
 		};
 	}
@@ -459,6 +492,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 					source.owner,
 					source.repo,
 					source.path,
+					source.branch,
 				);
 
 				if (result && "authRequired" in result) {
@@ -503,7 +537,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						token,
 						`${source.owner}/${source.repo}`,
 						skillPath,
-						"main",
+						source.branch,
 						installPath,
 						(downloaded, total) => {
 							const downloadProgress = 25 + (downloaded / total) * 50;
