@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -135,13 +136,27 @@ export default function List({ options: opts }: Props) {
 		async function loadSkills() {
 			const config = getConfig();
 			const currentAgent = getCurrentAgent();
+			const cwd = process.cwd();
 
-			// Filter skills by current agent unless --all is passed
-			const skills = opts.all
-				? config.installed
-				: config.installed.filter(
-						(s) => s.agent === currentAgent || !s.agent, // Include legacy skills without agent field
-					);
+			// Filter skills by agent, CWD (for local skills), and filesystem existence
+			const skills = config.installed.filter((skill) => {
+				// 1. Filter by agent unless --all is passed
+				if (!opts.all && skill.agent !== currentAgent && skill.agent) {
+					return false;
+				}
+
+				// 2. Local skills: only show if in current directory
+				if (skill.scope === "local" && !skill.installedPath.startsWith(cwd)) {
+					return false;
+				}
+
+				// 3. Verify file exists on filesystem
+				if (!existsSync(skill.installedPath)) {
+					return false;
+				}
+
+				return true;
+			});
 
 			if (!opts.outdated) {
 				// Just show installed skills - no auth needed
