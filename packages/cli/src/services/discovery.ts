@@ -61,6 +61,14 @@ export async function discoverSkillPaths(
 			};
 		}
 		if (response.status === 404) {
+			// 404 could mean: repo doesn't exist, branch doesn't exist, or private repo (unauthenticated)
+			// If no token was provided, suggest it might be private
+			if (!token) {
+				return {
+					authRequired: true,
+					message: `Repository ${owner}/${repo} not found. If this is a private repo, run 'skilluse login' first.`,
+				};
+			}
 			throw new Error(
 				`Repository ${owner}/${repo} not found or branch '${branch}' doesn't exist`,
 			);

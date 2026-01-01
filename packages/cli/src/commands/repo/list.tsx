@@ -73,23 +73,21 @@ export default function RepoList(_props: Props) {
 					<Text> </Text>
 					{state.repos.map((repo) => {
 						const isDefault = repo.repo === state.defaultRepo;
+						const pathsDisplay =
+							repo.paths.length > 0 ? repo.paths.join(", ") : "(all)";
 						return (
-							<Box key={repo.repo} flexDirection="column" marginBottom={1}>
-								<Box>
-									<Text color={isDefault ? "green" : undefined}>
-										{isDefault ? "● " : "○ "}
-									</Text>
-									<Text color={isDefault ? "cyan" : undefined} bold={isDefault}>
-										{repo.repo}
-									</Text>
-									{isDefault && <Text dimColor> (default)</Text>}
-								</Box>
-								<Box marginLeft={2}>
-									<Text dimColor>
-										Branch: {repo.branch} | Paths:{" "}
-										{repo.paths.length > 0 ? repo.paths.join(", ") : "(all)"}
-									</Text>
-								</Box>
+							<Box key={repo.repo}>
+								<Text color={isDefault ? "green" : undefined}>
+									{isDefault ? "● " : "○ "}
+								</Text>
+								<Text color={isDefault ? "cyan" : undefined} bold={isDefault}>
+									{repo.repo}
+								</Text>
+								{isDefault && <Text dimColor> (default)</Text>}
+								<Text dimColor>
+									{" "}
+									[{repo.branch}] {pathsDisplay}
+								</Text>
 							</Box>
 						);
 					})}

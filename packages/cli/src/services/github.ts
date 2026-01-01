@@ -58,18 +58,22 @@ export function isRateLimited(response: Response): boolean {
  */
 export function getGitHubErrorMessage(response: Response): string {
 	if (response.status === 401) {
-		return "This repository requires authentication. Run 'skilluse login' to access private repos.";
+		return "Authentication required: This appears to be a private repository.";
 	}
 
 	if (response.status === 403) {
 		if (isRateLimited(response)) {
-			return "Rate limit exceeded. Run 'skilluse login' for higher rate limits (5000 req/hr vs 60 req/hr).";
+			const resetTime = response.headers.get("X-RateLimit-Reset");
+			const resetInfo = resetTime
+				? ` (resets at ${new Date(Number(resetTime) * 1000).toLocaleTimeString()})`
+				: "";
+			return `Rate limit exceeded${resetInfo}. Login for higher limits (5000/hr vs 60/hr).`;
 		}
-		return "This repository requires authentication. Run 'skilluse login' to access private repos.";
+		return "Authentication required: Access denied to this repository.";
 	}
 
 	if (response.status === 404) {
-		return "Repository not found or requires authentication.";
+		return "Repository not found. Check the owner/repo name or it may be private.";
 	}
 
 	return `GitHub API error: ${response.status}`;

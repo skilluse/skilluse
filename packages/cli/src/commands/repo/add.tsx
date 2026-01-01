@@ -56,12 +56,24 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<AddState>({ phase: "checking" });
 
+	// Handle exit after terminal states are rendered
+	useEffect(() => {
+		if (
+			state.phase === "invalid_repo" ||
+			state.phase === "already_exists" ||
+			state.phase === "auth_required" ||
+			state.phase === "error" ||
+			state.phase === "success"
+		) {
+			exit();
+		}
+	}, [state.phase, exit]);
+
 	useEffect(() => {
 		async function checkAndAdd() {
 			// Validate repo format
 			if (!repoArg.match(/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/)) {
 				setState({ phase: "invalid_repo" });
-				exit();
 				return;
 			}
 
@@ -69,7 +81,6 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 			const config = getConfig();
 			if (config.repos.find((r) => r.repo === repoArg)) {
 				setState({ phase: "already_exists", repo: repoArg });
-				exit();
 				return;
 			}
 
@@ -96,7 +107,6 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 					paths: paths.length > 0 ? paths : ["(all paths)"],
 					isDefault,
 				});
-				exit();
 				return;
 			}
 
@@ -117,7 +127,6 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 
 				if ("authRequired" in result) {
 					setState({ phase: "auth_required", message: result.message });
-					exit();
 					return;
 				}
 
@@ -134,12 +143,11 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				const message =
 					error instanceof Error ? error.message : "Unknown error";
 				setState({ phase: "error", message });
-				exit();
 			}
 		}
 
 		checkAndAdd();
-	}, [repoArg, opts.path, opts.branch, opts.default, exit]);
+	}, [repoArg, opts.path, opts.branch, opts.default]);
 
 	// Handle path selection submission
 	const handlePathsSelected = (selectedPaths: string[]) => {
@@ -162,7 +170,6 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 			paths: selectedPaths.length > 0 ? selectedPaths : ["(all paths)"],
 			isDefault,
 		});
-		exit();
 	};
 
 	// Handle no skills found options
@@ -173,7 +180,7 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 			case "manual":
 				setState({ phase: "input_path", repo: repoArg, currentPath: "" });
 				break;
-			case "add_all":
+			case "add_all": {
 				addRepo({
 					repo: repoArg,
 					branch: opts.branch,
@@ -191,8 +198,8 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 					paths: ["(all paths)"],
 					isDefault,
 				});
-				exit();
 				break;
+			}
 			case "cancel":
 				exit();
 				break;
@@ -226,7 +233,6 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 					paths: paths.length > 0 ? paths : ["(all paths)"],
 					isDefault,
 				});
-				exit();
 				return;
 			}
 
@@ -262,6 +268,17 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 			return (
 				<Box flexDirection="column">
 					<StatusMessage type="error">{state.message}</StatusMessage>
+					<Box marginTop={1} flexDirection="column">
+						<Text dimColor>To access private repositories:</Text>
+						<Text dimColor> 1. Run: skilluse login</Text>
+						<Text dimColor> 2. Then retry: skilluse repo add {repoArg}</Text>
+					</Box>
+					<Box marginTop={1}>
+						<Text dimColor>
+							Or add without verification: skilluse repo add {repoArg} --path
+							skills/
+						</Text>
+					</Box>
 				</Box>
 			);
 
