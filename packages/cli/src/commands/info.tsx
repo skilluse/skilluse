@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
@@ -209,6 +209,7 @@ async function getRemoteSkillInfo(
 export default function Info({ args: [skillName] }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<InfoState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
 		async function loadInfo() {
@@ -225,7 +226,6 @@ export default function Info({ args: [skillName] }: Props) {
 				const info = await getLocalSkillInfo(installedSkill);
 				if (info) {
 					setState({ phase: "success", info });
-					exit();
 					return;
 				}
 			}
@@ -242,7 +242,6 @@ export default function Info({ args: [skillName] }: Props) {
 
 			if (remoteResult && "authRequired" in remoteResult) {
 				setState({ phase: "auth_required", message: remoteResult.message });
-				exit();
 				return;
 			}
 
@@ -251,8 +250,6 @@ export default function Info({ args: [skillName] }: Props) {
 			} else {
 				setState({ phase: "not_found", skillName });
 			}
-
-			exit();
 		}
 
 		loadInfo().catch((err) => {
@@ -261,119 +258,158 @@ export default function Info({ args: [skillName] }: Props) {
 				message:
 					err instanceof Error ? err.message : "Failed to load skill info",
 			});
-			exit();
 		});
-	}, [skillName, exit]);
+	}, [skillName]);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Initializing..." />;
+	// Add output item when state is final
+	useEffect(() => {
+		const isFinalState =
+			state.phase === "success" ||
+			state.phase === "not_found" ||
+			state.phase === "auth_required" ||
+			state.phase === "error";
 
-		case "auth_required":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">{state.message}</StatusMessage>
-				</Box>
-			);
+		if (isFinalState && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "loading":
-			return <Spinner text={`Loading info for "${skillName}"...`} />;
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
 
-		case "not_found":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">
-						Skill "{state.skillName}" not found
-					</StatusMessage>
-					<Box marginTop={1}>
-						<Text dimColor>
-							Try 'skilluse search {state.skillName}' to find available skills.
-						</Text>
+	const renderContent = () => {
+		switch (state.phase) {
+			case "auth_required":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">{state.message}</StatusMessage>
 					</Box>
-				</Box>
-			);
+				);
 
-		case "success": {
-			const { info } = state;
-			return (
-				<Box flexDirection="column">
-					<Box marginBottom={1}>
-						<Text color="cyan" bold>
-							{info.name}
-						</Text>
-						<Text> v{info.version}</Text>
-						{info.installed && <Text color="green"> (installed)</Text>}
-					</Box>
-
-					{info.description && (
-						<Box marginBottom={1}>
-							<Text>{info.description}</Text>
-						</Box>
-					)}
-
-					<Box flexDirection="column" marginLeft={2}>
-						{info.type && (
-							<Box>
-								<Text dimColor>Type: </Text>
-								<Text>{info.type}</Text>
-							</Box>
-						)}
-
-						{info.author && (
-							<Box>
-								<Text dimColor>Author: </Text>
-								<Text>{info.author}</Text>
-							</Box>
-						)}
-
-						<Box>
-							<Text dimColor>Source: </Text>
-							<Text>
-								{info.repo}/{info.repoPath}
-							</Text>
-						</Box>
-
-						{info.tags && info.tags.length > 0 && (
-							<Box>
-								<Text dimColor>Tags: </Text>
-								<Text>{info.tags.join(", ")}</Text>
-							</Box>
-						)}
-
-						{info.installed && info.scope && (
-							<Box>
-								<Text dimColor>Scope: </Text>
-								<Text>{info.scope}</Text>
-							</Box>
-						)}
-
-						{info.installed && info.installedPath && (
-							<Box>
-								<Text dimColor>Location: </Text>
-								<Text>{info.installedPath}</Text>
-							</Box>
-						)}
-
-						{info.installed && info.commitSha && (
-							<Box>
-								<Text dimColor>Commit: </Text>
-								<Text>{info.commitSha.substring(0, 7)}</Text>
-							</Box>
-						)}
-					</Box>
-
-					{!info.installed && (
+			case "not_found":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">
+							Skill "{state.skillName}" not found
+						</StatusMessage>
 						<Box marginTop={1}>
 							<Text dimColor>
-								Run 'skilluse install {info.name}' to install this skill.
+								Try 'skilluse search {state.skillName}' to find available skills.
 							</Text>
 						</Box>
-					)}
-				</Box>
-			);
-		}
+					</Box>
+				);
 
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+			case "success": {
+				const { info } = state;
+				return (
+					<Box flexDirection="column">
+						<Box marginBottom={1}>
+							<Text color="cyan" bold>
+								{info.name}
+							</Text>
+							<Text> v{info.version}</Text>
+							{info.installed && <Text color="green"> (installed)</Text>}
+						</Box>
+
+						{info.description && (
+							<Box marginBottom={1}>
+								<Text>{info.description}</Text>
+							</Box>
+						)}
+
+						<Box flexDirection="column" marginLeft={2}>
+							{info.type && (
+								<Box>
+									<Text dimColor>Type: </Text>
+									<Text>{info.type}</Text>
+								</Box>
+							)}
+
+							{info.author && (
+								<Box>
+									<Text dimColor>Author: </Text>
+									<Text>{info.author}</Text>
+								</Box>
+							)}
+
+							<Box>
+								<Text dimColor>Source: </Text>
+								<Text>
+									{info.repo}/{info.repoPath}
+								</Text>
+							</Box>
+
+							{info.tags && info.tags.length > 0 && (
+								<Box>
+									<Text dimColor>Tags: </Text>
+									<Text>{info.tags.join(", ")}</Text>
+								</Box>
+							)}
+
+							{info.installed && info.scope && (
+								<Box>
+									<Text dimColor>Scope: </Text>
+									<Text>{info.scope}</Text>
+								</Box>
+							)}
+
+							{info.installed && info.installedPath && (
+								<Box>
+									<Text dimColor>Location: </Text>
+									<Text>{info.installedPath}</Text>
+								</Box>
+							)}
+
+							{info.installed && info.commitSha && (
+								<Box>
+									<Text dimColor>Commit: </Text>
+									<Text>{info.commitSha.substring(0, 7)}</Text>
+								</Box>
+							)}
+						</Box>
+
+						{!info.installed && (
+							<Box marginTop={1}>
+								<Text dimColor>
+									Run 'skilluse install {info.name}' to install this skill.
+								</Text>
+							</Box>
+						)}
+					</Box>
+				);
+			}
+
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			{(state.phase === "checking" || state.phase === "loading") && (
+				<Spinner
+					text={
+						state.phase === "loading"
+							? `Loading info for "${skillName}"...`
+							: "Initializing..."
+					}
+				/>
+			)}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }

@@ -92,17 +92,22 @@ export default function Command() {
 | `list.tsx` | `list` | ✅ Fixed (v0.2.1) | `<Static>` pattern |
 | `repo/add.tsx` | `repo add` | ✅ Fixed (v0.3.1) | Separate exit useEffect |
 
-### Need to Fix (call `exit()` directly)
+### Recently Fixed
+
+| File | Command | Status | Method |
+|------|---------|--------|--------|
+| `repo/remove.tsx` | `repo remove` | ✅ Fixed | `<Static>` pattern |
+| `repo/edit.tsx` | `repo edit` | ✅ Fixed | `<Static>` pattern |
+| `search.tsx` | `search` | ✅ Fixed | `<Static>` pattern |
+| `info.tsx` | `info` | ✅ Fixed | `<Static>` pattern |
+| `install.tsx` | `install` | ✅ Fixed | Already had `<Static>` pattern |
+| `upgrade.tsx` | `upgrade` | ✅ Fixed | `<Static>` pattern |
+| `uninstall.tsx` | `uninstall` | ✅ Fixed | `<Static>` pattern |
+
+### Remaining (Low Priority)
 
 | File | Command | Priority |
 |------|---------|----------|
-| `repo/remove.tsx` | `repo remove` | High - shows only "Checking..." |
-| `repo/edit.tsx` | `repo edit` | High - shows only "Checking..." |
-| `search.tsx` | `search` | High - common command |
-| `info.tsx` | `info` | High - common command |
-| `install.tsx` | `install` | Medium - has multi-step UI |
-| `upgrade.tsx` | `upgrade` | Medium - has progress UI |
-| `uninstall.tsx` | `uninstall` | Medium - has confirmation |
 | `index.tsx` | status (no args) | Low - shows help instead |
 | `login.tsx` | `login` | Low - has interactive OAuth flow |
 

@@ -1,4 +1,4 @@
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
@@ -197,6 +197,7 @@ function filterSkills(
 export default function Search({ args: [keyword], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<SearchState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
 		async function search() {
@@ -221,7 +222,6 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 
 			if (reposToSearch.length === 0) {
 				setState({ phase: "no_repos" });
-				exit();
 				return;
 			}
 
@@ -239,7 +239,6 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 
 				if ("authRequired" in result) {
 					setState({ phase: "auth_required", message: result.message });
-					exit();
 					return;
 				}
 
@@ -250,7 +249,6 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 			const matchingSkills = filterSkills(allSkills, keyword);
 
 			setState({ phase: "success", skills: matchingSkills, keyword });
-			exit();
 		}
 
 		search().catch((err) => {
@@ -258,38 +256,70 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 				phase: "error",
 				message: err instanceof Error ? err.message : "Search failed",
 			});
-			exit();
 		});
-	}, [keyword, opts.all, exit]);
+	}, [keyword, opts.all]);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Initializing..." />;
+	// Add output item when state is final
+	useEffect(() => {
+		const isFinalState =
+			state.phase === "no_repos" ||
+			state.phase === "success" ||
+			state.phase === "auth_required" ||
+			state.phase === "error";
 
-		case "auth_required":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">{state.message}</StatusMessage>
-				</Box>
-			);
+		if (isFinalState && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "no_repos":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="warning">
-						No repositories configured
-					</StatusMessage>
-					<Text dimColor>
-						Run 'skilluse repo add owner/repo' to add a skill repository.
-					</Text>
-				</Box>
-			);
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
 
-		case "searching":
-			return <Spinner text={`Searching ${state.repo}...`} />;
+	const renderContent = () => {
+		switch (state.phase) {
+			case "auth_required":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">{state.message}</StatusMessage>
+					</Box>
+				);
 
-		case "success":
-			if (state.skills.length === 0) {
+			case "no_repos":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="warning">
+							No repositories configured
+						</StatusMessage>
+						<Text dimColor>
+							Run 'skilluse repo add owner/repo' to add a skill repository.
+						</Text>
+					</Box>
+				);
+
+			case "success":
+				if (state.skills.length === 0) {
+					return (
+						<Box flexDirection="column">
+							<Box marginBottom={1}>
+								<Text>Search results for "</Text>
+								<Text color="cyan">{state.keyword}</Text>
+								<Text>"</Text>
+							</Box>
+							<StatusMessage type="warning">No skills found</StatusMessage>
+							<Box marginTop={1}>
+								<Text dimColor>
+									Try a different search term or check your configured repos with
+									'skilluse repo list'.
+								</Text>
+							</Box>
+						</Box>
+					);
+				}
+
 				return (
 					<Box flexDirection="column">
 						<Box marginBottom={1}>
@@ -297,59 +327,66 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 							<Text color="cyan">{state.keyword}</Text>
 							<Text>"</Text>
 						</Box>
-						<StatusMessage type="warning">No skills found</StatusMessage>
+
+						{state.skills.map((skill) => (
+							<Box
+								key={`${skill.repo}/${skill.path}`}
+								flexDirection="column"
+								marginBottom={1}
+							>
+								<Box>
+									<Text color="cyan" bold>
+										{skill.name}
+									</Text>
+									{skill.version && <Text dimColor> v{skill.version}</Text>}
+								</Box>
+								<Box marginLeft={2}>
+									<Text>{skill.description}</Text>
+								</Box>
+								<Box marginLeft={2}>
+									<Text dimColor>
+										{skill.repo}
+										{skill.type && ` • ${skill.type}`}
+									</Text>
+								</Box>
+							</Box>
+						))}
+
 						<Box marginTop={1}>
 							<Text dimColor>
-								Try a different search term or check your configured repos with
-								'skilluse repo list'.
+								{state.skills.length} skill{state.skills.length !== 1 ? "s" : ""}{" "}
+								found
 							</Text>
 						</Box>
 					</Box>
 				);
-			}
 
-			return (
-				<Box flexDirection="column">
-					<Box marginBottom={1}>
-						<Text>Search results for "</Text>
-						<Text color="cyan">{state.keyword}</Text>
-						<Text>"</Text>
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			{(state.phase === "checking" || state.phase === "searching") && (
+				<Spinner
+					text={
+						state.phase === "searching"
+							? `Searching ${state.repo}...`
+							: "Initializing..."
+					}
+				/>
+			)}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
 					</Box>
-
-					{state.skills.map((skill) => (
-						<Box
-							key={`${skill.repo}/${skill.path}`}
-							flexDirection="column"
-							marginBottom={1}
-						>
-							<Box>
-								<Text color="cyan" bold>
-									{skill.name}
-								</Text>
-								{skill.version && <Text dimColor> v{skill.version}</Text>}
-							</Box>
-							<Box marginLeft={2}>
-								<Text>{skill.description}</Text>
-							</Box>
-							<Box marginLeft={2}>
-								<Text dimColor>
-									{skill.repo}
-									{skill.type && ` • ${skill.type}`}
-								</Text>
-							</Box>
-						</Box>
-					))}
-
-					<Box marginTop={1}>
-						<Text dimColor>
-							{state.skills.length} skill{state.skills.length !== 1 ? "s" : ""}{" "}
-							found
-						</Text>
-					</Box>
-				</Box>
-			);
-
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+				)}
+			</Static>
+		</>
+	);
 }

@@ -1,4 +1,4 @@
-import { Box, Text, useApp, useInput } from "ink";
+import { Box, Static, Text, useApp, useInput } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../../components/index.js";
@@ -33,6 +33,8 @@ type EditState =
 export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<EditState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
+	const [cancelled, setCancelled] = useState(false);
 
 	useEffect(() => {
 		function checkAndEdit() {
@@ -41,7 +43,6 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 			const existingConfig = config.repos.find((r) => r.repo === repoArg);
 			if (!existingConfig) {
 				setState({ phase: "not_found", repo: repoArg });
-				exit();
 				return;
 			}
 
@@ -67,7 +68,6 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 							? updatedConfig.paths.join(", ")
 							: "(all paths)",
 				});
-				exit();
 				return;
 			}
 
@@ -82,7 +82,7 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 		}
 
 		checkAndEdit();
-	}, [repoArg, opts.path, opts.branch, exit]);
+	}, [repoArg, opts.path, opts.branch]);
 
 	// Handle input for path
 	useInput(
@@ -102,7 +102,6 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 					repo: state.repo,
 					path: state.currentPath || "(all paths)",
 				});
-				exit();
 				return;
 			}
 
@@ -115,7 +114,7 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 			}
 
 			if (key.escape) {
-				exit();
+				setCancelled(true);
 				return;
 			}
 
@@ -130,24 +129,64 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 		{ isActive: state.phase === "input_path" },
 	);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Checking..." />;
+	// Add output item when state is final
+	useEffect(() => {
+		const isFinalState =
+			state.phase === "not_found" ||
+			state.phase === "success" ||
+			state.phase === "error" ||
+			cancelled;
 
-		case "not_found":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">
-						Repository {state.repo} not found in config
-					</StatusMessage>
-					<Text dimColor>
-						Run 'skilluse repo add {state.repo}' to add it first.
-					</Text>
-				</Box>
-			);
+		if (isFinalState && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length, cancelled]);
 
-		case "input_path":
-			return (
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
+
+	const renderContent = () => {
+		if (cancelled) {
+			return <Text dimColor>Edit cancelled</Text>;
+		}
+
+		switch (state.phase) {
+			case "not_found":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">
+							Repository {state.repo} not found in config
+						</StatusMessage>
+						<Text dimColor>
+							Run 'skilluse repo add {state.repo}' to add it first.
+						</Text>
+					</Box>
+				);
+
+			case "success":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="success">Updated {state.repo}</StatusMessage>
+						<Text dimColor>Path: {state.path}</Text>
+					</Box>
+				);
+
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			{state.phase === "checking" && <Spinner text="Checking..." />}
+			{state.phase === "input_path" && !cancelled && (
 				<Box flexDirection="column">
 					<Text>
 						Editing repository: <Text color="cyan">{state.repo}</Text>
@@ -164,17 +203,14 @@ export default function RepoEdit({ args: [repoArg], options: opts }: Props) {
 						<Text dimColor>Press Enter to confirm, Esc to cancel</Text>
 					</Box>
 				</Box>
-			);
-
-		case "success":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="success">Updated {state.repo}</StatusMessage>
-					<Text dimColor>Path: {state.path}</Text>
-				</Box>
-			);
-
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+			)}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }

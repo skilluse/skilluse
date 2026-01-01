@@ -102,8 +102,8 @@
         "Verify success/error message is displayed (not just 'Checking...')",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "HIGH PRIORITY - currently shows only 'Checking...' then exits"
+      "passes": true,
+      "notes": "Fixed with Static pattern"
     },
     {
       "id": "F009",
@@ -114,8 +114,8 @@
         "Verify edit result message is displayed",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "HIGH PRIORITY - currently shows only 'Checking...' then exits"
+      "passes": true,
+      "notes": "Fixed with Static pattern"
     },
     {
       "id": "F010",
@@ -126,8 +126,8 @@
         "Verify search results are displayed",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "HIGH PRIORITY - common command"
+      "passes": true,
+      "notes": "Fixed with Static pattern"
     },
     {
       "id": "F011",
@@ -138,8 +138,8 @@
         "Verify skill info is displayed",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "HIGH PRIORITY - common command"
+      "passes": true,
+      "notes": "Fixed with Static pattern"
     },
     {
       "id": "F012",
@@ -150,8 +150,8 @@
         "Verify installation progress and success message are displayed",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "MEDIUM PRIORITY - has multi-step UI"
+      "passes": true,
+      "notes": "Already had Static pattern implemented"
     },
     {
       "id": "F013",
@@ -162,8 +162,8 @@
         "Verify upgrade progress and result are displayed",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "MEDIUM PRIORITY - has progress UI"
+      "passes": true,
+      "notes": "Fixed with Static pattern"
     },
     {
       "id": "F014",
@@ -174,8 +174,8 @@
         "Verify uninstall result is displayed",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "MEDIUM PRIORITY - has confirmation"
+      "passes": true,
+      "notes": "Fixed with Static pattern"
     },
     {
       "id": "F015",
@@ -199,8 +199,8 @@
         "Verify success message is displayed",
         "Verify output persists after exit"
       ],
-      "passes": false,
-      "notes": "LOW PRIORITY - has interactive selection"
+      "passes": true,
+      "notes": "Fixed with separate exit useEffect pattern"
     },
     {
       "id": "F017",
@@ -225,8 +225,8 @@
         "Verify spinner is replaced by final output",
         "Verify final output persists after exit"
       ],
-      "passes": false,
-      "notes": "Test after fixing all commands"
+      "passes": true,
+      "notes": "All fixed commands now show spinner during loading and preserve output on exit"
     }
   ],
   "metadata": {

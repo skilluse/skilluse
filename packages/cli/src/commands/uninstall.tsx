@@ -1,5 +1,5 @@
 import { rm } from "node:fs/promises";
-import { Box, Text, useApp, useInput } from "ink";
+import { Box, Static, Text, useApp, useInput } from "ink";
 import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
@@ -74,30 +74,26 @@ function ConfirmPrompt({
 export default function Uninstall({ args: [skillName], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<UninstallState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
-	const performUninstall = useCallback(
-		async (skill: InstalledSkill) => {
-			setState({ phase: "uninstalling", skill });
+	const performUninstall = useCallback(async (skill: InstalledSkill) => {
+		setState({ phase: "uninstalling", skill });
 
-			try {
-				// Remove skill directory
-				await rm(skill.installedPath, { recursive: true, force: true });
+		try {
+			// Remove skill directory
+			await rm(skill.installedPath, { recursive: true, force: true });
 
-				// Remove from config
-				removeInstalledSkill(skill.name);
+			// Remove from config
+			removeInstalledSkill(skill.name);
 
-				setState({ phase: "success", skill });
-			} catch (err) {
-				setState({
-					phase: "error",
-					message: err instanceof Error ? err.message : "Uninstall failed",
-				});
-			}
-
-			exit();
-		},
-		[exit],
-	);
+			setState({ phase: "success", skill });
+		} catch (err) {
+			setState({
+				phase: "error",
+				message: err instanceof Error ? err.message : "Uninstall failed",
+			});
+		}
+	}, []);
 
 	useEffect(() => {
 		const config = getConfig();
@@ -114,7 +110,6 @@ export default function Uninstall({ args: [skillName], options: opts }: Props) {
 
 		if (!skill) {
 			setState({ phase: "not_found", skillName, agentName });
-			exit();
 			return;
 		}
 
@@ -124,7 +119,27 @@ export default function Uninstall({ args: [skillName], options: opts }: Props) {
 		} else {
 			setState({ phase: "confirming", skill });
 		}
-	}, [skillName, opts.force, exit, performUninstall]);
+	}, [skillName, opts.force, performUninstall]);
+
+	// Add output item when state is final
+	useEffect(() => {
+		const isFinalState =
+			state.phase === "not_found" ||
+			state.phase === "success" ||
+			state.phase === "cancelled" ||
+			state.phase === "error";
+
+		if (isFinalState && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
+
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
 
 	function handleConfirm() {
 		if (state.phase === "confirming") {
@@ -134,53 +149,65 @@ export default function Uninstall({ args: [skillName], options: opts }: Props) {
 
 	function handleCancel() {
 		setState({ phase: "cancelled" });
-		exit();
 	}
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Loading..." />;
+	const renderContent = () => {
+		switch (state.phase) {
+			case "not_found":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">
+							Skill "{state.skillName}" is not installed for {state.agentName}
+						</StatusMessage>
+						<Box marginTop={1}>
+							<Text dimColor>Run 'skilluse list' to see installed skills.</Text>
+						</Box>
+						<Box>
+							<Text dimColor>
+								Run 'skilluse list --all' to see skills for all agents.
+							</Text>
+						</Box>
+					</Box>
+				);
 
-		case "not_found":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">
-						Skill "{state.skillName}" is not installed for {state.agentName}
+			case "success":
+				return (
+					<StatusMessage type="success">
+						Uninstalled "{state.skill.name}"
 					</StatusMessage>
-					<Box marginTop={1}>
-						<Text dimColor>Run 'skilluse list' to see installed skills.</Text>
-					</Box>
-					<Box>
-						<Text dimColor>
-							Run 'skilluse list --all' to see skills for all agents.
-						</Text>
-					</Box>
-				</Box>
-			);
+				);
 
-		case "confirming":
-			return (
+			case "cancelled":
+				return <StatusMessage type="warning">Uninstall cancelled</StatusMessage>;
+
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			{state.phase === "checking" && <Spinner text="Loading..." />}
+			{state.phase === "confirming" && (
 				<ConfirmPrompt
 					skill={state.skill}
 					onConfirm={handleConfirm}
 					onCancel={handleCancel}
 				/>
-			);
-
-		case "uninstalling":
-			return <Spinner text={`Uninstalling ${state.skill.name}...`} />;
-
-		case "success":
-			return (
-				<StatusMessage type="success">
-					Uninstalled "{state.skill.name}"
-				</StatusMessage>
-			);
-
-		case "cancelled":
-			return <StatusMessage type="warning">Uninstall cancelled</StatusMessage>;
-
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+			)}
+			{state.phase === "uninstalling" && (
+				<Spinner text={`Uninstalling ${state.skill.name}...`} />
+			)}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }

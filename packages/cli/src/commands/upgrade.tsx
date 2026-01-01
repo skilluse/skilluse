@@ -1,6 +1,6 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { Box, Text, useApp } from "ink";
+import { Box, Static, Text, useApp } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { ProgressBar, Spinner, StatusMessage } from "../components/index.js";
@@ -215,6 +215,7 @@ async function downloadSkillFiles(
 export default function Upgrade({ args: [skillName] }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<UpgradeState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
 		async function upgrade() {
@@ -229,7 +230,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 				);
 				if (!skill) {
 					setState({ phase: "not_found", skillName });
-					exit();
 					return;
 				}
 				skillsToCheck = [skill];
@@ -239,7 +239,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 
 			if (skillsToCheck.length === 0) {
 				setState({ phase: "no_updates" });
-				exit();
 				return;
 			}
 
@@ -265,7 +264,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 
 				if (result && "authRequired" in result) {
 					setState({ phase: "auth_required", message: result.message });
-					exit();
 					return;
 				}
 
@@ -276,7 +274,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 
 			if (upgrades.length === 0) {
 				setState({ phase: "no_updates" });
-				exit();
 				return;
 			}
 
@@ -310,7 +307,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 							phase: "auth_required",
 							message: downloadResult.message,
 						});
-						exit();
 						return;
 					}
 
@@ -333,8 +329,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 			} else {
 				setState({ phase: "error", message: "All upgrades failed" });
 			}
-
-			exit();
 		}
 
 		upgrade().catch((err) => {
@@ -342,47 +336,89 @@ export default function Upgrade({ args: [skillName] }: Props) {
 				phase: "error",
 				message: err instanceof Error ? err.message : "Upgrade failed",
 			});
-			exit();
 		});
-	}, [skillName, exit]);
+	}, [skillName]);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Initializing..." />;
+	// Add output item when state is final
+	useEffect(() => {
+		const isFinalState =
+			state.phase === "not_found" ||
+			state.phase === "no_updates" ||
+			state.phase === "success" ||
+			state.phase === "auth_required" ||
+			state.phase === "error";
 
-		case "auth_required":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">{state.message}</StatusMessage>
-				</Box>
-			);
+		if (isFinalState && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "not_found":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">
-						Skill "{state.skillName}" is not installed
-					</StatusMessage>
-					<Box marginTop={1}>
-						<Text dimColor>Run 'skilluse list' to see installed skills.</Text>
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
+
+	const renderContent = () => {
+		switch (state.phase) {
+			case "auth_required":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">{state.message}</StatusMessage>
 					</Box>
-				</Box>
-			);
+				);
 
-		case "checking_updates":
-			return (
+			case "not_found":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">
+							Skill "{state.skillName}" is not installed
+						</StatusMessage>
+						<Box marginTop={1}>
+							<Text dimColor>Run 'skilluse list' to see installed skills.</Text>
+						</Box>
+					</Box>
+				);
+
+			case "no_updates":
+				return (
+					<StatusMessage type="success">All skills are up to date</StatusMessage>
+				);
+
+			case "success":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="success">
+							Upgraded {state.upgraded.length} skill(s)
+						</StatusMessage>
+						<Box flexDirection="column" marginLeft={2}>
+							{state.upgraded.map((name) => (
+								<Text key={name} dimColor>
+									{name}
+								</Text>
+							))}
+						</Box>
+					</Box>
+				);
+
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			{state.phase === "checking" && <Spinner text="Initializing..." />}
+			{state.phase === "checking_updates" && (
 				<Spinner
 					text={`Checking for updates (${state.current}/${state.total})...`}
 				/>
-			);
-
-		case "no_updates":
-			return (
-				<StatusMessage type="success">All skills are up to date</StatusMessage>
-			);
-
-		case "upgrading":
-			return (
+			)}
+			{state.phase === "upgrading" && (
 				<Box flexDirection="column">
 					<Box marginBottom={1}>
 						<Text bold>Upgrading skills...</Text>
@@ -405,25 +441,14 @@ export default function Upgrade({ args: [skillName] }: Props) {
 						<ProgressBar percent={state.progress} width={30} />
 					</Box>
 				</Box>
-			);
-
-		case "success":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="success">
-						Upgraded {state.upgraded.length} skill(s)
-					</StatusMessage>
-					<Box flexDirection="column" marginLeft={2}>
-						{state.upgraded.map((name) => (
-							<Text key={name} dimColor>
-								{name}
-							</Text>
-						))}
+			)}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
 					</Box>
-				</Box>
-			);
-
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+				)}
+			</Static>
+		</>
+	);
 }

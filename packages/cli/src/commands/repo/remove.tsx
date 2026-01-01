@@ -1,4 +1,4 @@
-import { Box, Text, useApp, useInput } from "ink";
+import { Box, Static, Text, useApp, useInput } from "ink";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../../components/index.js";
@@ -28,6 +28,7 @@ type RemoveState =
 export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<RemoveState>({ phase: "checking" });
+	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
 	useEffect(() => {
 		function checkAndRemove() {
@@ -35,7 +36,6 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
 			const config = getConfig();
 			if (!config.repos.find((r) => r.repo === repoArg)) {
 				setState({ phase: "not_found", repo: repoArg });
-				exit();
 				return;
 			}
 
@@ -43,7 +43,6 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
 			if (opts.force) {
 				removeRepo(repoArg);
 				setState({ phase: "success", repo: repoArg });
-				exit();
 				return;
 			}
 
@@ -52,7 +51,7 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
 		}
 
 		checkAndRemove();
-	}, [repoArg, opts.force, exit]);
+	}, [repoArg, opts.force]);
 
 	// Handle confirmation input
 	useInput(
@@ -62,35 +61,67 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
 			if (input.toLowerCase() === "y" || key.return) {
 				removeRepo(state.repo);
 				setState({ phase: "success", repo: state.repo });
-				exit();
 				return;
 			}
 
 			if (input.toLowerCase() === "n" || key.escape) {
 				setState({ phase: "cancelled" });
-				exit();
 				return;
 			}
 		},
 		{ isActive: state.phase === "confirm" },
 	);
 
-	switch (state.phase) {
-		case "checking":
-			return <Spinner text="Checking..." />;
+	// Add output item when state is final
+	useEffect(() => {
+		const isFinalState =
+			state.phase === "not_found" ||
+			state.phase === "success" ||
+			state.phase === "cancelled" ||
+			state.phase === "error";
 
-		case "not_found":
-			return (
-				<Box flexDirection="column">
-					<StatusMessage type="error">
-						Repository '{state.repo}' not found in config
-					</StatusMessage>
-					<Text dimColor>Run 'skilluse repo list' to see configured repos</Text>
-				</Box>
-			);
+		if (isFinalState && outputItems.length === 0) {
+			setOutputItems([{ id: "output" }]);
+		}
+	}, [state.phase, outputItems.length]);
 
-		case "confirm":
-			return (
+	// Exit after output item is rendered
+	useEffect(() => {
+		if (outputItems.length > 0) {
+			process.nextTick(() => exit());
+		}
+	}, [outputItems.length, exit]);
+
+	const renderContent = () => {
+		switch (state.phase) {
+			case "not_found":
+				return (
+					<Box flexDirection="column">
+						<StatusMessage type="error">
+							Repository '{state.repo}' not found in config
+						</StatusMessage>
+						<Text dimColor>Run 'skilluse repo list' to see configured repos</Text>
+					</Box>
+				);
+
+			case "success":
+				return <StatusMessage type="success">Removed {state.repo}</StatusMessage>;
+
+			case "cancelled":
+				return <Text dimColor>Removal cancelled</Text>;
+
+			case "error":
+				return <StatusMessage type="error">{state.message}</StatusMessage>;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			{state.phase === "checking" && <Spinner text="Checking..." />}
+			{state.phase === "confirm" && (
 				<Box flexDirection="column">
 					<Text>
 						Remove repository <Text color="cyan">{state.repo}</Text>?
@@ -99,15 +130,14 @@ export default function RepoRemove({ args: [repoArg], options: opts }: Props) {
 						<Text dimColor>Press Y to confirm, N to cancel</Text>
 					</Box>
 				</Box>
-			);
-
-		case "success":
-			return <StatusMessage type="success">Removed {state.repo}</StatusMessage>;
-
-		case "cancelled":
-			return <Text dimColor>Removal cancelled</Text>;
-
-		case "error":
-			return <StatusMessage type="error">{state.message}</StatusMessage>;
-	}
+			)}
+			<Static items={outputItems}>
+				{(item) => (
+					<Box key={item.id} flexDirection="column">
+						{renderContent()}
+					</Box>
+				)}
+			</Static>
+		</>
+	);
 }
