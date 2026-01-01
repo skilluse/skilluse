@@ -1,6 +1,6 @@
 {
 	"name": "skilluse",
-	"version": "0.4.1",
+	"version": "0.5.0",
 	"description": "CLI tool for managing and installing AI Coding Agent Skills",
 	"main": "dist/cli.js",
 	"bin": {
