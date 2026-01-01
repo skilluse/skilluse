@@ -11,35 +11,19 @@ Install, update, and manage AI agent skills.
 Install a skill from a configured repository or GitHub URL.
 
 ```bash
-skilluse install <skill>
-skilluse install <github-url>
+# Install from configured repo
+skilluse repo add owner/skill-repo
+skilluse install commit
+
+# Install from GitHub URL
+skilluse install https://github.com/skilluse/skilluse/tree/main/.claude/skills/commit
 ```
-
-### Arguments
-
-| Argument | Description |
-|----------|-------------|
-| `skill` | Skill name from configured repos |
-| `github-url` | Full GitHub URL to skill directory |
 
 ### Options
 
 | Option | Description |
 |--------|-------------|
 | `--global` | Install to global skills directory (~/.claude/skills) |
-
-### Example
-
-```bash
-# Install from configured repo
-skilluse install commit
-
-# Install from GitHub URL
-skilluse install https://github.com/owner/repo/tree/main/skills/commit
-
-# Install globally
-skilluse install commit --global
-```
 
 ## uninstall
 
