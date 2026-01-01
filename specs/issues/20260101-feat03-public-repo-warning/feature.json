@@ -1,0 +1,80 @@
+{
+  "issue": "feat03-public-repo-warning",
+  "title": "Security Warning for Public Repository Skills",
+  "epic": "cli",
+  "priority": 2,
+  "status": "completed",
+  "created_at": "2026-01-01",
+  "completed_at": "2026-01-01",
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "isPublicRepo() function detects public repositories",
+      "steps": [
+        "Step 1: Call isPublicRepo with a known public repo",
+        "Step 2: Verify it returns true",
+        "Step 3: Call isPublicRepo with a private repo",
+        "Step 4: Verify it returns false"
+      ],
+      "passes": true,
+      "notes": "Implemented in github.ts"
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Security warning shown for public repo installations",
+      "steps": [
+        "Step 1: Run skilluse install skill-name (from public repo)",
+        "Step 2: Verify security warning is displayed",
+        "Step 3: Verify warning shows skill name and repo",
+        "Step 4: Verify Y/N prompt is shown"
+      ],
+      "passes": true,
+      "notes": "SecurityWarningPrompt component added"
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "User can confirm installation with Y",
+      "steps": [
+        "Step 1: See security warning",
+        "Step 2: Press Y or Enter",
+        "Step 3: Verify installation proceeds"
+      ],
+      "passes": true,
+      "notes": "useInput handles Y and Enter keys"
+    },
+    {
+      "id": "F004",
+      "category": "functional",
+      "description": "User can cancel installation with N",
+      "steps": [
+        "Step 1: See security warning",
+        "Step 2: Press N or Escape",
+        "Step 3: Verify installation is cancelled"
+      ],
+      "passes": true,
+      "notes": "useInput handles N and Escape keys"
+    },
+    {
+      "id": "F005",
+      "category": "functional",
+      "description": "--force flag skips security warning",
+      "steps": [
+        "Step 1: Run skilluse install skill-name --force",
+        "Step 2: Verify no warning is shown",
+        "Step 3: Verify installation proceeds directly"
+      ],
+      "passes": true,
+      "notes": "opts.force check added"
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 1,
+    "blockers": []
+  }
+}

@@ -54,6 +54,36 @@ export function isRateLimited(response: Response): boolean {
 }
 
 /**
+ * Check if a repository is public
+ * Returns true if public, false if private or unknown
+ */
+export async function isPublicRepo(
+	owner: string,
+	repo: string,
+	token?: string,
+): Promise<boolean> {
+	try {
+		const response = await fetch(
+			`https://api.github.com/repos/${owner}/${repo}`,
+			{
+				headers: buildGitHubHeaders(token),
+			},
+		);
+
+		if (!response.ok) {
+			// If we can't access, assume private (safer default)
+			return false;
+		}
+
+		const data = (await response.json()) as { private: boolean };
+		return !data.private;
+	} catch {
+		// On error, assume private (safer default)
+		return false;
+	}
+}
+
+/**
  * Get a user-friendly error message for GitHub API errors
  */
 export function getGitHubErrorMessage(response: Response): string {

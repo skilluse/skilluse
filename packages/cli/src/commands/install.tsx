@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { Box, Static, Text, useApp } from "ink";
-import { useEffect, useState } from "react";
+import { Box, Static, Text, useApp, useInput } from "ink";
+import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { ProgressBar, Spinner, StatusMessage } from "../components/index.js";
 import {
@@ -16,6 +16,7 @@ import {
 	getSkillsPath,
 	type InstalledSkill,
 	isAuthRequired,
+	isPublicRepo,
 	type RepoConfig,
 } from "../services/index.js";
 
@@ -30,6 +31,10 @@ export const options = z.object({
 		.string()
 		.optional()
 		.describe("Override current agent (e.g., cursor, claude)"),
+	force: z
+		.boolean()
+		.default(false)
+		.describe("Skip security warning for public repos"),
 });
 
 interface Props {
@@ -63,6 +68,15 @@ type InstallState =
 			sources: Array<{ repo: string; path: string }>;
 	  }
 	| {
+			phase: "warning";
+			skill: SkillMetadata;
+			commitSha: string;
+			scope: "local" | "global";
+			agentId: string;
+			branch: string;
+			source: InstallSource;
+	  }
+	| {
 			phase: "installing";
 			skill: SkillMetadata;
 			scope: "local" | "global";
@@ -70,6 +84,7 @@ type InstallState =
 			progress: number;
 	  }
 	| { phase: "success"; skill: SkillMetadata; installedPath: string }
+	| { phase: "cancelled" }
 	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
 
@@ -81,7 +96,75 @@ const FINAL_PHASES = [
 	"no_repos",
 	"not_found",
 	"conflict",
+	"cancelled",
 ];
+
+/**
+ * Security warning prompt for public repo installations
+ */
+function SecurityWarningPrompt({
+	skill,
+	onConfirm,
+	onCancel,
+}: {
+	skill: SkillMetadata;
+	onConfirm: () => void;
+	onCancel: () => void;
+}) {
+	useInput((input, key) => {
+		if (input.toLowerCase() === "y" || key.return) {
+			onConfirm();
+		} else if (input.toLowerCase() === "n" || key.escape) {
+			onCancel();
+		}
+	});
+
+	return (
+		<Box flexDirection="column" borderStyle="round" paddingX={1}>
+			<Box marginBottom={1}>
+				<Text color="yellow" bold>
+					Security Warning
+				</Text>
+			</Box>
+			<Box flexDirection="column" marginBottom={1}>
+				<Text>
+					You are about to install{" "}
+					<Text color="cyan" bold>
+						{skill.name}
+					</Text>{" "}
+					from a <Text color="yellow">public repository</Text>:
+				</Text>
+				<Box marginLeft={2} marginTop={1}>
+					<Text dimColor>{skill.repo}</Text>
+				</Box>
+			</Box>
+			<Box flexDirection="column" marginBottom={1}>
+				<Text>
+					Skills can execute arbitrary code. Please review the skill content
+				</Text>
+				<Text>
+					at{" "}
+					<Text color="blue" underline>
+						https://github.com/{skill.repo}
+					</Text>{" "}
+					before proceeding.
+				</Text>
+			</Box>
+			<Box marginBottom={1}>
+				<Text dimColor>
+					Consider installing from your own private repo for better security.
+				</Text>
+			</Box>
+			<Box>
+				<Text dimColor>Press </Text>
+				<Text color="green">Y</Text>
+				<Text dimColor> to continue, </Text>
+				<Text color="red">N</Text>
+				<Text dimColor> to cancel</Text>
+			</Box>
+		</Box>
+	);
+}
 
 /**
  * Parse YAML frontmatter from SKILL.md content
@@ -492,6 +575,28 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				}
 
 				const { skill, commitSha } = result;
+
+				// Check if this is a public repo and show security warning
+				if (!opts.force) {
+					const isPublic = await isPublicRepo(
+						source.owner,
+						source.repo,
+						token,
+					);
+					if (isPublic) {
+						setState({
+							phase: "warning",
+							skill,
+							commitSha,
+							scope,
+							agentId,
+							branch: source.branch,
+							source,
+						});
+						return;
+					}
+				}
+
 				const baseDir = getSkillsPath(agentId, scope);
 				const installPath = join(baseDir, skill.name);
 
@@ -615,6 +720,28 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 			// Single match - proceed with installation
 			const { skill, commitSha } = results[0];
 
+			// Get branch from repo config
+			const repoConfig = config.repos.find((r) => r.repo === skill.repo);
+			const branch = repoConfig?.branch || "main";
+
+			// Check if this is a public repo and show security warning
+			if (!opts.force) {
+				const [owner, repo] = skill.repo.split("/");
+				const isPublic = await isPublicRepo(owner, repo, token);
+				if (isPublic) {
+					setState({
+						phase: "warning",
+						skill,
+						commitSha,
+						scope,
+						agentId,
+						branch,
+						source,
+					});
+					return;
+				}
+			}
+
 			// Determine install path using agent's path
 			const baseDir = getSkillsPath(agentId, scope);
 			const installPath = join(baseDir, skill.name);
@@ -639,9 +766,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 			});
 
 			try {
-				// Get branch from repo config
-				const repoConfig = config.repos.find((r) => r.repo === skill.repo);
-				const branch = repoConfig?.branch || "main";
 
 				// Download files
 				const downloadResult = await downloadSkillFiles(
@@ -723,7 +847,113 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				message: err instanceof Error ? err.message : "Installation failed",
 			});
 		});
-	}, [skillName, opts.global, opts.agent]);
+	}, [skillName, opts.global, opts.agent, opts.force]);
+
+	// Perform installation after user confirms security warning
+	const performInstall = useCallback(async () => {
+		if (state.phase !== "warning") return;
+
+		const { skill, commitSha, scope, agentId, branch, source } = state;
+		const agent = getAgent(agentId);
+		if (!agent) {
+			setState({ phase: "error", message: `Unknown agent: ${agentId}` });
+			return;
+		}
+
+		const credentials = await getCredentials();
+		const token = credentials?.token;
+
+		const baseDir = getSkillsPath(agentId, scope);
+		const installPath = join(baseDir, skill.name);
+
+		const steps: InstallStep[] = [
+			{ label: "Fetching skill metadata", status: "done" },
+			{ label: "Downloading files", status: "in_progress" },
+			{
+				label: `Installing to ${agent.localPath}/${skill.name}`,
+				status: "pending",
+			},
+			{ label: "Verifying installation", status: "pending" },
+		];
+
+		setState({
+			phase: "installing",
+			skill,
+			scope,
+			steps,
+			progress: 25,
+		});
+
+		try {
+			const skillPath =
+				source.type === "github" ? source.path || "" : skill.path;
+			const repoName =
+				source.type === "github"
+					? `${source.owner}/${source.repo}`
+					: skill.repo;
+
+			const downloadResult = await downloadSkillFiles(
+				token,
+				repoName,
+				skillPath,
+				branch,
+				installPath,
+				(downloaded, total) => {
+					const downloadProgress = 25 + (downloaded / total) * 50;
+					setState((prev) => {
+						if (prev.phase !== "installing") return prev;
+						return { ...prev, progress: Math.round(downloadProgress) };
+					});
+				},
+			);
+
+			if (downloadResult && "authRequired" in downloadResult) {
+				setState({ phase: "auth_required", message: downloadResult.message });
+				return;
+			}
+
+			steps[1].status = "done";
+			steps[2].status = "in_progress";
+			setState((prev) => {
+				if (prev.phase !== "installing") return prev;
+				return { ...prev, steps: [...steps], progress: 85 };
+			});
+
+			const installedSkill: InstalledSkill = {
+				name: skill.name,
+				repo: skill.repo,
+				repoPath: skill.path,
+				commitSha,
+				version: skill.version || "1.0.0",
+				type: skill.type || "skill",
+				installedPath: installPath,
+				scope,
+				agent: agentId,
+			};
+			addInstalledSkill(installedSkill);
+
+			steps[2].status = "done";
+			steps[3].status = "done";
+			setState({
+				phase: "success",
+				skill,
+				installedPath: installPath,
+			});
+		} catch (err) {
+			setState({
+				phase: "error",
+				message: err instanceof Error ? err.message : "Installation failed",
+			});
+		}
+	}, [state]);
+
+	function handleConfirm() {
+		performInstall();
+	}
+
+	function handleCancel() {
+		setState({ phase: "cancelled" });
+	}
 
 	// Add output item when entering a final phase
 	useEffect(() => {
@@ -746,6 +976,16 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 
 	if (state.phase === "searching") {
 		return <Spinner text={`Searching ${state.repo}...`} />;
+	}
+
+	if (state.phase === "warning") {
+		return (
+			<SecurityWarningPrompt
+				skill={state.skill}
+				onConfirm={handleConfirm}
+				onCancel={handleCancel}
+			/>
+		);
 	}
 
 	if (state.phase === "installing") {
@@ -840,6 +1080,11 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 							<Text dimColor>Location: {state.installedPath}</Text>
 						</Box>
 					</>
+				);
+
+			case "cancelled":
+				return (
+					<StatusMessage type="warning">Installation cancelled</StatusMessage>
 				);
 
 			case "error":

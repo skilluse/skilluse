@@ -72,5 +72,6 @@ export {
 	buildGitHubRawHeaders,
 	getGitHubErrorMessage,
 	isAuthRequired,
+	isPublicRepo,
 	isRateLimited,
 } from "./github.js";
