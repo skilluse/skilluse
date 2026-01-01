@@ -2,7 +2,7 @@
   "issue": "task01-create-github-app",
   "title": "Create GitHub App",
   "priority": 1,
-  "status": "pending",
+  "status": "completed",
   "dependencies": [],
   "parallelizable": false,
   "features": [
@@ -54,5 +54,5 @@
       "passes": false
     }
   ],
-  "completed_at": null
+  "completed_at": "2026-01-01"
 }

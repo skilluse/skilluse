@@ -2,9 +2,9 @@
   "issue": "npm-first-release",
   "title": "First NPM Release - skilluse CLI",
   "priority": 1,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2025-12-29",
-  "completed_at": null,
+  "completed_at": "2026-01-01",
   "dependencies": ["build01-bun-release"],
   "parallelizable": false,
   "features": [

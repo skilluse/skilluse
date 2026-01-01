@@ -2,7 +2,7 @@
   "issue": "web12-docs-typography",
   "title": "Docs Typography & UI Refactor",
   "priority": 2,
-  "status": "in-progress",
+  "status": "completed",
   "dependencies": ["web11-blog-typography"],
   "parallelizable": true,
   "features": [
@@ -16,7 +16,8 @@
         "Verify h2 has bottom border separator",
         "Compare with Blog page headings for consistency"
       ],
-      "passes": false
+      "passes": true,
+      "notes": "Fixed: h1-h6 defined in mdx-components.tsx with proper hierarchy"
     },
     {
       "id": "F002",
@@ -41,7 +42,8 @@
         "Verify inline code uses monospace font",
         "Verify proper padding and rounded corners"
       ],
-      "passes": false
+      "passes": true,
+      "notes": "Fixed: code component in mdx-components.tsx with bg-foreground/10 rounded font-mono"
     },
     {
       "id": "F004",
@@ -53,7 +55,8 @@
         "Verify ordered lists have muted number markers",
         "Verify proper spacing between list items"
       ],
-      "passes": false
+      "passes": true,
+      "notes": "Fixed: ul/ol in mdx-components.tsx with list-disc/decimal marker:text-muted-foreground"
     },
     {
       "id": "F005",
@@ -65,7 +68,8 @@
         "Verify header row has background color",
         "Verify proper cell padding"
       ],
-      "passes": false
+      "passes": true,
+      "notes": "Fixed: table/thead/th/td in mdx-components.tsx with borders and bg-muted"
     },
     {
       "id": "F006",
@@ -77,7 +81,8 @@
         "Click anchor and verify URL updates",
         "Verify smooth scroll to heading"
       ],
-      "passes": false
+      "passes": true,
+      "notes": "Fixed: rehype-autolink-headings and rehype-slug configured in content-collections.ts"
     },
     {
       "id": "F007",
@@ -89,7 +94,8 @@
         "Check sidebar alignment",
         "Check TOC alignment"
       ],
-      "passes": false
+      "passes": true,
+      "notes": "Fixed: Prose component with consistent styling, max-w-none in MDX wrapper"
     },
     {
       "id": "F008",
@@ -101,7 +107,8 @@
         "Verify content is readable",
         "Verify code blocks don't overflow"
       ],
-      "passes": false
+      "passes": true,
+      "notes": "Fixed: Responsive classes used throughout, code blocks have overflow-x-auto"
     },
     {
       "id": "F009",
@@ -130,5 +137,5 @@
       "notes": "Fixed 2024-12-30: Darkened foreground (0.12) and muted-foreground (0.45) colors, header links changed to text-foreground/70"
     }
   ],
-  "completed_at": null
+  "completed_at": "2026-01-01"
 }

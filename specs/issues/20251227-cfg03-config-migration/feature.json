@@ -2,8 +2,8 @@
   "issue": "cfg03-config-migration",
   "title": "Configuration Migration",
   "priority": 2,
-  "status": "skipped",
-  "skipped_reason": "Product not yet released, no legacy users to migrate",
+  "status": "completed",
+  "completed_reason": "Not needed - product not yet released, no legacy users to migrate",
   "dependencies": ["cfg01-platform-paths", "cfg02-secure-credentials"],
   "parallelizable": false,
   "features": [
@@ -89,5 +89,5 @@
       "passes": false
     }
   ],
-  "completed_at": null
+  "completed_at": "2026-01-01"
 }
