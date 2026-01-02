@@ -1,11 +1,5 @@
+import { config } from "~/config"
 import { cx } from "~/utils/cva"
-
-const ASCII_LOGO = `
- ____  _    _ _ _ _   _
-/ ___|| | _(_) | | | | |___  ___
-\\___ \\| |/ / | | | | | / __|/ _ \\
- ___) |   <| | | | |_| \\__ \\  __/
-|____/|_|\\_\\_|_|_|\\___/|___/\\___|`
 
 interface TerminalHeroProps {
   className?: string
@@ -36,8 +30,8 @@ export function TerminalHero({ className }: TerminalHeroProps) {
         {/* Welcome */}
         <div>
           <TerminalPrompt command="welcome" />
-          <pre className="text-foreground text-xs md:text-sm mt-2 overflow-x-auto">
-            {ASCII_LOGO}
+          <pre className="text-primary text-xs md:text-sm mt-2 overflow-x-auto leading-tight">
+            {config.site.asciiLogo}
           </pre>
         </div>
 

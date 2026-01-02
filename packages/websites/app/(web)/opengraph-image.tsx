@@ -8,11 +8,6 @@ export const size = {
 }
 export const contentType = "image/png"
 
-const ASCII_LOGO = `▗▄▄▖▗▖ ▗▖▗▄▄▄▖▗▖   ▗▖   ▗▖ ▗▖ ▗▄▄▖▗▄▄▄▖
-▐▌   ▐▌▗▞▘  █  ▐▌   ▐▌   ▐▌ ▐▌▐▌   ▐▌
- ▝▀▚▖▐▛▚▖   █  ▐▌   ▐▌   ▐▌ ▐▌ ▝▀▚▖▐▛▀▀▘
-▗▄▄▞▘▐▌ ▐▌▗▄█▄▖▐▙▄▄▖▐▙▄▄▖▝▚▄▞▘▗▄▄▞▘▐▙▄▄▖`
-
 export default async function OGImage() {
   return new ImageResponse(
     (
@@ -109,7 +104,7 @@ export default async function OGImage() {
                   margin: 0,
                 }}
               >
-                {ASCII_LOGO}
+                {config.site.asciiLogo}
               </pre>
             </div>
 
