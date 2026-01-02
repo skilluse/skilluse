@@ -1,0 +1,94 @@
+{
+  "issue": "web13-og-images",
+  "title": "Add Open Graph Images for Docs and Blog Pages",
+  "epic": "website",
+  "priority": 2,
+  "status": "pending",
+  "created_at": "2026-01-02",
+  "completed_at": null,
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Docs index OG image displays 'Documentation' title and description",
+      "steps": [
+        "Navigate to /docs page",
+        "Use OG debugger tool to check og:image",
+        "Verify image displays 'Documentation' title",
+        "Verify image includes SkillUse branding"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Docs detail page OG image dynamically generated from document metadata",
+      "steps": [
+        "Navigate to /docs/installation page",
+        "Check if og:image includes the document title",
+        "Verify image includes document description",
+        "Test multiple different docs pages"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Blog index OG image displays 'Blog' title and description",
+      "steps": [
+        "Navigate to /blog page",
+        "Use OG debugger tool to check og:image",
+        "Verify image displays 'Blog' title",
+        "Verify image includes SkillUse branding"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "visual",
+      "description": "All OG images are 1200x630 pixels",
+      "steps": [
+        "Check dimensions of all new OG images",
+        "Verify size export is set correctly",
+        "Use image tool to confirm actual output size"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "visual",
+      "description": "OG image style matches existing blog OG",
+      "steps": [
+        "Compare new OG images with existing blog OG style",
+        "Verify same background color (#0a0a0a)",
+        "Verify same primary color (#05CE91)",
+        "Verify terminal-style > symbol and layout"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "integration",
+      "description": "Social media sharing previews display correctly",
+      "steps": [
+        "Test /docs page with Twitter Card Validator",
+        "Test /blog page with LinkedIn Post Inspector",
+        "Verify preview cards show correct image and title"
+      ],
+      "passes": false,
+      "notes": ""
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 0,
+    "blockers": []
+  }
+}

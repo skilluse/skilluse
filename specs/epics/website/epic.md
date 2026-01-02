@@ -31,6 +31,7 @@ A Next.js-based website providing documentation, blog posts, and landing pages f
 | web10-docs-typography | Docs Typography | completed |
 | web11-blog-typography | Blog Typography | completed |
 | web12-docs-typography | Docs Typography Optimization | in-progress |
+| web13-og-images | Add Open Graph Images for Docs and Blog | pending |
 
 ## Tech Stack
 

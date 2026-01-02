@@ -8,6 +8,15 @@ Core website features completed. Typography optimization in progress.
 ### Docs Typography Optimization
 - [ ] web12-docs-typography - Docs Typography Optimization
 
+## Pending
+
+### OG Images
+- [ ] web13-og-images - Add Open Graph Images for Docs and Blog
+
+---
+
+[2026-01-02] Created issue web13-og-images: Add Open Graph Images for Docs and Blog Pages
+
 ---
 
 ## Completed Sprints
