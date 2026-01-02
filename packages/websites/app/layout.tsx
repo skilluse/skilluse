@@ -18,9 +18,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(config.site.url),
   openGraph: {
     siteName: config.site.name,
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
+    site: "@JiweiYuan",
+    creator: "@JiweiYuan",
   },
 }
 
