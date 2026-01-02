@@ -1,5 +1,12 @@
 # SkillUse
 
+```
+ ▗▄▄▖▗▖ ▗▖▗▄▄▄▖▗▖   ▗▖   ▗▖ ▗▖ ▗▄▄▖▗▄▄▄▖
+▐▌   ▐▌▗▞▘  █  ▐▌   ▐▌   ▐▌ ▐▌▐▌   ▐▌
+ ▝▀▚▖▐▛▚▖   █  ▐▌   ▐▌   ▐▌ ▐▌ ▝▀▚▖▐▛▀▀▘
+▗▄▄▞▘▐▌ ▐▌▗▄█▄▖▐▙▄▄▖▐▙▄▄▖▝▚▄▞▘▗▄▄▞▘▐▙▄▄▖
+```
+
 **A Skills Registry for AI Agents.**
 
 SkillUse is a package manager for AI agent skills. Discover, install, and publish skills across multiple AI agents—Claude Code, Cursor, Windsurf, and more.

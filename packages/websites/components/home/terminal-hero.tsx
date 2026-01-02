@@ -1,4 +1,3 @@
-import { config } from "~/config"
 import { cx } from "~/utils/cva"
 
 interface TerminalHeroProps {
@@ -30,8 +29,14 @@ export function TerminalHero({ className }: TerminalHeroProps) {
         {/* Welcome */}
         <div>
           <TerminalPrompt command="welcome" />
-          <pre className="text-primary text-sm md:text-base mt-2 leading-none whitespace-pre">
-{config.site.asciiLogo}</pre>
+          <div className="mt-3">
+            <h1 className="text-3xl md:text-5xl font-bold text-primary tracking-tight">
+              SKILLUSE
+            </h1>
+            <p className="text-muted-foreground text-xs md:text-sm mt-1">
+              Manage AI Agent Skills with Ease
+            </p>
+          </div>
         </div>
 
         {/* Help */}
