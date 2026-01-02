@@ -8,12 +8,10 @@ export const size = {
 }
 export const contentType = "image/png"
 
-const ASCII_LOGO = `███████╗ ██╗  ██╗ ██╗ ██╗      ██╗      ██╗   ██╗ ███████╗ ███████╗
-██╔════╝ ██║ ██╔╝ ██║ ██║      ██║      ██║   ██║ ██╔════╝ ██╔════╝
-███████╗ █████╔╝  ██║ ██║      ██║      ██║   ██║ ███████╗ █████╗
-╚════██║ ██╔═██╗  ██║ ██║      ██║      ██║   ██║ ╚════██║ ██╔══╝
-███████║ ██║  ██╗ ██║ ███████╗ ███████╗ ╚██████╔╝ ███████║ ███████╗
-╚══════╝ ╚═╝  ╚═╝ ╚═╝ ╚══════╝ ╚══════╝  ╚═════╝  ╚══════╝ ╚══════╝`
+const ASCII_LOGO = `▗▄▄▖▗▖ ▗▖▗▄▄▄▖▗▖   ▗▖   ▗▖ ▗▖ ▗▄▄▖▗▄▄▄▖
+▐▌   ▐▌▗▞▘  █  ▐▌   ▐▌   ▐▌ ▐▌▐▌   ▐▌
+ ▝▀▚▖▐▛▚▖   █  ▐▌   ▐▌   ▐▌ ▐▌ ▝▀▚▖▐▛▀▀▘
+▗▄▄▞▘▐▌ ▐▌▗▄█▄▖▐▙▄▄▖▐▙▄▄▖▝▚▄▞▘▗▄▄▞▘▐▙▄▄▖`
 
 export default async function OGImage() {
   return new ImageResponse(
@@ -106,10 +104,9 @@ export default async function OGImage() {
               <pre
                 style={{
                   color: "#05CE91",
-                  fontSize: "14px",
-                  lineHeight: 1.1,
+                  fontSize: "28px",
+                  lineHeight: 1.15,
                   margin: 0,
-                  letterSpacing: "0.5px",
                 }}
               >
                 {ASCII_LOGO}
