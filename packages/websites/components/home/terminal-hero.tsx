@@ -30,9 +30,8 @@ export function TerminalHero({ className }: TerminalHeroProps) {
         {/* Welcome */}
         <div>
           <TerminalPrompt command="welcome" />
-          <pre className="text-primary text-xs md:text-sm mt-2 overflow-x-auto leading-tight">
-            {config.site.asciiLogo}
-          </pre>
+          <pre className="text-primary text-sm md:text-base mt-2 leading-none whitespace-pre">
+{config.site.asciiLogo}</pre>
         </div>
 
         {/* Help */}
