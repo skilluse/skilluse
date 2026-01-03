@@ -5,7 +5,6 @@ import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
 	buildGitHubHeaders,
-	buildGitHubRawHeaders,
 	getAgent,
 	getConfig,
 	getCredentials,
@@ -25,7 +24,6 @@ interface Props {
 }
 
 interface SkillWithUpdate extends InstalledSkill {
-	latestVersion?: string;
 	latestSha?: string;
 	hasUpdate?: boolean;
 }
@@ -41,27 +39,6 @@ type ListState =
 	  }
 	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
-
-/**
- * Parse YAML frontmatter from SKILL.md content
- */
-function parseFrontmatter(content: string): Record<string, unknown> {
-	const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-	if (!frontmatterMatch) return {};
-
-	const yaml = frontmatterMatch[1];
-	const result: Record<string, unknown> = {};
-
-	for (const line of yaml.split("\n")) {
-		const colonIndex = line.indexOf(":");
-		if (colonIndex === -1) continue;
-		const key = line.substring(0, colonIndex).trim();
-		const value = line.substring(colonIndex + 1).trim();
-		if (key) result[key] = value;
-	}
-
-	return result;
-}
 
 /**
  * Check if a skill has updates available
@@ -99,24 +76,8 @@ async function checkForUpdate(
 			return { ...skill, hasUpdate: false };
 		}
 
-		// Get latest version from SKILL.md
-		const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${skill.repoPath}/SKILL.md?ref=${branch}`;
-		const skillResponse = await fetch(skillMdUrl, {
-			headers: buildGitHubRawHeaders(token),
-		});
-
-		let latestVersion = skill.version;
-		if (skillResponse.ok) {
-			const content = await skillResponse.text();
-			const frontmatter = parseFrontmatter(content);
-			if (frontmatter.version) {
-				latestVersion = String(frontmatter.version);
-			}
-		}
-
 		return {
 			...skill,
-			latestVersion,
 			latestSha,
 			hasUpdate: true,
 		};
@@ -286,13 +247,10 @@ export default function List({ options: opts }: Props) {
 									<Text color="yellow" bold>
 										{skill.name}
 									</Text>
-									<Text dimColor> v{skill.version}</Text>
-									<Text color="green"> → v{skill.latestVersion}</Text>
+									<Text dimColor> ({skill.scope})</Text>
 								</Box>
 								<Box marginLeft={2}>
-									<Text dimColor>
-										From: {skill.repo} | Scope: {skill.scope}
-									</Text>
+									<Text dimColor>From: {skill.repo}</Text>
 								</Box>
 							</Box>
 						))}
@@ -319,7 +277,6 @@ export default function List({ options: opts }: Props) {
 								<Text color="cyan" bold>
 									{skill.name}
 								</Text>
-								<Text dimColor> v{skill.version}</Text>
 								<Text dimColor> ({skill.scope})</Text>
 							</Box>
 							<Box marginLeft={2}>

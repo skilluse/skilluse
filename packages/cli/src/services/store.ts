@@ -12,7 +12,6 @@ export interface InstalledSkill {
 	repo: string;
 	repoPath: string;
 	commitSha: string;
-	version: string;
 	type: string;
 	installedPath: string;
 	scope: "local" | "global";

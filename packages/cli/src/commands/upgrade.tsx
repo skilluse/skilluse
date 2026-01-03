@@ -34,7 +34,6 @@ interface UpgradeInfo {
 	skill: InstalledSkill;
 	currentSha: string;
 	latestSha: string;
-	latestVersion: string;
 }
 
 type UpgradeState =
@@ -51,27 +50,6 @@ type UpgradeState =
 	| { phase: "success"; upgraded: string[] }
 	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
-
-/**
- * Parse YAML frontmatter from SKILL.md content
- */
-function parseFrontmatter(content: string): Record<string, unknown> {
-	const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-	if (!frontmatterMatch) return {};
-
-	const yaml = frontmatterMatch[1];
-	const result: Record<string, unknown> = {};
-
-	for (const line of yaml.split("\n")) {
-		const colonIndex = line.indexOf(":");
-		if (colonIndex === -1) continue;
-		const key = line.substring(0, colonIndex).trim();
-		const value = line.substring(colonIndex + 1).trim();
-		if (key) result[key] = value;
-	}
-
-	return result;
-}
 
 /**
  * Check if a skill has updates available
@@ -109,26 +87,10 @@ async function checkForUpdate(
 			return null;
 		}
 
-		// Get latest version from SKILL.md
-		const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${skill.repoPath}/SKILL.md?ref=${branch}`;
-		const skillResponse = await fetch(skillMdUrl, {
-			headers: buildGitHubRawHeaders(token),
-		});
-
-		let latestVersion = skill.version;
-		if (skillResponse.ok) {
-			const content = await skillResponse.text();
-			const frontmatter = parseFrontmatter(content);
-			if (frontmatter.version) {
-				latestVersion = String(frontmatter.version);
-			}
-		}
-
 		return {
 			skill,
 			currentSha: skill.commitSha,
 			latestSha,
-			latestVersion,
 		};
 	} catch {
 		return null;
@@ -281,7 +243,7 @@ export default function Upgrade({ args: [skillName] }: Props) {
 			const upgraded: string[] = [];
 
 			for (let i = 0; i < upgrades.length; i++) {
-				const { skill, latestSha, latestVersion } = upgrades[i];
+				const { skill, latestSha } = upgrades[i];
 				setState({
 					phase: "upgrading",
 					upgrades,
@@ -314,11 +276,10 @@ export default function Upgrade({ args: [skillName] }: Props) {
 					const updatedSkill: InstalledSkill = {
 						...skill,
 						commitSha: latestSha,
-						version: latestVersion,
 					};
 					addInstalledSkill(updatedSkill);
 
-					upgraded.push(`${skill.name} → v${latestVersion}`);
+					upgraded.push(skill.name);
 				} catch {
 					// Skip failed upgrades
 				}
@@ -431,10 +392,6 @@ export default function Upgrade({ args: [skillName] }: Props) {
 								{i > state.current && <Text dimColor>○</Text>}
 							</Text>
 							<Text> {upgrade.skill.name}</Text>
-							<Text dimColor>
-								{" "}
-								v{upgrade.skill.version} → v{upgrade.latestVersion}
-							</Text>
 						</Box>
 					))}
 					<Box marginTop={1}>

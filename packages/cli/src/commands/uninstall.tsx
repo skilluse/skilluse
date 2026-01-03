@@ -55,7 +55,7 @@ function ConfirmPrompt({
 				<Text color="cyan" bold>
 					{skill.name}
 				</Text>
-				<Text> v{skill.version}?</Text>
+				<Text>?</Text>
 			</Box>
 			<Box marginLeft={2}>
 				<Text dimColor>Location: {skill.installedPath}</Text>

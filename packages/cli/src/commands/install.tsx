@@ -42,7 +42,6 @@ interface SkillMetadata {
 	name: string;
 	description: string;
 	type?: string;
-	version?: string;
 	author?: string;
 	repo: string;
 	path: string;
@@ -328,9 +327,6 @@ async function findSkill(
 								name: String(frontmatter.name || dir.name),
 								description: String(frontmatter.description || ""),
 								type: frontmatter.type ? String(frontmatter.type) : undefined,
-								version: frontmatter.version
-									? String(frontmatter.version)
-									: "1.0.0",
 								author: frontmatter.author
 									? String(frontmatter.author)
 									: undefined,
@@ -505,7 +501,6 @@ async function fetchGitHubSkill(
 				name: String(frontmatter.name || skillName),
 				description: String(frontmatter.description || ""),
 				type: frontmatter.type ? String(frontmatter.type) : undefined,
-				version: frontmatter.version ? String(frontmatter.version) : "1.0.0",
 				author: frontmatter.author ? String(frontmatter.author) : undefined,
 				repo: fullRepo,
 				path: skillPath,
@@ -649,7 +644,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						repo: skill.repo,
 						repoPath: skill.path,
 						commitSha,
-						version: skill.version || "1.0.0",
 						type: skill.type || "skill",
 						installedPath: installPath,
 						scope,
@@ -794,7 +788,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 					repo: skill.repo,
 					repoPath: skill.path,
 					commitSha,
-					version: skill.version || "1.0.0",
 					type: skill.type || "skill",
 					installedPath: installPath,
 					scope,
@@ -916,7 +909,6 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				repo: skill.repo,
 				repoPath: skill.path,
 				commitSha,
-				version: skill.version || "1.0.0",
 				type: skill.type || "skill",
 				installedPath: installPath,
 				scope,
@@ -1066,7 +1058,7 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				return (
 					<>
 						<StatusMessage type="success">
-							Installed "{state.skill.name}" v{state.skill.version}
+							Installed "{state.skill.name}"
 						</StatusMessage>
 						<Box marginTop={1} marginLeft={2}>
 							<Text dimColor>Location: {state.installedPath}</Text>

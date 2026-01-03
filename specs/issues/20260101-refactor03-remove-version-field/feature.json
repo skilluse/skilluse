@@ -3,9 +3,9 @@
   "title": "Remove Version Field from InstalledSkill",
   "epic": "cli",
   "priority": 2,
-  "status": "pending",
+  "status": "completed",
   "created_at": "2026-01-01",
-  "completed_at": null,
+  "completed_at": "2026-01-03",
   "dependencies": [],
   "parallelizable": true,
   "features": [
@@ -18,8 +18,8 @@
         "Remove 'version: string' from InstalledSkill interface",
         "Verify TypeScript compilation passes"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Removed version from InstalledSkill interface in store.ts"
     },
     {
       "id": "F002",
@@ -30,8 +30,8 @@
         "Remove 'v{skill.version}' from skill display",
         "Run 'skilluse list' and verify no version shown"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Removed version display from both regular and outdated skill lists"
     },
     {
       "id": "F003",
@@ -43,8 +43,8 @@
         "Remove version from InstalledSkill object creation",
         "Test install command still works"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Removed version from SkillMetadata interface and all InstalledSkill creations"
     },
     {
       "id": "F004",
@@ -56,8 +56,8 @@
         "Keep commitSha-based update detection",
         "Test upgrade command still works"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Removed latestVersion from UpgradeInfo and version diff from UI"
     },
     {
       "id": "F005",
@@ -68,8 +68,8 @@
         "Run 'skilluse list' and verify scope is displayed",
         "Install a skill with --global and verify scope is 'global'"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "scope field preserved in InstalledSkill interface"
     },
     {
       "id": "F006",
@@ -80,13 +80,13 @@
         "Run 'skilluse list --outdated' to verify SHA comparison works",
         "Upgrade a skill and verify commitSha is updated"
       ],
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "commitSha field preserved, used for update detection"
     }
   ],
   "metadata": {
     "estimated_sessions": 1,
-    "actual_sessions": 0,
+    "actual_sessions": 1,
     "blockers": []
   }
 }

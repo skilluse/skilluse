@@ -97,7 +97,7 @@ async function getLocalSkillInfo(
 		return {
 			name: String(frontmatter.name || skill.name),
 			description: String(frontmatter.description || ""),
-			version: String(frontmatter.version || skill.version),
+			version: frontmatter.version ? String(frontmatter.version) : "",
 			type: frontmatter.type ? String(frontmatter.type) : skill.type,
 			author: frontmatter.author ? String(frontmatter.author) : undefined,
 			tags: Array.isArray(frontmatter.tags)
@@ -115,7 +115,7 @@ async function getLocalSkillInfo(
 		return {
 			name: skill.name,
 			description: "",
-			version: skill.version,
+			version: "",
 			type: skill.type,
 			repo: skill.repo,
 			repoPath: skill.repoPath,

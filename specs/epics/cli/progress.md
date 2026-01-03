@@ -28,6 +28,16 @@ All core CLI features completed. Adding write support with repo init and publish
 
 ## Refactoring Sprint
 
+### [2026-01-03] Completed refactor03-remove-version-field
+- Completed: F001-F006
+- Notes:
+  - Removed `version` field from `InstalledSkill` interface in store.ts
+  - Removed version display from list.tsx (both regular and outdated views)
+  - Removed version extraction from install.tsx (SkillMetadata and InstalledSkill)
+  - Removed version diff display from upgrade.tsx
+  - Fixed info.tsx and uninstall.tsx version references
+  - Preserved `scope` and `commitSha` fields
+
 ### [2026-01-01] Created refactor03-remove-version-field
 - **Problem**: `InstalledSkill` has `version` field but version management is in backlog
 - **Solution**: Remove `version` field and related UI code
