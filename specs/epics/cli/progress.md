@@ -57,6 +57,17 @@ All core CLI features completed. Adding write support with repo init and publish
 
 ## New Features Sprint
 
+### [2026-01-03] Completed feat01-repo-write-commands
+- Completed: F001-F008
+- Notes:
+  - Added `skilluse publish <skill-name>` command to upload local skills to default repo
+  - Created publish.tsx with validation, upload, and error handling
+  - Validation: skill directory exists, SKILL.md exists, frontmatter has name/description
+  - Uses GitHub Contents API (PUT) to upload each file with commit message
+  - Handles: no default repo, no write access, repo not found, skill already exists
+  - Shows interactive Y/N prompt when skill exists (overwrite or cancel)
+  - Success shows GitHub tree URL link
+
 ### [2026-01-03] Completed feat04-repo-url-support
 - **Problem**: `skilluse repo add` only accepts `owner/repo` format
 - **User request**: Support full URLs like `https://github.com/skilluse/skills`

@@ -1,145 +1,78 @@
-# Add Repo Init and Publish Commands
+# Add Publish Command
 
 ## Overview
 
-Add write capabilities to the CLI, enabling users to create skill repositories and publish skills. Currently the CLI is read-only (search, install, list). These commands complete the skill ecosystem by allowing users to be both consumers and creators.
+Add `skilluse publish <skill-name>` command to upload local skills to a configured GitHub repository.
 
-## Requirements
+## Command
 
-- `skilluse repo init <username/repo>` - Create a new skills repository on GitHub
-- `skilluse publish [skill-path]` - Publish a local skill to a configured repository
-- Proper validation of skill structure before publishing
-- GitHub API integration for repo creation and file commits
+```bash
+skilluse publish <skill-name>
+```
+
+**Arguments:**
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `skill-name` | Yes | Name of the skill to publish |
+
+**No options.** Uses existing configuration:
+- Target repo: from `skilluse repo use`
+- Local path: from current agent (e.g., `.claude/skills/`)
+
+## Workflow
+
+```
+skilluse publish commit
+
+1. Get current agent config → .claude/skills/
+2. Read skill → .claude/skills/commit/
+3. Validate SKILL.md exists and has valid frontmatter
+4. Get default repo config → owner/my-skills (path: skills/)
+5. Upload files → owner/my-skills/skills/commit/
+6. Show success with GitHub link
+```
 
 ## Technical Details
 
-### Command: `repo init <username/repo>`
+### Validation
 
-Creates a new GitHub repository with proper skills structure.
-
-**Arguments:**
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `username/repo` | Yes | Repository name in owner/repo format |
-
-**Options:**
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--public` | Yes | Create as public repository |
-| `--private` | No | Create as private repository |
-| `--path <path>` | `skills` | Skills directory within repo |
-
-**Generated Structure:**
-```
-my-skills/
-├── README.md           # Auto-generated repo description
-└── skills/             # Default skills directory
-    └── .gitkeep
-```
-
-**API Calls:**
-- `POST /user/repos` - Create repository
-- `PUT /repos/{owner}/{repo}/contents/{path}` - Create initial files
-
----
-
-### Command: `publish [skill-path]`
-
-Publishes a local skill directory to a configured repository.
-
-**Arguments:**
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `skill-path` | No | Path to skill directory (default: current dir) |
-
-**Options:**
-| Option | Default | Description |
-|--------|---------|-------------|
-| `-r, --repo <name>` | default repo | Target repository (owner/repo) |
-| `--pr` | No | Create PR instead of direct push |
-
-**Workflow:**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Validate Skill                                           │
-│    → Check SKILL.md exists                                  │
-│    → Parse frontmatter (name, description)                  │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│ 2. Check Target Repository                                  │
-│    → Verify repo exists and user has write access           │
-│    → Check for existing skill with same name                │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│ 3. Upload Files                                             │
-│    → PUT /repos/{owner}/{repo}/contents/{path}             │
-│    → Commit all skill files to main branch (or PR)          │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│ 4. Complete                                                 │
-│    ✔ Published {skill-name} to {repo}                      │
-│    → https://github.com/{owner}/{repo}/tree/main/skills/.. │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**Validation Rules:**
 - SKILL.md must exist
-- SKILL.md must have valid YAML frontmatter with: name, description
+- SKILL.md must have valid frontmatter: `name`, `description`
 
-**API Calls:**
-- `GET /repos/{owner}/{repo}/contents/{path}` - Check existing skill
-- `PUT /repos/{owner}/{repo}/contents/{path}` - Create/update files
-- `POST /repos/{owner}/{repo}/pulls` - Create PR (if --pr flag)
+### GitHub API
 
----
+Upload files using Contents API:
+- `PUT /repos/{owner}/{repo}/contents/{path}` for each file
 
-### Data Models
+### Error Cases
 
-```typescript
-interface RepoInitOptions {
-  public: boolean;
-  private: boolean;
-  path: string;
-}
-
-interface PublishOptions {
-  repo?: string;
-  pr: boolean;
-}
-```
-
----
-
-### Dependencies
-
-- GitHub API with `repo` scope (may require re-authentication)
-- Existing services: oauth.ts, github.ts, store.ts, metadata.ts
+| Error | Message |
+|-------|---------|
+| No default repo | "No default repo. Run: skilluse repo use <owner/repo>" |
+| Skill not found | "Skill 'xxx' not found in .claude/skills/" |
+| Missing SKILL.md | "SKILL.md not found in skill directory" |
+| Invalid frontmatter | "SKILL.md missing required field: name" |
+| No write access | "No write access to repo" |
+| Skill exists in repo | Prompt: overwrite or cancel |
 
 ### New Files
 
 ```
 packages/cli/src/
 ├── commands/
-│   ├── repo/
-│   │   └── init.tsx      # New: repo init command
-│   └── publish.tsx       # New: publish command
+│   └── publish.tsx       # publish command
+└── services/
+    └── publish.ts        # GitHub upload logic
 ```
 
 ## Acceptance Criteria
 
 See `feature.json` for testable criteria.
 
-## Issue Dependencies
-
-- None (all core CLI features completed)
-
 ## Out of Scope
 
-- Version management (Git Tags, GitHub Releases)
-- Automatic version bumping
-- Skill registry/index file management
-- Team/organization permission management
+- `repo init` command (users create repos manually on GitHub)
+- `--to` option for target repo override
+- `--path` option for custom path
+- `--pr` option for pull request
+- Version management

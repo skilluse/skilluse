@@ -45,6 +45,7 @@ import Uninstall, {
 	options as uninstallOptions,
 } from "./commands/uninstall.js";
 import Upgrade, { args as upgradeArgs } from "./commands/upgrade.js";
+import Publish, { args as publishArgs } from "./commands/publish.js";
 import pkg from "../package.json" with { type: "json" };
 
 // Version injected via --define at build time, fallback to package.json
@@ -140,6 +141,15 @@ program
 	.action((skillName) => {
 		const args = infoArgs.parse([skillName]);
 		render(<Info args={args} options={{}} />);
+	});
+
+// publish command
+program
+	.command("publish <skill-name>")
+	.description("Publish a local skill to the default repository")
+	.action((skillName) => {
+		const args = publishArgs.parse([skillName]);
+		render(<Publish args={args} options={{}} />);
 	});
 
 // repo command group

@@ -80,7 +80,7 @@ The CLI provides a unified interface for discovering, installing, and managing s
 
 | Issue | Title | Status |
 |-------|-------|--------|
-| feat01-repo-write-commands | Add Publish Command | pending |
+| feat01-repo-write-commands | Add Publish Command | completed |
 | feat02-status-command | Add Status Command as Default Action | completed |
 | feat03-public-repo-warning | Security Warning for Public Repos | completed |
 | feat04-repo-url-support | Support Full GitHub URLs in Repo Add | completed |
