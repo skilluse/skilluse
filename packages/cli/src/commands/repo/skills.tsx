@@ -3,14 +3,12 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../../components/index.js";
 import {
-	buildGitHubHeaders,
-	buildGitHubRawHeaders,
+	fetchSkillsFromRepo,
 	getConfig,
 	getCredentials,
 	getCurrentAgent,
-	getGitHubErrorMessage,
-	isAuthRequired,
 	type RepoConfig,
+	type SkillMetadata,
 } from "../../services/index.js";
 
 export const options = z.object({});
@@ -19,13 +17,7 @@ interface Props {
 	options: z.infer<typeof options>;
 }
 
-interface SkillMetadata {
-	name: string;
-	description: string;
-	type?: string;
-	version?: string;
-	repo: string;
-	path: string;
+interface SkillWithInstalled extends SkillMetadata {
 	installed: boolean;
 }
 
@@ -33,135 +25,9 @@ type SkillsState =
 	| { phase: "checking" }
 	| { phase: "no_repos" }
 	| { phase: "fetching"; repo: string }
-	| { phase: "success"; skills: SkillMetadata[]; repoName: string }
+	| { phase: "success"; skills: SkillWithInstalled[]; repoName: string }
 	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
-
-/**
- * Parse YAML frontmatter from SKILL.md content
- */
-function parseFrontmatter(content: string): Record<string, unknown> {
-	const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-	if (!frontmatterMatch) {
-		return {};
-	}
-
-	const yaml = frontmatterMatch[1];
-	const result: Record<string, unknown> = {};
-
-	for (const line of yaml.split("\n")) {
-		const colonIndex = line.indexOf(":");
-		if (colonIndex === -1) continue;
-
-		const key = line.substring(0, colonIndex).trim();
-		let value: unknown = line.substring(colonIndex + 1).trim();
-
-		// Handle arrays like [tag1, tag2]
-		if (
-			typeof value === "string" &&
-			value.startsWith("[") &&
-			value.endsWith("]")
-		) {
-			value = value
-				.slice(1, -1)
-				.split(",")
-				.map((s) => s.trim());
-		}
-
-		if (key) {
-			result[key] = value;
-		}
-	}
-
-	return result;
-}
-
-/**
- * Fetch all skills from a GitHub repo
- */
-async function fetchSkillsFromRepo(
-	token: string | undefined,
-	repoConfig: RepoConfig,
-	installedSkillNames: Set<string>,
-): Promise<SkillMetadata[] | { authRequired: true; message: string }> {
-	const { repo, branch, paths } = repoConfig;
-	const skills: SkillMetadata[] = [];
-
-	// Search paths - if none specified, search root
-	const searchPaths = paths.length > 0 ? paths : [""];
-
-	for (const basePath of searchPaths) {
-		try {
-			// Get directory contents
-			const apiPath = basePath
-				? `https://api.github.com/repos/${repo}/contents/${basePath}?ref=${branch}`
-				: `https://api.github.com/repos/${repo}/contents?ref=${branch}`;
-
-			const response = await fetch(apiPath, {
-				headers: buildGitHubHeaders(token),
-			});
-
-			if (!response.ok) {
-				if (isAuthRequired(response)) {
-					return {
-						authRequired: true,
-						message: getGitHubErrorMessage(response),
-					};
-				}
-				continue;
-			}
-
-			const contents = (await response.json()) as Array<{
-				name: string;
-				path: string;
-				type: string;
-			}>;
-
-			// Find directories that might contain SKILL.md
-			const dirs = contents.filter((item) => item.type === "dir");
-
-			for (const dir of dirs) {
-				// Check if this directory has a SKILL.md
-				const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${dir.path}/SKILL.md?ref=${branch}`;
-				const skillResponse = await fetch(skillMdUrl, {
-					headers: buildGitHubRawHeaders(token),
-				});
-
-				if (skillResponse.ok) {
-					const content = await skillResponse.text();
-					const frontmatter = parseFrontmatter(content);
-
-					if (frontmatter.name) {
-						const skillName = String(frontmatter.name);
-						skills.push({
-							name: skillName,
-							description: String(frontmatter.description || ""),
-							type: frontmatter.type ? String(frontmatter.type) : undefined,
-							version: frontmatter.version
-								? String(frontmatter.version)
-								: undefined,
-							repo,
-							path: dir.path,
-							installed: installedSkillNames.has(skillName),
-						});
-					}
-				}
-			}
-		} catch {
-			// Continue on error
-		}
-	}
-
-	// Sort: installed first, then alphabetically
-	skills.sort((a, b) => {
-		if (a.installed !== b.installed) {
-			return a.installed ? -1 : 1;
-		}
-		return a.name.localeCompare(b.name);
-	});
-
-	return skills;
-}
 
 export default function RepoSkills(_props: Props) {
 	const { exit } = useApp();
@@ -200,20 +66,29 @@ export default function RepoSkills(_props: Props) {
 			const credentials = await getCredentials();
 			const token = credentials?.token;
 
-			const result = await fetchSkillsFromRepo(
-				token,
-				repoConfig,
-				installedSkillNames,
-			);
+			const result = await fetchSkillsFromRepo(token, repoConfig);
 
 			if ("authRequired" in result) {
 				setState({ phase: "auth_required", message: result.message });
 				return;
 			}
 
+			// Add installed status and sort (installed first, then alphabetically)
+			const skillsWithInstalled: SkillWithInstalled[] = result
+				.map((skill) => ({
+					...skill,
+					installed: installedSkillNames.has(skill.name),
+				}))
+				.sort((a, b) => {
+					if (a.installed !== b.installed) {
+						return a.installed ? -1 : 1;
+					}
+					return a.name.localeCompare(b.name);
+				});
+
 			setState({
 				phase: "success",
-				skills: result,
+				skills: skillsWithInstalled,
 				repoName: repoConfig.repo,
 			});
 		}

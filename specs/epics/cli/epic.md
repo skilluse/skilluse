@@ -85,11 +85,17 @@ The CLI provides a unified interface for discovering, installing, and managing s
 | feat03-public-repo-warning | Security Warning for Public Repos | completed |
 | feat04-repo-url-support | Support Full GitHub URLs in Repo Add | completed |
 
+### Enhancements
+
+| Issue | Title | Status |
+|-------|-------|--------|
+| feat05-interactive-upgrade | Interactive Upgrade Selection | pending |
+
 ### Performance
 
 | Issue | Title | Status |
 |-------|-------|--------|
-| perf01-local-skills-index | Local Skills Index Cache | pending |
+| perf01-concurrent-skill-fetch | Concurrent Skill Metadata Fetching | completed |
 
 ## References
 

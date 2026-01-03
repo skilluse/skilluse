@@ -76,3 +76,9 @@ export {
 	isRateLimited,
 	parseGitHubRepo,
 } from "./github.js";
+export {
+	fetchSkillsFromRepo,
+	type FetchSkillsResult,
+	parseFrontmatter,
+	type SkillMetadata,
+} from "./skills.js";

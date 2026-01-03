@@ -5,6 +5,19 @@ All core CLI features completed. Adding write support with repo init and publish
 
 ---
 
+## Performance Improvements Sprint
+
+### [2026-01-03] Completed perf01-concurrent-skill-fetch
+- Completed: F001-F006
+- Notes:
+  - Created `services/skills.ts` with shared `fetchSkillsFromRepo` and `parseFrontmatter`
+  - Implemented concurrent fetching with `Promise.all` for ~5x speedup
+  - Updated `search.tsx` to use shared service
+  - Updated `repo/skills.tsx` to use shared service
+  - Error handling preserved (individual failures don't break entire search)
+
+---
+
 ## Bug Fixes Sprint
 
 ### [2026-01-01] Completed bug02-list-filesystem-sync

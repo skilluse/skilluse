@@ -3,13 +3,11 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Spinner, StatusMessage } from "../components/index.js";
 import {
-	buildGitHubHeaders,
-	buildGitHubRawHeaders,
+	fetchSkillsFromRepo,
 	getConfig,
 	getCredentials,
-	getGitHubErrorMessage,
-	isAuthRequired,
 	type RepoConfig,
+	type SkillMetadata,
 } from "../services/index.js";
 
 export const args = z.tuple([z.string().describe("Search keyword")]);
@@ -26,16 +24,6 @@ interface Props {
 	options: z.infer<typeof options>;
 }
 
-interface SkillMetadata {
-	name: string;
-	description: string;
-	type?: string;
-	version?: string;
-	tags?: string[];
-	repo: string;
-	path: string;
-}
-
 type SearchState =
 	| { phase: "checking" }
 	| { phase: "no_repos" }
@@ -43,127 +31,6 @@ type SearchState =
 	| { phase: "success"; skills: SkillMetadata[]; keyword: string }
 	| { phase: "auth_required"; message: string }
 	| { phase: "error"; message: string };
-
-/**
- * Parse YAML frontmatter from SKILL.md content
- */
-function parseFrontmatter(content: string): Record<string, unknown> {
-	const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-	if (!frontmatterMatch) {
-		return {};
-	}
-
-	const yaml = frontmatterMatch[1];
-	const result: Record<string, unknown> = {};
-
-	// Simple YAML parser for frontmatter
-	const lines = yaml.split("\n");
-	for (const line of lines) {
-		const colonIndex = line.indexOf(":");
-		if (colonIndex === -1) continue;
-
-		const key = line.substring(0, colonIndex).trim();
-		let value: unknown = line.substring(colonIndex + 1).trim();
-
-		// Handle arrays like [tag1, tag2]
-		if (
-			typeof value === "string" &&
-			value.startsWith("[") &&
-			value.endsWith("]")
-		) {
-			value = value
-				.slice(1, -1)
-				.split(",")
-				.map((s) => s.trim());
-		}
-
-		if (key) {
-			result[key] = value;
-		}
-	}
-
-	return result;
-}
-
-/**
- * Fetch SKILL.md files from a GitHub repo
- * Returns authRequired if private repo access is denied
- */
-async function fetchSkillsFromRepo(
-	token: string | undefined,
-	repoConfig: RepoConfig,
-): Promise<SkillMetadata[] | { authRequired: true; message: string }> {
-	const { repo, branch, paths } = repoConfig;
-	const skills: SkillMetadata[] = [];
-
-	// Search paths - if none specified, search root
-	const searchPaths = paths.length > 0 ? paths : [""];
-
-	for (const basePath of searchPaths) {
-		try {
-			// Get directory contents
-			const apiPath = basePath
-				? `https://api.github.com/repos/${repo}/contents/${basePath}?ref=${branch}`
-				: `https://api.github.com/repos/${repo}/contents?ref=${branch}`;
-
-			const response = await fetch(apiPath, {
-				headers: buildGitHubHeaders(token),
-			});
-
-			if (!response.ok) {
-				if (isAuthRequired(response)) {
-					return {
-						authRequired: true,
-						message: getGitHubErrorMessage(response),
-					};
-				}
-				continue;
-			}
-
-			const contents = (await response.json()) as Array<{
-				name: string;
-				path: string;
-				type: string;
-			}>;
-
-			// Find directories that might contain SKILL.md
-			const dirs = contents.filter((item) => item.type === "dir");
-
-			for (const dir of dirs) {
-				// Check if this directory has a SKILL.md
-				const skillMdUrl = `https://api.github.com/repos/${repo}/contents/${dir.path}/SKILL.md?ref=${branch}`;
-				const skillResponse = await fetch(skillMdUrl, {
-					headers: buildGitHubRawHeaders(token),
-				});
-
-				if (skillResponse.ok) {
-					const content = await skillResponse.text();
-					const frontmatter = parseFrontmatter(content);
-
-					if (frontmatter.name) {
-						skills.push({
-							name: String(frontmatter.name),
-							description: String(frontmatter.description || ""),
-							type: frontmatter.type ? String(frontmatter.type) : undefined,
-							version: frontmatter.version
-								? String(frontmatter.version)
-								: undefined,
-							tags: Array.isArray(frontmatter.tags)
-								? frontmatter.tags.map(String)
-								: undefined,
-							repo,
-							path: dir.path,
-						});
-					}
-				}
-			}
-		} catch {
-			// Continue on error
-		}
-	}
-
-	return skills;
-}
 
 /**
  * Filter skills by search keyword

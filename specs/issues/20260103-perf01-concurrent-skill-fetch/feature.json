@@ -1,0 +1,34 @@
+{
+  "features": [
+    {
+      "id": "F001",
+      "description": "SKILL.md files fetched concurrently with Promise.all",
+      "passes": true
+    },
+    {
+      "id": "F002",
+      "description": "search command uses concurrent fetching",
+      "passes": true
+    },
+    {
+      "id": "F003",
+      "description": "repo skills command uses concurrent fetching",
+      "passes": true
+    },
+    {
+      "id": "F004",
+      "description": "Shared code extracted to services/skills.ts",
+      "passes": true
+    },
+    {
+      "id": "F005",
+      "description": "parseFrontmatter extracted to shared service",
+      "passes": true
+    },
+    {
+      "id": "F006",
+      "description": "Error handling preserved (individual failures don't break entire search)",
+      "passes": true
+    }
+  ]
+}
