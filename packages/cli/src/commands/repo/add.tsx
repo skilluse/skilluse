@@ -1,5 +1,5 @@
 import { Box, Text, useApp, useInput } from "ink";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import {
 	MultiSelect,
@@ -14,11 +14,12 @@ import {
 	type DiscoveryResult,
 	getConfig,
 	getCredentials,
+	parseGitHubRepo,
 	setDefaultRepo,
 } from "../../services/index.js";
 
 export const args = z.tuple([
-	z.string().describe("Repository in owner/repo format"),
+	z.string().describe("Repository (owner/repo or https://github.com/owner/repo)"),
 ]);
 
 export const options = z.object({
@@ -56,6 +57,10 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<AddState>({ phase: "checking" });
 
+	// Parse repo identifier once (supports owner/repo and https://github.com/owner/repo)
+	const parsed = useMemo(() => parseGitHubRepo(repoArg), [repoArg]);
+	const repoIdentifier = parsed ? `${parsed.owner}/${parsed.repo}` : null;
+
 	// Handle exit after terminal states are rendered
 	useEffect(() => {
 		if (
@@ -72,25 +77,25 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 	useEffect(() => {
 		async function checkAndAdd() {
 			// Validate repo format
-			if (!repoArg.match(/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/)) {
+			if (!parsed || !repoIdentifier) {
 				setState({ phase: "invalid_repo" });
 				return;
 			}
 
 			// Check if already exists
 			const config = getConfig();
-			if (config.repos.find((r) => r.repo === repoArg)) {
-				setState({ phase: "already_exists", repo: repoArg });
+			if (config.repos.find((r) => r.repo === repoIdentifier)) {
+				setState({ phase: "already_exists", repo: repoIdentifier });
 				return;
 			}
 
 			// If path is provided via --path, save directly (no API call needed)
 			if (opts.path !== undefined) {
-				setState({ phase: "saving", repo: repoArg });
+				setState({ phase: "saving", repo: repoIdentifier });
 
 				const paths = opts.path ? [opts.path] : [];
 				addRepo({
-					repo: repoArg,
+					repo: repoIdentifier,
 					branch: opts.branch,
 					paths,
 				});
@@ -98,12 +103,12 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				// Set as default if requested or if first repo
 				const isDefault = opts.default || config.repos.length === 0;
 				if (isDefault) {
-					setDefaultRepo(repoArg);
+					setDefaultRepo(repoIdentifier);
 				}
 
 				setState({
 					phase: "success",
-					repo: repoArg,
+					repo: repoIdentifier,
 					paths: paths.length > 0 ? paths : ["(all paths)"],
 					isDefault,
 				});
@@ -111,16 +116,15 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 			}
 
 			// Start discovery with optional credentials
-			setState({ phase: "discovering", repo: repoArg });
+			setState({ phase: "discovering", repo: repoIdentifier });
 
 			try {
 				const credentials = await getCredentials();
 				const token = credentials?.token;
 
-				const [owner, repo] = repoArg.split("/");
 				const result = await discoverSkillPaths(
-					owner,
-					repo,
+					parsed.owner,
+					parsed.repo,
 					opts.branch,
 					token,
 				);
@@ -131,11 +135,11 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				}
 
 				if (result.totalSkills === 0) {
-					setState({ phase: "no_skills_found", repo: repoArg });
+					setState({ phase: "no_skills_found", repo: repoIdentifier });
 				} else {
 					setState({
 						phase: "select_paths",
-						repo: repoArg,
+						repo: repoIdentifier,
 						discovery: result,
 					});
 				}
@@ -147,26 +151,27 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 		}
 
 		checkAndAdd();
-	}, [repoArg, opts.path, opts.branch, opts.default]);
+	}, [parsed, repoIdentifier, opts.path, opts.branch, opts.default]);
 
 	// Handle path selection submission
 	const handlePathsSelected = (selectedPaths: string[]) => {
+		if (!repoIdentifier) return;
 		const config = getConfig();
 
 		addRepo({
-			repo: repoArg,
+			repo: repoIdentifier,
 			branch: opts.branch,
 			paths: selectedPaths,
 		});
 
 		const isDefault = opts.default || config.repos.length === 0;
 		if (isDefault) {
-			setDefaultRepo(repoArg);
+			setDefaultRepo(repoIdentifier);
 		}
 
 		setState({
 			phase: "success",
-			repo: repoArg,
+			repo: repoIdentifier,
 			paths: selectedPaths.length > 0 ? selectedPaths : ["(all paths)"],
 			isDefault,
 		});
@@ -174,27 +179,28 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 
 	// Handle no skills found options
 	const handleNoSkillsOption = (option: { value: string }) => {
+		if (!repoIdentifier) return;
 		const config = getConfig();
 
 		switch (option.value) {
 			case "manual":
-				setState({ phase: "input_path", repo: repoArg, currentPath: "" });
+				setState({ phase: "input_path", repo: repoIdentifier, currentPath: "" });
 				break;
 			case "add_all": {
 				addRepo({
-					repo: repoArg,
+					repo: repoIdentifier,
 					branch: opts.branch,
 					paths: [],
 				});
 
 				const isDefault = opts.default || config.repos.length === 0;
 				if (isDefault) {
-					setDefaultRepo(repoArg);
+					setDefaultRepo(repoIdentifier);
 				}
 
 				setState({
 					phase: "success",
-					repo: repoArg,
+					repo: repoIdentifier,
 					paths: ["(all paths)"],
 					isDefault,
 				});
@@ -209,7 +215,7 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 	// Handle input for manual path entry
 	useInput(
 		(input, key) => {
-			if (state.phase !== "input_path") return;
+			if (state.phase !== "input_path" || !repoIdentifier) return;
 
 			if (key.return) {
 				// Save with current path
@@ -217,19 +223,19 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 				const paths = state.currentPath ? [state.currentPath] : [];
 
 				addRepo({
-					repo: repoArg,
+					repo: repoIdentifier,
 					branch: opts.branch,
 					paths,
 				});
 
 				const isDefault = opts.default || config.repos.length === 0;
 				if (isDefault) {
-					setDefaultRepo(repoArg);
+					setDefaultRepo(repoIdentifier);
 				}
 
 				setState({
 					phase: "success",
-					repo: repoArg,
+					repo: repoIdentifier,
 					paths: paths.length > 0 ? paths : ["(all paths)"],
 					isDefault,
 				});
@@ -286,19 +292,20 @@ export default function RepoAdd({ args: [repoArg], options: opts }: Props) {
 			return (
 				<Box flexDirection="column">
 					<StatusMessage type="error">Invalid repository format</StatusMessage>
-					<Text dimColor>Use the format: owner/repo</Text>
+					<Text dimColor>Accepted formats:</Text>
+					<Text dimColor> - owner/repo</Text>
+					<Text dimColor> - https://github.com/owner/repo</Text>
 				</Box>
 			);
 
 		case "already_exists":
 			return (
 				<Box flexDirection="column">
-					<StatusMessage type="warning">
+					<StatusMessage type="info">
 						Repository {state.repo} is already configured
 					</StatusMessage>
-					<Text dimColor>
-						Use 'skilluse repo edit {state.repo}' to modify it.
-					</Text>
+					<Text dimColor>To set it as default skills registry:</Text>
+					<Text dimColor> skilluse repo use {state.repo}</Text>
 				</Box>
 			);
 

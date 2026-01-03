@@ -9,6 +9,37 @@
 type Headers = Record<string, string>;
 
 /**
+ * Parse a GitHub repository identifier from various formats
+ *
+ * Supported formats:
+ * - owner/repo
+ * - https://github.com/owner/repo
+ *
+ * @returns { owner, repo } or null if invalid
+ */
+export function parseGitHubRepo(
+	input: string,
+): { owner: string; repo: string } | null {
+	// Pattern for owner/repo format
+	const shortPattern = /^([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)$/;
+
+	// Pattern for https://github.com/owner/repo format
+	const urlPattern = /^https:\/\/github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)\/?$/;
+
+	let match = input.match(shortPattern);
+	if (match) {
+		return { owner: match[1], repo: match[2] };
+	}
+
+	match = input.match(urlPattern);
+	if (match) {
+		return { owner: match[1], repo: match[2] };
+	}
+
+	return null;
+}
+
+/**
  * Build GitHub API headers with optional authentication token
  */
 export function buildGitHubHeaders(token?: string): Headers {

@@ -1,0 +1,65 @@
+{
+  "issue": "feat04-repo-url-support",
+  "title": "Support GitHub URLs in Repo Add Command",
+  "epic": "cli",
+  "priority": 2,
+  "status": "completed",
+  "created_at": "2026-01-03",
+  "completed_at": "2026-01-03",
+  "dependencies": [],
+  "parallelizable": true,
+  "features": [
+    {
+      "id": "F001",
+      "category": "functional",
+      "description": "Accept full HTTPS GitHub URL",
+      "steps": [
+        "Run: skilluse repo add https://github.com/skilluse/skills",
+        "Verify repo is parsed as skilluse/skills",
+        "Verify skill discovery proceeds normally"
+      ],
+      "passes": true,
+      "notes": "Tested with https://github.com/test/url-format"
+    },
+    {
+      "id": "F002",
+      "category": "functional",
+      "description": "Continue supporting owner/repo format",
+      "steps": [
+        "Run: skilluse repo add skilluse/skills",
+        "Verify existing functionality still works"
+      ],
+      "passes": true,
+      "notes": "Existing functionality preserved"
+    },
+    {
+      "id": "F003",
+      "category": "functional",
+      "description": "Reject invalid inputs",
+      "steps": [
+        "Run: skilluse repo add https://gitlab.com/owner/repo",
+        "Verify error message indicates invalid format",
+        "Run: skilluse repo add invalid-string",
+        "Verify error message indicates invalid format"
+      ],
+      "passes": true,
+      "notes": "Both invalid-format and https://gitlab.com/owner/repo correctly rejected"
+    },
+    {
+      "id": "F004",
+      "category": "ux",
+      "description": "Error message shows accepted formats",
+      "steps": [
+        "Run: skilluse repo add invalid",
+        "Verify error includes example formats: owner/repo, https://github.com/owner/repo"
+      ],
+      "passes": true,
+      "notes": "Error message shows both accepted formats"
+    }
+  ],
+  "metadata": {
+    "estimated_sessions": 1,
+    "actual_sessions": 1,
+    "blockers": []
+  }
+}

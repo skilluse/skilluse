@@ -2,7 +2,7 @@ import figures from "figures";
 import { Box, Text } from "ink";
 import type React from "react";
 
-type StatusType = "success" | "error" | "warning";
+type StatusType = "success" | "error" | "warning" | "info";
 
 interface StatusMessageProps {
 	type: StatusType;
@@ -13,6 +13,7 @@ const statusConfig: Record<StatusType, { icon: string; color: string }> = {
 	success: { icon: figures.tick, color: "green" },
 	error: { icon: figures.cross, color: "red" },
 	warning: { icon: figures.warning, color: "yellow" },
+	info: { icon: figures.info, color: "blue" },
 };
 
 export function StatusMessage({ type, children }: StatusMessageProps) {

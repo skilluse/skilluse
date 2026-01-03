@@ -83,6 +83,7 @@ The CLI provides a unified interface for discovering, installing, and managing s
 | feat01-repo-write-commands | Add Repo Init and Publish Commands | pending |
 | feat02-status-command | Add Status Command as Default Action | pending |
 | feat03-public-repo-warning | Security Warning for Public Repos | completed |
+| feat04-repo-url-support | Support Full GitHub URLs in Repo Add | completed |
 
 ## References
 

@@ -74,4 +74,5 @@ export {
 	isAuthRequired,
 	isPublicRepo,
 	isRateLimited,
+	parseGitHubRepo,
 } from "./github.js";

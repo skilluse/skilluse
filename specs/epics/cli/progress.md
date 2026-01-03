@@ -47,6 +47,19 @@ All core CLI features completed. Adding write support with repo init and publish
 
 ## New Features Sprint
 
+### [2026-01-03] Completed feat04-repo-url-support
+- **Problem**: `skilluse repo add` only accepts `owner/repo` format
+- **User request**: Support full URLs like `https://github.com/skilluse/skills`
+- **Solution**: Add `parseGitHubRepo()` utility to parse URL formats
+- **Supported formats**:
+  - `owner/repo` (existing)
+  - `https://github.com/owner/repo`
+- **Implementation**:
+  - Added `parseGitHubRepo()` in `github.ts`
+  - Updated `repo/add.tsx` to use parser with `useMemo`
+  - Updated error message to show accepted formats
+- **Features**: 4/4 acceptance criteria passed
+
 ### [2026-01-01] Completed feat03-public-repo-warning
 - **Goal**: Add security warning when installing skills from public repositories
 - **Implementation**:
