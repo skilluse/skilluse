@@ -11,20 +11,23 @@ Manage skill repositories that SkillUse can install from.
 Add a GitHub repository as a skill source.
 
 ```bash
-skilluse repo add <owner/repo>
+skilluse repo add <repository>
 ```
 
 ### Arguments
 
 | Argument | Description |
 |----------|-------------|
-| `owner/repo` | GitHub repository in owner/repo format |
+| `repository` | GitHub repository (`owner/repo` or `https://github.com/owner/repo`) |
 
 ### Example
 
 ```bash
-# Add a public skill repository
+# Add using short format
 skilluse repo add acme/skills
+
+# Add using full GitHub URL
+skilluse repo add https://github.com/acme/skills
 
 # Add your own repository
 skilluse repo add myuser/my-skills

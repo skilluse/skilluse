@@ -19,8 +19,9 @@ curl -fsSL https://skilluse.dev/install.sh | bash
 ## Quick Start
 
 ```bash
-# 1. Add a skill repository
+# 1. Add a skill repository (supports GitHub URLs)
 skilluse repo add owner/skill-repo
+skilluse repo add https://github.com/owner/skill-repo
 
 # 2. Install a skill
 skilluse install code-review
@@ -41,7 +42,7 @@ skilluse install code-review
 | Command | Description |
 |---------|-------------|
 | `skilluse repo list` | List configured repositories |
-| `skilluse repo add <repo>` | Add a skill repository |
+| `skilluse repo add <repo>` | Add a skill repository (supports URLs) |
 | `skilluse repo remove <name>` | Remove a repository |
 | `skilluse repo use <name>` | Set default repository |
 | `skilluse repo edit <name>` | Edit repository settings |
