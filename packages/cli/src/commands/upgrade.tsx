@@ -1,9 +1,15 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { Box, Static, Text, useApp } from "ink";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
-import { ProgressBar, Spinner, StatusMessage } from "../components/index.js";
+import {
+	MultiSelect,
+	type MultiSelectItem,
+	ProgressBar,
+	Spinner,
+	StatusMessage,
+} from "../components/index.js";
 import {
 	addInstalledSkill,
 	buildGitHubHeaders,
@@ -23,7 +29,12 @@ export const args = z.tuple([
 		.describe("Skill name to upgrade (optional, upgrades all if omitted)"),
 ]);
 
-export const options = z.object({});
+export const options = z.object({
+	yes: z
+		.boolean()
+		.default(false)
+		.describe("Skip selection and upgrade all"),
+});
 
 interface Props {
 	args: z.infer<typeof args>;
@@ -41,6 +52,7 @@ type UpgradeState =
 	| { phase: "not_found"; skillName: string }
 	| { phase: "checking_updates"; current: number; total: number }
 	| { phase: "no_updates" }
+	| { phase: "select"; upgrades: UpgradeInfo[] }
 	| {
 			phase: "upgrading";
 			upgrades: UpgradeInfo[];
@@ -49,6 +61,7 @@ type UpgradeState =
 	  }
 	| { phase: "success"; upgraded: string[] }
 	| { phase: "auth_required"; message: string }
+	| { phase: "cancelled" }
 	| { phase: "error"; message: string };
 
 /**
@@ -174,13 +187,97 @@ async function downloadSkillFiles(
 	}
 }
 
-export default function Upgrade({ args: [skillName] }: Props) {
+export default function Upgrade({ args: [skillName], options }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<UpgradeState>({ phase: "checking" });
 	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
 
+	// Perform upgrades for selected skills
+	const performUpgrades = useCallback(async (upgradesToPerform: UpgradeInfo[]) => {
+		const config = getConfig();
+		const credentials = await getCredentials();
+		const token = credentials?.token;
+
+		const upgraded: string[] = [];
+
+		for (let i = 0; i < upgradesToPerform.length; i++) {
+			const { skill, latestSha } = upgradesToPerform[i];
+			setState({
+				phase: "upgrading",
+				upgrades: upgradesToPerform,
+				current: i,
+				progress: Math.round((i / upgradesToPerform.length) * 100),
+			});
+
+			try {
+				const repoConfig = config.repos.find((r) => r.repo === skill.repo);
+				if (!repoConfig) continue;
+
+				// Download new files
+				const downloadResult = await downloadSkillFiles(
+					token,
+					skill.repo,
+					skill.repoPath,
+					repoConfig.branch,
+					skill.installedPath,
+				);
+
+				if (downloadResult && "authRequired" in downloadResult) {
+					setState({
+						phase: "auth_required",
+						message: downloadResult.message,
+					});
+					return;
+				}
+
+				// Update config
+				const updatedSkill: InstalledSkill = {
+					...skill,
+					commitSha: latestSha,
+				};
+				addInstalledSkill(updatedSkill);
+
+				upgraded.push(skill.name);
+			} catch {
+				// Skip failed upgrades
+			}
+		}
+
+		if (upgraded.length > 0) {
+			setState({ phase: "success", upgraded });
+		} else {
+			setState({ phase: "error", message: "All upgrades failed" });
+		}
+	}, []);
+
+	// Handle selection confirmation
+	const handleSelectConfirm = (selectedValues: string[]) => {
+		if (state.phase !== "select") return;
+
+		if (selectedValues.length === 0) {
+			setState({ phase: "cancelled" });
+			return;
+		}
+
+		const selectedUpgrades = state.upgrades.filter((u) =>
+			selectedValues.includes(u.skill.name),
+		);
+
+		performUpgrades(selectedUpgrades).catch((err) => {
+			setState({
+				phase: "error",
+				message: err instanceof Error ? err.message : "Upgrade failed",
+			});
+		});
+	};
+
+	// Handle selection cancel
+	const handleSelectCancel = () => {
+		setState({ phase: "cancelled" });
+	};
+
 	useEffect(() => {
-		async function upgrade() {
+		async function checkUpdates() {
 			const config = getConfig();
 
 			// Determine which skills to check
@@ -239,66 +336,23 @@ export default function Upgrade({ args: [skillName] }: Props) {
 				return;
 			}
 
-			// Perform upgrades
-			const upgraded: string[] = [];
-
-			for (let i = 0; i < upgrades.length; i++) {
-				const { skill, latestSha } = upgrades[i];
-				setState({
-					phase: "upgrading",
-					upgrades,
-					current: i,
-					progress: Math.round((i / upgrades.length) * 100),
-				});
-
-				try {
-					const repoConfig = config.repos.find((r) => r.repo === skill.repo);
-					if (!repoConfig) continue;
-
-					// Download new files
-					const downloadResult = await downloadSkillFiles(
-						token,
-						skill.repo,
-						skill.repoPath,
-						repoConfig.branch,
-						skill.installedPath,
-					);
-
-					if (downloadResult && "authRequired" in downloadResult) {
-						setState({
-							phase: "auth_required",
-							message: downloadResult.message,
-						});
-						return;
-					}
-
-					// Update config
-					const updatedSkill: InstalledSkill = {
-						...skill,
-						commitSha: latestSha,
-					};
-					addInstalledSkill(updatedSkill);
-
-					upgraded.push(skill.name);
-				} catch {
-					// Skip failed upgrades
-				}
+			// If specific skill or --yes flag, upgrade directly
+			if (skillName || options.yes) {
+				await performUpgrades(upgrades);
+				return;
 			}
 
-			if (upgraded.length > 0) {
-				setState({ phase: "success", upgraded });
-			} else {
-				setState({ phase: "error", message: "All upgrades failed" });
-			}
+			// Show selection UI
+			setState({ phase: "select", upgrades });
 		}
 
-		upgrade().catch((err) => {
+		checkUpdates().catch((err) => {
 			setState({
 				phase: "error",
 				message: err instanceof Error ? err.message : "Upgrade failed",
 			});
 		});
-	}, [skillName]);
+	}, [skillName, options.yes, performUpgrades]);
 
 	// Add output item when state is final
 	useEffect(() => {
@@ -307,6 +361,7 @@ export default function Upgrade({ args: [skillName] }: Props) {
 			state.phase === "no_updates" ||
 			state.phase === "success" ||
 			state.phase === "auth_required" ||
+			state.phase === "cancelled" ||
 			state.phase === "error";
 
 		if (isFinalState && outputItems.length === 0) {
@@ -363,6 +418,11 @@ export default function Upgrade({ args: [skillName] }: Props) {
 					</Box>
 				);
 
+			case "cancelled":
+				return (
+					<StatusMessage type="info">Upgrade cancelled</StatusMessage>
+				);
+
 			case "error":
 				return <StatusMessage type="error">{state.message}</StatusMessage>;
 
@@ -378,6 +438,27 @@ export default function Upgrade({ args: [skillName] }: Props) {
 				<Spinner
 					text={`Checking for updates (${state.current}/${state.total})...`}
 				/>
+			)}
+			{state.phase === "select" && (
+				<Box flexDirection="column">
+					<Box marginBottom={1}>
+						<Text bold>
+							Found {state.upgrades.length} skill(s) with updates available:
+						</Text>
+					</Box>
+					<MultiSelect
+						items={state.upgrades.map(
+							(u): MultiSelectItem => ({
+								label: u.skill.name,
+								value: u.skill.name,
+								hint: `${u.currentSha.slice(0, 7)} → ${u.latestSha.slice(0, 7)}`,
+							}),
+						)}
+						initialSelected={state.upgrades.map((u) => u.skill.name)}
+						onSubmit={handleSelectConfirm}
+						onCancel={handleSelectCancel}
+					/>
+				</Box>
 			)}
 			{state.phase === "upgrading" && (
 				<Box flexDirection="column">

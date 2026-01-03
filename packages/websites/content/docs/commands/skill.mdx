@@ -42,20 +42,35 @@ skilluse uninstall <skill>
 
 ## upgrade
 
-Update a skill to its latest version.
+Update skills to their latest versions with interactive selection.
 
 ```bash
+# Interactive upgrade (shows multi-select UI)
+skilluse upgrade
+
+# Upgrade specific skill directly
 skilluse upgrade <skill>
+
+# Upgrade all without prompting
+skilluse upgrade --yes
 ```
 
-Compares the installed version's commit SHA with the latest in the repository.
+When run without arguments, displays an interactive multi-select UI showing all skills with available updates. Each skill shows its current and latest commit SHA (e.g., `abc1234 → def5678`).
+
+### Interactive Controls
+
+| Key | Action |
+|-----|--------|
+| `Space` | Toggle selection |
+| `a` | Select/deselect all |
+| `Enter` | Confirm and upgrade selected |
+| `Esc` | Cancel |
 
 ### Options
 
 | Option | Description |
 |--------|-------------|
-| `--global` | Upgrade global skill |
-| `--all` | Upgrade all installed skills |
+| `-y, --yes` | Skip selection UI, upgrade all |
 
 ## list
 

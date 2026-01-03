@@ -55,7 +55,8 @@ skilluse install code-review
 | `skilluse install <github-url>` | Install from GitHub URL |
 | `skilluse install <skill> --global` | Install globally |
 | `skilluse uninstall <skill>` | Remove installed skill |
-| `skilluse upgrade [skill]` | Upgrade skill(s) to latest |
+| `skilluse upgrade [skill]` | Upgrade skill(s) with interactive selection |
+| `skilluse upgrade --yes` | Upgrade all skills without prompting |
 | `skilluse list` | List installed skills |
 | `skilluse list --outdated` | Show skills with updates |
 
