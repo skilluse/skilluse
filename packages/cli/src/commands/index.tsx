@@ -207,7 +207,7 @@ export default function Index(_props: Props) {
 
 					{/* Installed Skills Section */}
 					<Text bold>Installed Skills ({state.skills.length})</Text>
-					<Box flexDirection="column" marginLeft={2}>
+					<Box flexDirection="column" marginLeft={2} marginBottom={1}>
 						{state.skills.length === 0 ? (
 							<Text dimColor>(no skills installed)</Text>
 						) : (
@@ -220,6 +220,13 @@ export default function Index(_props: Props) {
 								</Box>
 							))
 						)}
+					</Box>
+
+					{/* Commands Section */}
+					<Box marginTop={0}>
+						<Text dimColor>Run </Text>
+						<Text color="cyan">skilluse --help</Text>
+						<Text dimColor> for all commands</Text>
 					</Box>
 				</Box>
 			);

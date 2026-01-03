@@ -13,7 +13,7 @@ Currently, running `skilluse` without arguments shows Commander.js help. The `co
 - `skilluse` (no args) shows status overview
 - Remove explicit `skilluse status` command (keep CLI minimal)
 - Display structured, grouped information
-- No "Quick Actions" section (keep it concise)
+- Add concise "Commands" section with core commands only
 
 ## Output Format
 
@@ -32,6 +32,12 @@ Installed Skills (3)
   commit       from anthropics/claude-skills
   pdf          from anthropics/claude-skills
   code-review  from my/personal-skills
+
+Commands
+  skilluse search <query>     Search for skills
+  skilluse install <skill>    Install a skill
+  skilluse list               List installed skills
+  skilluse --help             Show all commands
 ```
 
 ### Not Logged In State
@@ -48,6 +54,12 @@ Repos (0)
 
 Installed Skills (0)
   (no skills installed)
+
+Commands
+  skilluse login              Login to GitHub
+  skilluse repo add <repo>    Add a skill repository
+  skilluse search <query>     Search for skills
+  skilluse --help             Show all commands
 ```
 
 ## Technical Details
@@ -69,10 +81,10 @@ Installed Skills (0)
    ```
 
 2. Update `commands/index.tsx` to:
-   - Remove "Quick Actions" section
    - Show full repo list (not just count)
    - Show full skill list (not just count)
    - Use structured grouping with headers
+   - Add "Commands" section with contextual core commands
 
 ## Acceptance Criteria
 

@@ -59,7 +59,7 @@ The CLI provides a unified interface for discovering, installing, and managing s
 
 | Issue | Title | Status |
 |-------|-------|--------|
-| auth01-optional-authentication | Optional Auth for Public Repos | pending |
+| auth01-optional-authentication | Optional Auth for Public Repos | completed |
 
 ### Refactoring
 
@@ -73,17 +73,23 @@ The CLI provides a unified interface for discovering, installing, and managing s
 
 | Issue | Title | Status |
 |-------|-------|--------|
-| bug01-ink-static-component | Fix Ink Exit Race Condition | in-progress |
+| bug01-ink-static-component | Fix Ink Exit Race Condition | completed |
 | bug02-list-filesystem-sync | Verify Filesystem and CWD in List | completed |
 
 ### New Features
 
 | Issue | Title | Status |
 |-------|-------|--------|
-| feat01-repo-write-commands | Add Repo Init and Publish Commands | pending |
-| feat02-status-command | Add Status Command as Default Action | pending |
+| feat01-repo-write-commands | Add Publish Command | pending |
+| feat02-status-command | Add Status Command as Default Action | completed |
 | feat03-public-repo-warning | Security Warning for Public Repos | completed |
 | feat04-repo-url-support | Support Full GitHub URLs in Repo Add | completed |
+
+### Performance
+
+| Issue | Title | Status |
+|-------|-------|--------|
+| perf01-local-skills-index | Local Skills Index Cache | pending |
 
 ## References
 
