@@ -36,15 +36,15 @@ import RepoRemove, {
 import RepoUse, { args as repoUseArgs } from "./commands/repo/use.js";
 // Import agent subcommands
 import AgentIndex, { args as agentArgs } from "./commands/agent/index.js";
-import Search, {
-	args as searchArgs,
-	options as searchOptions,
-} from "./commands/search.js";
+import Search, { args as searchArgs } from "./commands/search.js";
 import Uninstall, {
 	args as uninstallArgs,
 	options as uninstallOptions,
 } from "./commands/uninstall.js";
-import Upgrade, { args as upgradeArgs } from "./commands/upgrade.js";
+import Upgrade, {
+	args as upgradeArgs,
+	options as upgradeOptions,
+} from "./commands/upgrade.js";
 import Publish, { args as publishArgs } from "./commands/publish.js";
 import pkg from "../package.json" with { type: "json" };
 
@@ -94,12 +94,10 @@ program
 // search command
 program
 	.command("search <keyword>")
-	.description("Search for skills")
-	.option("-a, --all", "Search in all configured repos")
-	.action((keyword, opts) => {
+	.description("Search for skills in default repository")
+	.action((keyword) => {
 		const args = searchArgs.parse([keyword]);
-		const options = searchOptions.parse(opts);
-		render(<Search args={args} options={options} />);
+		render(<Search args={args} options={{}} />);
 	});
 
 // install command
@@ -129,9 +127,11 @@ program
 program
 	.command("upgrade [skill-name]")
 	.description("Upgrade skill(s) to latest version")
-	.action((skillName) => {
+	.option("-y, --yes", "Skip selection and upgrade all")
+	.action((skillName, opts) => {
 		const args = upgradeArgs.parse([skillName]);
-		render(<Upgrade args={args} options={{}} />);
+		const options = upgradeOptions.parse(opts);
+		render(<Upgrade args={args} options={options} />);
 	});
 
 // info command

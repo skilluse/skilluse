@@ -12,12 +12,7 @@ import {
 
 export const args = z.tuple([z.string().describe("Search keyword")]);
 
-export const options = z.object({
-	all: z
-		.boolean()
-		.default(false)
-		.describe("Search in all configured repos (not just default)"),
-});
+export const options = z.object({});
 
 interface Props {
 	args: z.infer<typeof args>;
@@ -61,7 +56,7 @@ function filterSkills(
 	});
 }
 
-export default function Search({ args: [keyword], options: opts }: Props) {
+export default function Search({ args: [keyword] }: Props) {
 	const { exit } = useApp();
 	const [state, setState] = useState<SearchState>({ phase: "checking" });
 	const [outputItems, setOutputItems] = useState<Array<{ id: string }>>([]);
@@ -70,50 +65,36 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 		async function search() {
 			const config = getConfig();
 
-			// Determine which repos to search
-			let reposToSearch: RepoConfig[] = [];
+			// Get default repo to search
+			let repoConfig: RepoConfig | undefined;
 
-			if (opts.all) {
-				reposToSearch = config.repos;
-			} else if (config.defaultRepo) {
-				const defaultRepoConfig = config.repos.find(
-					(r) => r.repo === config.defaultRepo,
-				);
-				if (defaultRepoConfig) {
-					reposToSearch = [defaultRepoConfig];
-				}
+			if (config.defaultRepo) {
+				repoConfig = config.repos.find((r) => r.repo === config.defaultRepo);
 			} else if (config.repos.length > 0) {
 				// Use first repo if no default
-				reposToSearch = [config.repos[0]];
+				repoConfig = config.repos[0];
 			}
 
-			if (reposToSearch.length === 0) {
+			if (!repoConfig) {
 				setState({ phase: "no_repos" });
 				return;
 			}
+
+			setState({ phase: "searching", repo: repoConfig.repo });
 
 			// Get optional credentials
 			const credentials = await getCredentials();
 			const token = credentials?.token;
 
-			// Fetch skills from all repos
-			const allSkills: SkillMetadata[] = [];
+			const result = await fetchSkillsFromRepo(token, repoConfig);
 
-			for (const repoConfig of reposToSearch) {
-				setState({ phase: "searching", repo: repoConfig.repo });
-
-				const result = await fetchSkillsFromRepo(token, repoConfig);
-
-				if ("authRequired" in result) {
-					setState({ phase: "auth_required", message: result.message });
-					return;
-				}
-
-				allSkills.push(...result);
+			if ("authRequired" in result) {
+				setState({ phase: "auth_required", message: result.message });
+				return;
 			}
 
 			// Filter by keyword
-			const matchingSkills = filterSkills(allSkills, keyword);
+			const matchingSkills = filterSkills(result, keyword);
 
 			setState({ phase: "success", skills: matchingSkills, keyword });
 		}
@@ -124,7 +105,7 @@ export default function Search({ args: [keyword], options: opts }: Props) {
 				message: err instanceof Error ? err.message : "Search failed",
 			});
 		});
-	}, [keyword, opts.all]);
+	}, [keyword]);
 
 	// Add output item when state is final
 	useEffect(() => {
