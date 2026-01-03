@@ -24,13 +24,10 @@ skilluse repo add <repository>
 
 ```bash
 # Add using short format
-skilluse repo add acme/skills
+skilluse repo add skilluse/skills
 
 # Add using full GitHub URL
-skilluse repo add https://github.com/acme/skills
-
-# Add your own repository
-skilluse repo add myuser/my-skills
+skilluse repo add https://github.com/skilluse/skills
 ```
 
 ## repo list
@@ -57,7 +54,7 @@ skilluse repo use <owner/repo>
 ### Example
 
 ```bash
-skilluse repo use acme/skills
+skilluse repo use skilluse/skills
 ```
 
 ## repo skills
@@ -77,7 +74,7 @@ Shows:
 
 ```bash
 $ skilluse repo skills
-Skills in acme/skills (2/5 installed)
+Skills in skilluse/skills (2/5 installed)
 
 ● commit v1.0.0 (installed)
   Generate conventional commit messages
@@ -113,8 +110,8 @@ skilluse repo remove <owner/repo>
 
 ```bash
 # Remove with confirmation
-skilluse repo remove acme/skills
+skilluse repo remove skilluse/skills
 
 # Remove without confirmation
-skilluse repo remove acme/skills --force
+skilluse repo remove skilluse/skills --force
 ```
