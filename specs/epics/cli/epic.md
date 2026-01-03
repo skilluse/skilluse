@@ -67,14 +67,14 @@ The CLI provides a unified interface for discovering, installing, and managing s
 |-------|-------|--------|
 | refactor01-agent-command | Simplify "agent use" to "agent" | completed |
 | refactor02-login-force-flag | Remove --force flag from login | completed |
-| refactor03-remove-version-field | Remove version field from InstalledSkill | pending |
+| refactor03-remove-version-field | Remove version field from InstalledSkill | completed |
 
 ### Bug Fixes
 
 | Issue | Title | Status |
 |-------|-------|--------|
-| bug01-ink-static-component | Fix Ink Exit Race Condition | pending |
-| bug02-list-filesystem-sync | Verify Filesystem and CWD in List | pending |
+| bug01-ink-static-component | Fix Ink Exit Race Condition | in-progress |
+| bug02-list-filesystem-sync | Verify Filesystem and CWD in List | completed |
 
 ### New Features
 
