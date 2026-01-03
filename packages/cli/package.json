@@ -27,7 +27,6 @@
 		"dev": "bun --watch src/index.tsx",
 		"build": "bun build src/cli.tsx --outdir dist --target node --define 'process.env.DEV=\"false\"'",
 		"build:bin": "bun build src/cli.tsx --compile --minify --sourcemap --define 'process.env.DEV=\"false\"' --outfile dist/skilluse",
-		"build:all": "bun run scripts/build-all.ts",
 		"typecheck": "tsc --noEmit",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
