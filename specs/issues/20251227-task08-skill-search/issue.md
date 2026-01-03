@@ -5,7 +5,6 @@ Implement skill search functionality across configured repositories.
 
 ## Requirements
 - `skilluse search <keyword>` - Search in default repo
-- `skilluse search <keyword> --all` - Search in all repos
 - Display search results with name, description, repo, type
 
 ## Technical Details

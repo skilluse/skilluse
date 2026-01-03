@@ -288,8 +288,7 @@ skilluse repo remove <owner/repo>   # Remove repo
 skilluse repo update [owner/repo]   # Update skill index
 
 # Skill Operations
-skilluse search <keyword> [--repo <repo>]   # Search (default repo)
-skilluse search <keyword> --all             # Search all repos
+skilluse search <keyword>                   # Search in default repo
 skilluse install <skill-name> [--repo <repo>]  # Install from repo
 skilluse install <skill-name> --local       # Explicit local install
 skilluse install <skill-name> --global      # Global install (~/.claude/skills/)

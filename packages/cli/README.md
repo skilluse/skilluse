@@ -51,6 +51,8 @@ skilluse install code-review
 
 | Command | Description |
 |---------|-------------|
+| `skilluse search <keyword>` | Search for skills in default repo |
+| `skilluse repo skills` | List all skills in default repo |
 | `skilluse install <skill>` | Install from configured repo |
 | `skilluse install <github-url>` | Install from GitHub URL |
 | `skilluse install <skill> --global` | Install globally |

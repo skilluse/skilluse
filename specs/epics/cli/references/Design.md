@@ -100,7 +100,6 @@ skilluse repo sync [owner/repo]     # Refresh index
 
 # Skill Operations
 skilluse search <keyword>                   # Search in default repo
-skilluse search <keyword> --all             # Search in all repos
 skilluse install <skill-name>               # Install locally (default)
 skilluse install <skill-name> --local       # Explicit local install
 skilluse install <skill-name> --global      # Global install (~/.claude/skills/)
