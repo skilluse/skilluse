@@ -588,9 +588,27 @@ export default function Publish({ args: [skillName] }: Props) {
 
 			case "no_write_access":
 				return (
-					<StatusMessage type="error">
-						No write access to repo: {state.repo}
-					</StatusMessage>
+					<>
+						<StatusMessage type="error">
+							No write access to repo: {state.repo}
+						</StatusMessage>
+						<Box marginTop={1} flexDirection="column">
+							<Text dimColor>Possible causes:</Text>
+							<Text dimColor>
+								1. Skilluse App not installed on this org/account
+							</Text>
+							<Text dimColor>
+								2. App not granted access to this specific repo
+							</Text>
+						</Box>
+						<Box marginTop={1} flexDirection="column">
+							<Text dimColor>Install or configure the App for this repo:</Text>
+							<Text color="cyan">
+								https://github.com/apps/skilluse/installations/new
+							</Text>
+							<Text dimColor>Then run 'skilluse login' to refresh your token.</Text>
+						</Box>
+					</>
 				);
 
 			case "repo_not_found":

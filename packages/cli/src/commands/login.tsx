@@ -132,7 +132,6 @@ export default function Login(_props: Props) {
 					phase: "no_installation",
 					installUrl: "https://github.com/apps/skilluse/installations/new",
 				});
-				exit();
 				return;
 			}
 
@@ -142,7 +141,6 @@ export default function Login(_props: Props) {
 					phase: "no_installation",
 					installUrl: "https://github.com/apps/skilluse/installations/new",
 				});
-				exit();
 				return;
 			}
 
@@ -168,11 +166,17 @@ export default function Login(_props: Props) {
 				username,
 				installations: storedInstallations,
 			});
-			exit();
 		}
 
 		runLogin();
 	}, [exit]);
+
+	// Exit after terminal states are rendered
+	useEffect(() => {
+		if (state.phase === "success" || state.phase === "no_installation") {
+			exit();
+		}
+	}, [state.phase, exit]);
 
 	switch (state.phase) {
 		case "requesting_code":
@@ -226,17 +230,31 @@ export default function Login(_props: Props) {
 					</StatusMessage>
 					{state.installations.length > 0 && (
 						<Box marginTop={1} flexDirection="column">
-							<Text dimColor>
-								{state.installations.length} installation
-								{state.installations.length > 1 ? "s" : ""} found:
-							</Text>
+							<Text>App installed on:</Text>
 							{state.installations.map((inst) => (
-								<Text key={inst.id} dimColor>
-									• {inst.account} ({inst.accountType.toLowerCase()})
-								</Text>
+								<Box key={inst.id} marginLeft={2}>
+									<Text color="green">*</Text>
+									<Text> {inst.account}</Text>
+									<Text dimColor>
+										{" "}
+										({inst.accountType.toLowerCase()},{" "}
+										{inst.repositorySelection === "all"
+											? "all repos"
+											: "selected repos"}
+										)
+									</Text>
+								</Box>
 							))}
 						</Box>
 					)}
+					<Box marginTop={1} flexDirection="column">
+						<Text dimColor>
+							To publish skills to other orgs, install the App there first:
+						</Text>
+						<Text color="cyan" dimColor>
+							https://github.com/apps/skilluse/installations/new
+						</Text>
+					</Box>
 				</Box>
 			);
 
