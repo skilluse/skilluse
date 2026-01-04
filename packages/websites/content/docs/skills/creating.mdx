@@ -88,8 +88,20 @@ Test your skill by:
 
 ## Sharing Skills
 
-Once tested, share skills by:
+Once tested, share skills with the publish command:
+
+```bash
+# Set your default repository
+skilluse repo use <owner/repo>
+
+# Publish the skill
+skilluse publish <skill-name>
+```
+
+Or manually by:
 
 1. Pushing to a GitHub repository
-2. Adding the repo: `skilluse repo add owner/repo`
-3. Installing: `skilluse install skill-name`
+2. Adding the repo: `skilluse repo add <owner/repo>`
+3. Installing: `skilluse install <skill-name>`
+
+See [Publish Command](/docs/commands/publish) for more details.

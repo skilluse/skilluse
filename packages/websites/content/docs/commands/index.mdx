@@ -21,23 +21,24 @@ SkillUse provides commands for authentication, repository management, skill inst
 | Command | Description |
 |---------|-------------|
 | `skilluse repo list` | List configured repositories |
-| `skilluse repo add <repo>` | Add a skill repository |
-| `skilluse repo remove <repo>` | Remove a repository |
-| `skilluse repo use <repo>` | Set default repository |
-| `skilluse repo edit <repo>` | Edit repository settings |
+| `skilluse repo add <owner/repo>` | Add a skill repository |
+| `skilluse repo remove <owner/repo>` | Remove a repository |
+| `skilluse repo use <owner/repo>` | Set default repository |
+| `skilluse repo edit <owner/repo>` | Edit repository settings |
 
 ### Skill Management
 
 | Command | Description |
 |---------|-------------|
 | `skilluse search <keyword>` | Search for skills |
-| `skilluse install <skill>` | Install a skill locally |
-| `skilluse install <skill> -g` | Install globally |
-| `skilluse uninstall <skill>` | Remove an installed skill |
-| `skilluse upgrade [skill]` | Upgrade skill(s) to latest |
+| `skilluse install <skill-name>` | Install a skill locally |
+| `skilluse install <skill-name> -g` | Install globally |
+| `skilluse uninstall <skill-name>` | Remove an installed skill |
+| `skilluse upgrade [skill-name]` | Upgrade skill(s) to latest |
 | `skilluse list` | List installed skills |
 | `skilluse list --outdated` | Show skills with updates |
-| `skilluse info <skill>` | Show skill details |
+| `skilluse info <skill-name>` | Show skill details |
+| `skilluse publish <skill-name>` | Publish skill to repository |
 
 ### Agent Management
 
@@ -62,3 +63,4 @@ skilluse repo --help
 - [Authentication Commands](/docs/commands/auth)
 - [Repository Commands](/docs/commands/repo)
 - [Skill Commands](/docs/commands/skill)
+- [Publish Command](/docs/commands/publish)

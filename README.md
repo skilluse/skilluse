@@ -73,13 +73,14 @@ skilluse logout       # Clear credentials
 
 ### Skill Management
 ```bash
-skilluse install <skill>                    # Install from configured repo
+skilluse install <skill-name>               # Install from configured repo
 skilluse install <github-url>               # Install from GitHub URL
-skilluse install <skill> -g                 # Install globally
-skilluse uninstall <skill>                  # Remove skill
-skilluse upgrade [skill]                    # Upgrade to latest
+skilluse install <skill-name> -g            # Install globally
+skilluse uninstall <skill-name>             # Remove skill
+skilluse upgrade [skill-name]               # Upgrade to latest
 skilluse list                               # List installed
 skilluse list --outdated                    # Check for updates
+skilluse publish <skill-name>               # Publish skill to repo
 ```
 
 Example with GitHub URL:
@@ -89,11 +90,11 @@ skilluse install https://github.com/owner/repo/tree/main/skills/code-review
 
 ### Repository Management
 ```bash
-skilluse repo list             # List repositories
-skilluse repo add <repo>       # Add repository
-skilluse repo use <repo>       # Set default
-skilluse repo skills           # List all skills in current repo
-skilluse repo remove <repo>    # Remove repository
+skilluse repo list                 # List repositories
+skilluse repo add <owner/repo>     # Add repository
+skilluse repo use <owner/repo>     # Set default
+skilluse repo skills               # List all skills in current repo
+skilluse repo remove <owner/repo>  # Remove repository
 ```
 
 ### Multi-Agent Support
@@ -132,8 +133,8 @@ Supported: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `
 
 | Scope | Path |
 |-------|------|
-| Local | `./.claude/skills/<name>/` |
-| Global | `~/.claude/skills/<name>/` |
+| Local | `./.claude/skills/<skill-name>/` |
+| Global | `~/.claude/skills/<skill-name>/` |
 
 ## Security
 
@@ -150,3 +151,8 @@ Supported: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `
 ## License
 
 MIT
+
+
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)

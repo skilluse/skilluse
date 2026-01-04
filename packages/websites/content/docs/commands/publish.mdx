@@ -1,0 +1,91 @@
+---
+title: Publish Command
+description: Publish skills to a GitHub repository
+order: 14
+---
+
+Publish your locally created skills to a configured GitHub repository.
+
+## Usage
+
+```bash
+skilluse publish <skill-name>
+```
+
+The skill must exist in your local skills directory (`.claude/skills/<skill-name>/`).
+
+## Prerequisites
+
+1. **Authentication**: You must be logged in with `skilluse login`
+2. **Default Repository**: A default repo must be set with `skilluse repo use <repo>`
+3. **Write Access**: You need write access to the target repository (via SkillUse GitHub App)
+
+## Skill Requirements
+
+Your skill directory must contain a `SKILL.md` file with required frontmatter:
+
+```markdown
+---
+name: my-skill
+description: A brief description of what this skill does
+---
+
+# My Skill
+
+Instructions for the AI agent...
+```
+
+### Required Fields
+
+| Field | Description |
+|-------|-------------|
+| `name` | Skill identifier (should match directory name) |
+| `description` | Brief description of the skill's purpose |
+
+## Examples
+
+### Publish a Skill
+
+```bash
+# Create a skill locally first
+# .claude/skills/<skill-name>/SKILL.md
+
+# Publish to your default repository
+skilluse publish <skill-name>
+```
+
+### Overwrite Existing Skill
+
+If the skill already exists in the repository, you'll be prompted:
+
+```
+Skill Already Exists
+Skill <skill-name> already exists in repository:
+  <owner/repo>
+Press Y to overwrite, N to cancel
+```
+
+## Workflow
+
+1. Create your skill locally in `.claude/skills/<skill-name>/`
+2. Add a `SKILL.md` with required frontmatter
+3. Test the skill with your AI agent
+4. Run `skilluse publish <skill-name>`
+5. Share the repository with others
+
+## Error Messages
+
+| Error | Solution |
+|-------|----------|
+| Authentication required | Run `skilluse login` |
+| No default repo configured | Run `skilluse repo use <owner/repo>` |
+| Skill not found | Check skill exists in `.claude/skills/` |
+| SKILL.md not found | Create SKILL.md in skill directory |
+| Missing required field | Add `name` and `description` to frontmatter |
+| No write access | Install SkillUse GitHub App on the repository |
+
+## Related
+
+- [Creating Skills](/docs/skills/creating) - How to create effective skills
+- [Skill Format](/docs/skills/format) - SKILL.md specification
+- [Repository Commands](/docs/commands/repo) - Managing repositories
