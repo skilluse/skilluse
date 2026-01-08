@@ -110,6 +110,7 @@ skilluse repo remove <owner/repo>  # Remove repository
 ```
 
 ### Skill Management
+
 ```bash
 skilluse install <skill-name>               # Install from configured repo
 skilluse install <github-url>               # Install from GitHub URL
@@ -127,14 +128,13 @@ skilluse install https://github.com/owner/repo/tree/main/skills/code-review
 ```
 
 ### Multi-Agent Support
+
 ```bash
 skilluse agent                 # Select agent interactively
 skilluse agent <name>          # Switch to agent
 ```
 
 Supported: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `aider`, `continue`
-
-
 
 ## Installation Paths
 
