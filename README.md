@@ -9,25 +9,51 @@
 
 **A Skills Registry for AI Agents.**
 
-SkillUse is a package manager for AI agent skills. Discover, install, and publish skills across multiple AI agents—Claude Code, Cursor, Windsurf, and more.
+SkillUse is a registry for AI agent skills based on GitHub. Discover, install, and publish skills across your teams and coding agents like Claude Code, Cursor, Windsurf, and more.
 
-## Why SkillUse?
+## How It Works
 
-**For Individuals**
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│            GitHub Repositories (Skill Registries)               │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│   │ Public Repo  │  │ Company Repo │  │ Personal Repo│          │
+│   │ (community)  │  │  (private)   │  │  (private)   │          │
+│   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
+│          │                 │                 │                  │
+│          └─────────────────┼─────────────────┘                  │
+│                            ▼                                    │
+│                     ┌────────────┐                              │
+│                     │  skilluse  │                              │
+│                     └─────┬──────┘                              │
+│                           │                                     │
+│          ┌────────────────┼────────────────┐                    │
+│          ▼                ▼                ▼                    │
+│   ~/.claude/skills  ~/.cursor/skills  ~/.codex/skills           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Why Use SkillUse?
+
+For Individuals:
+
 - Reuse your best prompts and workflows across projects
 - Share expertise with the community
 - Switch between AI agents without rebuilding your skill library
 
-**For Teams**
+For Teams:
+
 - Standardize workflows and best practices across the organization
 - Onboard new members faster with institutional knowledge encoded in skills
 - Keep private skills internal while consuming public community skills
 
-**Key Features**
+### Key Features
+
 - **Multi-Agent**: One CLI for all AI agents, automatic path detection
 - **Read + Write**: Not just install—create and publish your own skills
 - **GitHub-Based**: Use any GitHub repo as a skill registry—public or private
-- **Version Tracking**: Git-based versioning with upgrade detection
 
 ## Installation
 
@@ -57,6 +83,7 @@ skilluse install code-review
 | Private repo | Yes |
 
 For private repositories:
+
 ```bash
 skilluse login
 skilluse repo add mycompany/private-skills
@@ -65,10 +92,21 @@ skilluse repo add mycompany/private-skills
 ## Commands
 
 ### Status & Auth
+
 ```bash
 skilluse              # Show status
 skilluse login        # Authenticate with GitHub
 skilluse logout       # Clear credentials
+```
+
+### Repository Management
+
+```bash
+skilluse repo list                 # List repositories
+skilluse repo add <owner/repo>     # Add repository
+skilluse repo use <owner/repo>     # Set default
+skilluse repo skills               # List all skills in current repo
+skilluse repo remove <owner/repo>  # Remove repository
 ```
 
 ### Skill Management
@@ -88,15 +126,6 @@ Example with GitHub URL:
 skilluse install https://github.com/owner/repo/tree/main/skills/code-review
 ```
 
-### Repository Management
-```bash
-skilluse repo list                 # List repositories
-skilluse repo add <owner/repo>     # Add repository
-skilluse repo use <owner/repo>     # Set default
-skilluse repo skills               # List all skills in current repo
-skilluse repo remove <owner/repo>  # Remove repository
-```
-
 ### Multi-Agent Support
 ```bash
 skilluse agent                 # Select agent interactively
@@ -105,29 +134,7 @@ skilluse agent <name>          # Switch to agent
 
 Supported: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `aider`, `continue`
 
-## How It Works
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   GitHub Repositories (Skill Registries)                        │
-│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│   │ Public Repo  │  │ Company Repo │  │ Personal Repo│          │
-│   │ (community)  │  │  (private)   │  │  (private)   │          │
-│   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
-│          │                 │                 │                  │
-│          └─────────────────┼─────────────────┘                  │
-│                            ▼                                    │
-│                     ┌────────────┐                              │
-│                     │  skilluse  │                              │
-│                     └─────┬──────┘                              │
-│                           │                                     │
-│          ┌────────────────┼────────────────┐                    │
-│          ▼                ▼                ▼                    │
-│   ~/.claude/skills  ~/.cursor/skills  ~/.windsurf/skills        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
 
 ## Installation Paths
 
@@ -151,8 +158,3 @@ Supported: `claude`, `cursor`, `windsurf`, `codex`, `copilot`, `cline`, `roo`, `
 ## License
 
 MIT
-
-
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
