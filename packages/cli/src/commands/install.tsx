@@ -673,13 +673,30 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 				return;
 			}
 
-			// Search for the skill
-			const allRepos = config.repos;
-			for (const repo of allRepos) {
-				setState({ phase: "searching", repo: repo.repo });
+			// If a default repo is set, only search in that repo
+			// Otherwise search all configured repos
+			let searchRepos: RepoConfig[];
+			if (config.defaultRepo) {
+				const defaultRepoConfig = config.repos.find(
+					(r) => r.repo === config.defaultRepo,
+				);
+				if (defaultRepoConfig) {
+					searchRepos = [defaultRepoConfig];
+				} else {
+					// Default repo is set but not found in repos list
+					setState({
+						phase: "error",
+						message: `Default repo "${config.defaultRepo}" not found in configured repos`,
+					});
+					return;
+				}
+			} else {
+				searchRepos = config.repos;
 			}
 
-			const findResult = await findSkill(token, allRepos, source.name);
+			setState({ phase: "searching", repo: searchRepos[0].repo });
+
+			const findResult = await findSkill(token, searchRepos, source.name);
 
 			if ("authRequired" in findResult) {
 				setState({ phase: "auth_required", message: findResult.message });
@@ -1024,10 +1041,14 @@ export default function Install({ args: [skillName], options: opts }: Props) {
 						<StatusMessage type="error">
 							Skill "{state.skillName}" not found
 						</StatusMessage>
-						<Box marginTop={1}>
+						<Box flexDirection="column" marginTop={1}>
 							<Text dimColor>
 								Try 'skilluse search {state.skillName}' to find available
 								skills.
+							</Text>
+							<Text dimColor>
+								Or install from a specific repo: skilluse install
+								https://github.com/owner/repo/tree/main/skill-name
 							</Text>
 						</Box>
 					</>

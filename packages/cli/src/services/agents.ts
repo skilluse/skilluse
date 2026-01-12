@@ -55,8 +55,8 @@ export const AGENTS: Record<string, AgentConfig> = {
 		id: "opencode",
 		name: "OpenCode",
 		description: "OpenCode CLI",
-		localPath: ".opencode/skills",
-		globalPath: join(homedir(), ".opencode/skills"),
+		localPath: ".opencode/skill",
+		globalPath: join(homedir(), ".config/opencode/skill"),
 	},
 	letta: {
 		id: "letta",

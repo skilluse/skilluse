@@ -16,150 +16,32 @@ export default async function OGImage() {
           height: "100%",
           width: "100%",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#0a0a0a",
+          backgroundColor: "#ffffff",
           fontFamily: "monospace",
-          padding: "48px",
         }}
       >
-        {/* Terminal window */}
-        <div
+        <span
           style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            maxWidth: "1000px",
-            border: "1px solid #27272a",
-            backgroundColor: "#09090b",
+            color: "#05CE91",
+            fontSize: "72px",
+            fontWeight: 700,
           }}
         >
-          {/* Terminal header - macOS style */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "16px 20px",
-              borderBottom: "1px solid #27272a",
-              backgroundColor: "#18181b",
-            }}
-          >
-            {/* Traffic lights */}
-            <div style={{ display: "flex", gap: "8px" }}>
-              <div
-                style={{
-                  width: "14px",
-                  height: "14px",
-                  borderRadius: "50%",
-                  backgroundColor: "#ef4444",
-                  opacity: 0.7,
-                }}
-              />
-              <div
-                style={{
-                  width: "14px",
-                  height: "14px",
-                  borderRadius: "50%",
-                  backgroundColor: "#eab308",
-                  opacity: 0.7,
-                }}
-              />
-              <div
-                style={{
-                  width: "14px",
-                  height: "14px",
-                  borderRadius: "50%",
-                  backgroundColor: "#22c55e",
-                  opacity: 0.7,
-                }}
-              />
-            </div>
-            <span style={{ color: "#71717a", fontSize: "16px", marginLeft: "8px" }}>
-              skilluse.dev
-            </span>
-          </div>
+          {config.site.name}
+        </span>
 
-          {/* Terminal content */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "28px 32px",
-              gap: "20px",
-            }}
-          >
-            {/* ASCII Logo */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <div style={{ display: "flex", gap: "8px", fontSize: "18px" }}>
-                <span style={{ color: "#05CE91" }}>~</span>
-                <span style={{ color: "#71717a" }}>$</span>
-                <span style={{ color: "#ededed", marginLeft: "4px" }}>welcome</span>
-              </div>
-              <pre
-                style={{
-                  color: "#05CE91",
-                  fontSize: "28px",
-                  lineHeight: 1.15,
-                  margin: 0,
-                }}
-              >
-                {config.site.asciiLogo}
-              </pre>
-            </div>
-
-            {/* Help commands */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <div style={{ display: "flex", gap: "8px", fontSize: "18px" }}>
-                <span style={{ color: "#05CE91" }}>~</span>
-                <span style={{ color: "#71717a" }}>$</span>
-                <span style={{ color: "#ededed", marginLeft: "4px" }}>help</span>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginLeft: "4px", fontSize: "17px" }}>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <span style={{ color: "#05CE91", minWidth: "140px" }}>login</span>
-                  <span style={{ color: "#71717a" }}>- authenticate with GitHub</span>
-                </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <span style={{ color: "#05CE91", minWidth: "140px" }}>repo add</span>
-                  <span style={{ color: "#71717a" }}>- add a skill repository</span>
-                </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <span style={{ color: "#05CE91", minWidth: "140px" }}>install</span>
-                  <span style={{ color: "#71717a" }}>- install a skill</span>
-                </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <span style={{ color: "#05CE91", minWidth: "140px" }}>list</span>
-                  <span style={{ color: "#71717a" }}>- list installed skills</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Install command */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <div style={{ display: "flex", gap: "8px", fontSize: "18px" }}>
-                <span style={{ color: "#05CE91" }}>~</span>
-                <span style={{ color: "#71717a" }}>$</span>
-                <span style={{ color: "#ededed", marginLeft: "4px" }}>
-                  skilluse install code-review
-                </span>
-              </div>
-              <div style={{ display: "flex", gap: "8px", marginLeft: "4px", fontSize: "17px" }}>
-                <span style={{ color: "#22c55e" }}>✔</span>
-                <span style={{ color: "#71717a" }}>
-                  Installed code-review to .claude/skills/
-                </span>
-              </div>
-            </div>
-
-            {/* Active prompt with cursor */}
-            <div style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "18px" }}>
-              <span style={{ color: "#05CE91" }}>~</span>
-              <span style={{ color: "#71717a" }}>$</span>
-              <span style={{ color: "#05CE91", marginLeft: "4px" }}>▌</span>
-            </div>
-          </div>
-        </div>
+        <p
+          style={{
+            color: "#71717a",
+            fontSize: "28px",
+            marginTop: "16px",
+          }}
+        >
+          A Skills Registry for AI Agents
+        </p>
       </div>
     ),
     {
