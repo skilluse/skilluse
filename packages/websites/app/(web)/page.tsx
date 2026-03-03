@@ -48,8 +48,9 @@ export default function HomePage() {
       <Section id='introduction' title='Introduction'>
         <P>
           SkillUse is a CLI tool to discover, install, and manage{' '}
-          <strong>skills for AI coding assistants</strong> — Claude Code, Codex CLI, and more.
-          Skills are reusable slash commands and agent instructions that extend what your AI can do.{' '}
+          <strong>skills for AI coding assistants</strong> — Claude Code, Cursor, VS Code Copilot,
+          Goose, Codex, OpenCode, Letta, and more. Skills are reusable slash commands and agent
+          instructions that extend what your AI can do.{' '}
           <A href='https://github.com/skilluse/skilluse'>Star on GitHub</A>.
         </P>
         <P>
@@ -273,23 +274,35 @@ Run: git commit -m "<message>"`}</CodeBlock>
       {/* Supported agents */}
       <Section id='supported-agents' title='Supported agents'>
         <P>
-          SkillUse currently supports Claude Code with more agents on the roadmap.
+          SkillUse supports 8 agents. Skills are installed globally by default, or locally
+          (project-level) with the <Code>--local</Code> flag.
         </P>
         <ComparisonTable
           title='Agent support'
-          headers={['Agent', 'Status', 'Install path']}
+          headers={['Agent', 'Global path', 'Local path']}
           rows={[
-            ['Claude Code', '✓ Supported', '~/.claude/skills/'],
-            ['Codex CLI', 'Coming soon', '—'],
-            ['Cursor', 'Coming soon', '—'],
-            ['Windsurf', 'Coming soon', '—'],
+            ['Claude Code', '~/.claude/skills/', '.claude/skills/'],
+            ['Cursor', '— (project only)', '.cursor/skills/'],
+            ['VS Code + Copilot', '— (project only)', '.github/skills/'],
+            ['Goose', '~/.config/goose/skills/', '.goose/skills/'],
+            ['Codex CLI', '~/.codex/skills/', '.codex/skills/'],
+            ['OpenCode', '~/.config/opencode/skill/', '.opencode/skill/'],
+            ['Letta', '~/.letta/skills/', '.letta/skills/'],
+            ['Other (portable)', '— (project only)', '.skills/'],
           ]}
         />
         <P>
-          Skills installed for Claude Code appear as <Code>/skill-name</Code> slash commands in the
-          Claude Code REPL. The agent loads the <Code>SKILL.md</Code> prompt automatically when the
-          command is invoked.
+          Specify the agent with the <Code>--agent</Code> flag, or let SkillUse auto-detect based
+          on config files present in your project:
         </P>
+        <CodeBlock lang='bash' showLineNumbers={false}>{`# Auto-detect agent
+skilluse skill install commit
+
+# Specify agent explicitly
+skilluse skill install commit --agent cursor
+
+# Install locally (project-level)
+skilluse skill install commit --local`}</CodeBlock>
       </Section>
 
       <Divider />
