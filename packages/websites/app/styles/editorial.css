@@ -68,7 +68,7 @@
 /* ========================================================================
    Bleed — code blocks and images extend beyond the prose column so that
    the code text (after line numbers) aligns with the prose left edge.
-   44px = 8px div padding-left + 36px line-number span
+   80px bleed on each side
    ======================================================================== */
 
 .bleed {

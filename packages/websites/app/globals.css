@@ -34,9 +34,8 @@
     'JetBrainsMono NF Mono', 'JetBrains Mono', 'SF Mono', 'SFMono-Regular', 'Consolas',
     'Liberation Mono', Menlo, Courier, monospace;
 
-  /* Bleed: code blocks extend beyond prose column.
-     44px = 8px div padding-left + 36px line-number width */
-  --bleed: 44px;
+  /* Bleed: code blocks extend beyond prose column */
+  --bleed: 80px;
 
   /* Spacing scale */
   --spacing-xxs: 0.5rem;
@@ -62,7 +61,7 @@
   --bg: #fff;
   --page-border: #e3e3e3;
   --divider: rgb(242, 242, 242);
-  --code-bg: rgba(0, 0, 0, 0.02);
+  --code-bg: rgba(0, 0, 0, 0.05);
   --code-line-nr: rgba(0, 0, 0, 0.3);
   --selection-bg: rgba(0, 0, 0, 0.08);
 
@@ -127,7 +126,7 @@
     --bg: rgb(17, 17, 17);
     --page-border: rgba(255, 255, 255, 0.1);
     --divider: rgba(255, 255, 255, 0.06);
-    --code-bg: rgba(255, 255, 255, 0.05);
+    --code-bg: rgba(255, 255, 255, 0.08);
     --code-line-nr: rgba(255, 255, 255, 0.3);
     --selection-bg: rgba(255, 255, 255, 0.1);
     --btn-bg: rgb(30, 30, 30);

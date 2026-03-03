@@ -305,7 +305,7 @@ export function CodeBlock({
       <div className='relative'>
         <pre
           className='overflow-x-auto'
-          style={{ borderRadius: '8px', margin: 0, padding: 0 }}
+          style={{ borderRadius: '8px', margin: 0, padding: 0, background: 'var(--code-bg)' }}
         >
           <div
             className='flex'
