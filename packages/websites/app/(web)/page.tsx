@@ -100,22 +100,12 @@ export default function HomePage() {
       {/* Quick start */}
       <Section id='quick-start' title='Quick start'>
         <P>Get up and running in three steps:</P>
-        <OL>
-          <Li>
-            <strong>Authenticate</strong> — log in with your GitHub account to enable installing
-            and publishing skills:
-            <CodeBlock lang='bash'>{`skilluse auth login`}</CodeBlock>
-          </Li>
-          <Li>
-            <strong>Add a skill repository</strong> — point SkillUse at a GitHub repo containing
-            skills:
-            <CodeBlock lang='bash'>{`skilluse repo add skilluse/skilluse`}</CodeBlock>
-          </Li>
-          <Li>
-            <strong>Install a skill</strong> — browse and install skills from the repo:
-            <CodeBlock lang='bash'>{`skilluse skill install commit`}</CodeBlock>
-          </Li>
-        </OL>
+        <P><strong>1. Authenticate</strong> — log in with your GitHub account to enable installing and publishing skills:</P>
+        <CodeBlock lang='bash'>{`skilluse auth login`}</CodeBlock>
+        <P><strong>2. Add a skill repository</strong> — point SkillUse at a GitHub repo containing skills:</P>
+        <CodeBlock lang='bash'>{`skilluse repo add skilluse/skilluse`}</CodeBlock>
+        <P><strong>3. Install a skill</strong> — browse and install skills from the repo:</P>
+        <CodeBlock lang='bash'>{`skilluse skill install commit`}</CodeBlock>
         <P>
           Once installed, the skill appears as a slash command in your AI agent. In Claude Code,
           type <Code>/commit</Code> to use it.
