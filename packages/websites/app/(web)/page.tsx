@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 
 const tocItems = [
   { label: 'Introduction', href: '#introduction' },
+  { label: 'How it works', href: '#how-it-works' },
   { label: 'Installation', href: '#installation' },
   { label: 'Quick start', href: '#quick-start' },
   { label: 'Commands', href: '#commands' },
@@ -56,6 +57,29 @@ export default function HomePage() {
         <P>
           Install a skill once, use it everywhere. Share skills across your team. Publish your own
           skills to any GitHub repository so others can discover and install them.
+        </P>
+      </Section>
+
+      {/* How it works */}
+      <Section id='how-it-works' title='How it works'>
+        <P>
+          Skills are Markdown prompt files stored in GitHub repositories. SkillUse fetches them
+          and writes them to the directory your AI agent watches — no restart required.
+        </P>
+        <CodeBlock lang='diagram' showLineNumbers={false}>{`┌─────────────────────┐     ┌──────────────────────┐     ┌─────────────────┐
+│   GitHub repo       │     │   skilluse CLI       │     │   AI Agent      │
+│                     │     │                      │     │                 │
+│  owner/repo/        │     │  $ skilluse skill    │     │  Claude Code    │
+│  ├── commit/        │────>│    install commit    │────>│  Cursor         │
+│  │   └── SKILL.md   │     │                      │     │  VS Code        │
+│  ├── review-pr/     │     │  fetches SKILL.md    │     │  Goose …        │
+│  │   └── SKILL.md   │     │  writes to           │     │                 │
+│  └── deploy/        │     │  ~/.claude/skills/   │     │  /commit ✓      │
+│      └── SKILL.md   │     │  .cursor/skills/ …   │     │  /review-pr ✓   │
+└─────────────────────┘     └──────────────────────┘     └─────────────────┘`}</CodeBlock>
+        <P>
+          Each agent has a designated skills directory it monitors. Once a skill file lands there,
+          the agent exposes it as a slash command immediately — no configuration needed.
         </P>
       </Section>
 
@@ -121,7 +145,7 @@ export default function HomePage() {
           The <Code>auth</Code> command handles GitHub OAuth authentication. SkillUse uses GitHub
           to identify users and to read from (and optionally write to) skill repositories.
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`# Log in via GitHub OAuth
+        <CodeBlock lang='bash'>{`# Log in via GitHub OAuth
 skilluse auth login
 
 # Check current auth status
@@ -141,7 +165,7 @@ skilluse auth logout`}</CodeBlock>
           Skill repositories are GitHub repos that follow the SkillUse format. The <Code>repo</Code>{' '}
           command manages which repos SkillUse knows about.
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`# Add a repository
+        <CodeBlock lang='bash'>{`# Add a repository
 skilluse repo add <owner>/<repo>
 
 # List configured repositories
@@ -164,7 +188,7 @@ skilluse repo default <owner>/<repo>`}</CodeBlock>
           The <Code>skill</Code> command is the core of SkillUse. Install skills from repositories,
           list what&apos;s installed, and remove skills you no longer need.
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`# Install a skill by name
+        <CodeBlock lang='bash'>{`# Install a skill by name
 skilluse skill install <skill-name>
 
 # Install from a specific repo
@@ -191,7 +215,7 @@ skilluse skill info <skill-name>`}</CodeBlock>
           Share your skills with others by publishing them to a GitHub repository. The{' '}
           <Code>publish</Code> command handles versioning and pushing your skill files.
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`# Publish a skill from the current directory
+        <CodeBlock lang='bash'>{`# Publish a skill from the current directory
 skilluse publish
 
 # Publish to a specific repository
@@ -229,7 +253,7 @@ touch SKILL.md`}</CodeBlock>
           Each skill lives in a folder and must have a <Code>SKILL.md</Code> file — the prompt
           that gets injected into the AI agent when the skill is invoked.
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`my-skill/
+        <CodeBlock lang='diagram'>{`my-skill/
 ├── SKILL.md          # Required — the skill prompt
 └── references/       # Optional — supporting docs
     ├── guide.md
@@ -238,7 +262,7 @@ touch SKILL.md`}</CodeBlock>
           Write <Code>SKILL.md</Code> as a plain Markdown instruction prompt. Describe what the
           skill does, what inputs it expects, and how the agent should behave.
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`# SKILL.md example
+        <CodeBlock lang='bash'>{`# SKILL.md example
 
 Generate a Conventional Commits 1.0.0 compliant commit message.
 
@@ -258,7 +282,7 @@ Run: git commit -m "<message>"`}</CodeBlock>
           without cluttering the main prompt.
         </P>
         <P>A skill repository has one folder per skill at the top level:</P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`my-skill-repo/
+        <CodeBlock lang='diagram'>{`my-skill-repo/
 ├── commit/
 │   ├── SKILL.md
 │   └── references/
@@ -295,7 +319,7 @@ Run: git commit -m "<message>"`}</CodeBlock>
           Specify the agent with the <Code>--agent</Code> flag, or let SkillUse auto-detect based
           on config files present in your project:
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`# Auto-detect agent
+        <CodeBlock lang='bash'>{`# Auto-detect agent
 skilluse skill install commit
 
 # Specify agent explicitly
