@@ -35,7 +35,7 @@
     'Liberation Mono', Menlo, Courier, monospace;
 
   /* Bleed: code blocks extend beyond prose column */
-  --bleed: 72px;
+  --bleed: 64px;
 
   /* Spacing scale */
   --spacing-xxs: 0.5rem;
