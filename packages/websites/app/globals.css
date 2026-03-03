@@ -62,6 +62,7 @@
   --page-border: #e3e3e3;
   --divider: rgb(242, 242, 242);
   --code-bg: rgba(0, 0, 0, 0.05);
+  --code-text: #1d4ed8;
   --code-line-nr: rgba(0, 0, 0, 0.3);
   --selection-bg: rgba(0, 0, 0, 0.08);
 
@@ -127,6 +128,7 @@
     --page-border: rgba(255, 255, 255, 0.1);
     --divider: rgba(255, 255, 255, 0.06);
     --code-bg: rgba(255, 255, 255, 0.08);
+    --code-text: #93c5fd;
     --code-line-nr: rgba(255, 255, 255, 0.3);
     --selection-bg: rgba(255, 255, 255, 0.1);
     --btn-bg: rgb(30, 30, 30);
