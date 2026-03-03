@@ -86,11 +86,11 @@ export default function HomePage() {
       {/* Installation */}
       <Section id='installation' title='Installation'>
         <P>Install the SkillUse CLI globally using your preferred package manager:</P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`npm install -g skilluse`}</CodeBlock>
+        <CodeBlock lang='bash'>{`npm install -g skilluse`}</CodeBlock>
         <P>Or with pnpm:</P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`pnpm add -g skilluse`}</CodeBlock>
+        <CodeBlock lang='bash'>{`pnpm add -g skilluse`}</CodeBlock>
         <P>Verify the installation:</P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`skilluse --version`}</CodeBlock>
+        <CodeBlock lang='bash'>{`skilluse --version`}</CodeBlock>
         <P>
           SkillUse requires Node.js 18 or later. It stores skills in your home directory under{' '}
           <Code>~/.claude/skills/</Code> for Claude Code, with support for other agents coming soon.
@@ -104,16 +104,16 @@ export default function HomePage() {
           <Li>
             <strong>Authenticate</strong> — log in with your GitHub account to enable installing
             and publishing skills:
-            <CodeBlock lang='bash' showLineNumbers={false}>{`skilluse auth login`}</CodeBlock>
+            <CodeBlock lang='bash'>{`skilluse auth login`}</CodeBlock>
           </Li>
           <Li>
             <strong>Add a skill repository</strong> — point SkillUse at a GitHub repo containing
             skills:
-            <CodeBlock lang='bash' showLineNumbers={false}>{`skilluse repo add skilluse/skilluse`}</CodeBlock>
+            <CodeBlock lang='bash'>{`skilluse repo add skilluse/skilluse`}</CodeBlock>
           </Li>
           <Li>
             <strong>Install a skill</strong> — browse and install skills from the repo:
-            <CodeBlock lang='bash' showLineNumbers={false}>{`skilluse skill install commit`}</CodeBlock>
+            <CodeBlock lang='bash'>{`skilluse skill install commit`}</CodeBlock>
           </Li>
         </OL>
         <P>
@@ -235,7 +235,7 @@ skilluse publish --version 1.2.0`}</CodeBlock>
           A skill is a folder containing a <Code>SKILL.md</Code> file and optional reference
           documents. Create a new skill by making a directory with the skill name:
         </P>
-        <CodeBlock lang='bash' showLineNumbers={false}>{`mkdir my-skill && cd my-skill
+        <CodeBlock lang='bash'>{`mkdir my-skill && cd my-skill
 touch SKILL.md`}</CodeBlock>
         <P>
           The skill name (the folder name) becomes the slash command. A skill named{' '}
@@ -253,7 +253,7 @@ touch SKILL.md`}</CodeBlock>
           Each skill lives in a folder and must have a <Code>SKILL.md</Code> file — the prompt
           that gets injected into the AI agent when the skill is invoked.
         </P>
-        <CodeBlock lang='diagram'>{`my-skill/
+        <CodeBlock lang='diagram' showLineNumbers={false}>{`my-skill/
 ├── SKILL.md          # Required — the skill prompt
 └── references/       # Optional — supporting docs
     ├── guide.md
@@ -282,7 +282,7 @@ Run: git commit -m "<message>"`}</CodeBlock>
           without cluttering the main prompt.
         </P>
         <P>A skill repository has one folder per skill at the top level:</P>
-        <CodeBlock lang='diagram'>{`my-skill-repo/
+        <CodeBlock lang='diagram' showLineNumbers={false}>{`my-skill-repo/
 ├── commit/
 │   ├── SKILL.md
 │   └── references/
