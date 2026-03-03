@@ -66,17 +66,17 @@ export default function HomePage() {
           Skills are Markdown prompt files stored in GitHub repositories. SkillUse fetches them
           and writes them to the directory your AI agent watches — no restart required.
         </P>
-        <CodeBlock lang='diagram' showLineNumbers={false}>{`┌──────────────────┐   ┌─────────────────┐   ┌──────────────────┐   ┌─────────────────┐
-│   Skill repo     │   │  SkillUse CLI   │   │  Workspace repo  │   │   AI Agent      │
-│                  │   │                 │   │                  │   │                 │
-│  owner/repo/     │   │  $ skilluse     │   │  your-project/   │   │  Claude Code    │
-│  ├── commit/     │──>│    skill        │──>│  ├── .claude/    │──>│  Cursor         │
-│  │   └─ SKILL.md │   │    install      │   │  │   └─ skills/  │   │  VS Code        │
-│  ├── review-pr/  │   │    commit       │   │  │     └─ commit │   │  Goose …        │
-│  │   └─ SKILL.md │   │                 │   │  └── .cursor/    │   │                 │
-│  └── deploy/     │   │  or globally    │   │      └─ skills/  │   │  /commit ✓      │
-│      └─ SKILL.md │   │  ~/.claude/…    │   │                  │   │  /review-pr ✓   │
-└──────────────────┘   └─────────────────┘   └──────────────────┘   └─────────────────┘`}</CodeBlock>
+        <CodeBlock lang='diagram' showLineNumbers={false}>{`┌──────────────────┐   ┌──────────────────────┐   ┌─────────────────┐
+│   Skill repo     │   │    SkillUse CLI       │   │   AI Agent      │
+│                  │   │                       │   │                 │
+│  owner/repo/     │   │  $ skilluse skill     │   │  Claude Code    │
+│  ├── commit/     │──>│    install commit     │──>│  Cursor         │
+│  │   └─ SKILL.md │   │                       │   │  VS Code        │
+│  ├── review-pr/  │   │  writes to            │   │  Goose …        │
+│  │   └─ SKILL.md │   │  ~/.claude/skills/    │   │                 │
+│  └── deploy/     │   │  ~/.config/goose/…    │   │  /commit ✓      │
+│      └─ SKILL.md │   │  .cursor/skills/ …    │   │  /review-pr ✓   │
+└──────────────────┘   └──────────────────────┘   └─────────────────┘`}</CodeBlock>
         <P>
           Each agent has a designated skills directory it monitors. Once a skill file lands there,
           the agent exposes it as a slash command immediately — no configuration needed.
