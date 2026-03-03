@@ -67,7 +67,7 @@ export default function HomePage() {
           and writes them to the directory your AI agent watches — no restart required.
         </P>
         <CodeBlock lang='diagram' showLineNumbers={false}>{`┌──────────────────────┐   ┌──────────────────────┐   ┌──────────────────────┐
-│   Skill repo         │   │    SkillUse CLI       │   │      AI Agent        │
+│   Skill repo         │   │    SkillUse CLI      │   │      AI Agent        │
 │                      │   │                      │   │                      │
 │  owner/repo/         │   │  $ skilluse skill    │   │  Claude Code         │
 │  ├── commit/         │──>│    install commit    │──>│  Cursor              │
