@@ -1,13 +1,6 @@
-import type { Metadata } from "next"
-import { IBM_Plex_Mono } from "next/font/google"
-import { config } from "~/config"
-import "./globals.css"
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-})
+import type { Metadata } from 'next'
+import { config } from '~/config'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: {
@@ -18,13 +11,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(config.site.url),
   openGraph: {
     siteName: config.site.name,
-    locale: "en_US",
-    type: "website",
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    site: "@JiweiYuan",
-    creator: "@JiweiYuan",
+    card: 'summary_large_image',
+    site: '@JiweiYuan',
+    creator: '@JiweiYuan',
   },
 }
 
@@ -34,12 +27,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${ibmPlexMono.variable} font-mono antialiased bg-background text-foreground`}
-      >
-        {children}
-      </body>
+    <html lang='en'>
+      <head>
+        <link rel='preconnect' href='https://rsms.me' />
+        <link rel='stylesheet' href='https://rsms.me/inter/inter.css' />
+      </head>
+      <body style={{ fontFamily: 'var(--font-primary)', margin: 0 }}>{children}</body>
     </html>
   )
 }

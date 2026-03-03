@@ -1,26 +1,5 @@
-import type { ReactNode } from "react"
-import { Footer } from "~/components/layout/footer"
-import { Header } from "~/components/layout/header"
-import { Container } from "~/components/layout/container"
+import type { ReactNode } from 'react'
 
-type WebLayoutProps = {
-  children: ReactNode
-}
-
-export default function WebLayout({ children }: WebLayoutProps) {
-  return (
-    <div className="min-h-dvh p-2 sm:p-4">
-      <div className="flex flex-col min-h-[calc(100dvh-1rem)] sm:min-h-[calc(100dvh-2rem)] max-w-272 mx-auto border border-border">
-        <Header />
-
-        <main className="flex flex-col grow">
-          <Container className="flex flex-col grow py-8 gap-8 md:gap-10 md:py-10 lg:gap-12 lg:py-12">
-            {children}
-          </Container>
-        </main>
-
-        <Footer />
-      </div>
-    </div>
-  )
+export default function WebLayout({ children }: { children: ReactNode }) {
+  return <>{children}</>
 }

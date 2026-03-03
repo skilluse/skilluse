@@ -1,0 +1,149 @@
+/*
+ * Editorial page styles.
+ *
+ * Key design decisions:
+ * - Inter variable font at weight 460 (between normal and medium)
+ * - Near-black text (#111) not pure black, with 40% opacity for secondary
+ * - Narrow 550px content column for optimal reading
+ * - Negative letter-spacing on headings for tight, refined feel
+ * - 7-layer box shadows for realistic depth
+ * - Display P3 accent colors (wider gamut than sRGB)
+ * - Custom cubic-bezier easings with slight overshoot ("snappy", "swift")
+ * - Fading header gradient pseudo-element
+ * - Small font sizes (14px body) for editorial/compact aesthetic
+ *
+ * Design tokens are defined in globals.css :root (no prefix).
+ */
+
+/* ========================================================================
+   JetBrainsMono Nerd Font Mono — patched with box-drawing glyphs.
+   Source: github.com/ryanoasis/nerd-fonts
+   ======================================================================== */
+
+@font-face {
+  font-family: 'JetBrainsMono NF Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://raw.githubusercontent.com/ryanoasis/nerd-fonts/refs/tags/v3.3.0/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFontMono-Regular.ttf')
+    format('truetype');
+}
+
+/* ========================================================================
+   Selection
+   ======================================================================== */
+
+.editorial-page {
+  font-optical-sizing: auto;
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+}
+
+.editorial-page ::selection {
+  background: var(--selection-bg);
+}
+
+/* Bold and inline code inside prose punch through the reduced opacity */
+.editorial-prose strong,
+.editorial-prose .inline-code {
+  opacity: calc(1 / 0.82);
+}
+
+/* ========================================================================
+   Stagger-in animation
+   ======================================================================== */
+
+@keyframes stagger-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================================================
+   Bleed — code blocks and images extend beyond the prose column so that
+   the code text (after line numbers) aligns with the prose left edge.
+   44px = 8px div padding-left + 36px line-number span
+   ======================================================================== */
+
+.bleed {
+  margin-left: calc(-1 * var(--bleed));
+  margin-right: calc(-1 * var(--bleed));
+}
+
+@media (max-width: 650px) {
+  .bleed {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* ========================================================================
+   Inline code — subtle background pill via ::before pseudo-element.
+   ======================================================================== */
+
+.inline-code {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-code);
+  font-size: 12.6px;
+  font-weight: 500;
+  line-height: 12.6px;
+  letter-spacing: 0.01em;
+  padding: 1.6px 3.2px;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.inline-code::before {
+  content: '';
+  position: absolute;
+  inset: -1.26px 0;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  z-index: -1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .inline-code {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .inline-code::before {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ========================================================================
+   Header fade gradient
+   ======================================================================== */
+
+.editorial-page::before {
+  content: '';
+  pointer-events: none;
+  z-index: 9;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  background: linear-gradient(
+    var(--fade-0) 0px,
+    var(--fade-1) 19%,
+    var(--fade-2) 34%,
+    var(--fade-3) 47%,
+    var(--fade-4) 56.5%,
+    var(--fade-5) 65%,
+    var(--fade-6) 73%,
+    var(--fade-7) 80.2%,
+    var(--fade-8) 86.1%,
+    var(--fade-9) 91%,
+    var(--fade-10) 95.2%,
+    var(--fade-11) 98.2%,
+    var(--fade-12) 100%
+  );
+}

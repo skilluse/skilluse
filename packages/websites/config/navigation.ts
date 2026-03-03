@@ -41,7 +41,6 @@ export const docsNavigation: DocsNavGroup[] = [
 
 export const mainNavigation: NavItem[] = [
   { title: "Docs", href: "/docs" },
-  { title: "Blog", href: "/blog" },
   { title: "GitHub", href: linksConfig.github, external: true },
 ]
 
@@ -51,8 +50,6 @@ export const footerNavigation: {
 } = {
   quickLinks: [
     { title: "Docs", href: "/docs" },
-    { title: "Blog", href: "/blog" },
-    { title: "About", href: "/about" },
   ],
   social: [
     { title: "GitHub", href: linksConfig.github, external: true },
