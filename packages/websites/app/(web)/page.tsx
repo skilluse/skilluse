@@ -47,11 +47,14 @@ export default function HomePage() {
     <EditorialPage toc={tocItems} logo='skilluse'>
       {/* Introduction */}
       <Section id='introduction' title='Introduction'>
+        <CodeBlock lang='diagram' showLineNumbers={false}>{` ▗▄▄▖▗▖ ▗▖▗▄▄▄▖▗▖   ▗▖   ▗▖ ▗▖ ▗▄▄▖▗▄▄▄▖
+▐▌   ▐▌▗▞▘  █  ▐▌   ▐▌   ▐▌ ▐▌▐▌   ▐▌
+ ▝▀▚▖▐▛▚▖   █  ▐▌   ▐▌   ▐▌ ▐▌ ▝▀▚▖▐▛▀▀▘
+▗▄▄▞▘▐▌ ▐▌▗▄█▄▖▐▙▄▄▖▐▙▄▄▖▝▚▄▞▘▗▄▄▞▘▐▙▄▄▖`}</CodeBlock>
         <P>
-          SkillUse is a CLI tool to discover, install, and manage{' '}
-          <strong>skills for AI coding assistants</strong> — Claude Code, Cursor, VS Code Copilot,
-          Goose, Codex, OpenCode, Letta, and more. Skills are reusable slash commands and agent
-          instructions that extend what your AI can do.{' '}
+          SkillUse is a <strong>registry for AI agent skills</strong> based on GitHub. Discover,
+          install, and publish skills across your teams and coding agents — Claude Code, Cursor,
+          Windsurf, and more.{' '}
           <A href='https://github.com/skilluse/skilluse'>Star on GitHub</A>.
         </P>
         <P>
@@ -63,23 +66,29 @@ export default function HomePage() {
       {/* How it works */}
       <Section id='how-it-works' title='How it works'>
         <P>
-          Skills are Markdown prompt files stored in GitHub repositories. SkillUse fetches them
-          and writes them to the directory your AI agent watches — no restart required.
+          GitHub repositories act as skill registries — public community repos, private company
+          repos, or personal repos. SkillUse pulls skills from any of them and installs them into
+          the directory your AI agent watches.
         </P>
-        <CodeBlock lang='diagram' showLineNumbers={false}>{`┌──────────────────────┐   ┌──────────────────────┐   ┌──────────────────────┐
-│   Skill repo         │   │    SkillUse CLI      │   │      AI Agent        │
-│                      │   │                      │   │                      │
-│  owner/repo/         │   │  $ skilluse skill    │   │  Claude Code         │
-│  ├── commit/         │──>│    install commit    │──>│  Cursor              │
-│  │   └─ SKILL.md     │   │                      │   │  VS Code             │
-│  ├── review-pr/      │   │  writes to           │   │  Goose …             │
-│  │   └─ SKILL.md     │   │  ~/.claude/skills/   │   │                      │
-│  └── deploy/         │   │  ~/.config/goose/…   │   │  /commit ✓           │
-│      └─ SKILL.md     │   │  .cursor/skills/ …   │   │  /review-pr ✓        │
-└──────────────────────┘   └──────────────────────┘   └──────────────────────┘`}</CodeBlock>
+        <CodeBlock lang='diagram' showLineNumbers={false}>{`┌─────────────────────────────────────────────────────────────────┐
+│           GitHub Repositories (Skill Registries)                │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │
+│  │ Public Repo  │  │ Company Repo │  │Personal Repo │           │
+│  │ (community)  │  │  (private)   │  │  (private)   │           │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘           │
+│         └─────────────────┼─────────────────┘                   │
+│                           ▼                                     │
+│                    ┌────────────┐                               │
+│                    │  skilluse  │                               │
+│                    └─────┬──────┘                               │
+│                          │                                      │
+│         ┌────────────────┼────────────────┐                     │
+│         ▼                ▼                ▼                     │
+│  ~/.claude/skills  ~/.cursor/skills  ~/.codex/skills            │
+└─────────────────────────────────────────────────────────────────┘`}</CodeBlock>
         <P>
-          Each agent has a designated skills directory it monitors. Once a skill file lands there,
-          the agent exposes it as a slash command immediately — no configuration needed.
+          Once a skill file lands in the agent directory, it becomes available as a slash command
+          immediately — no restart, no configuration needed.
         </P>
       </Section>
 
